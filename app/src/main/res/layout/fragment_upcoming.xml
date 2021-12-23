@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nest_scrollview"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#00FFFFFF"
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fragment under construction"
+                android:textSize="50sp"
+                android:layout_marginBottom="500dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_below="@id/txt"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/p"/>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</androidx.core.widget.NestedScrollView>
+
+
+
+
