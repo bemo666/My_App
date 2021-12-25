@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_marginHorizontal="5dp"
+            android:layout_marginHorizontal="3dp"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:tabGravity="start"
             app:tabIndicatorColor="@color/blue"
@@ -57,9 +57,7 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="start|bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_scrollFlags="scroll">
-
-    </androidx.viewpager2.widget.ViewPager2>
+        app:layout_scrollFlags="scroll"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"

@@ -17,8 +17,8 @@ public class NewTrip extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_trip);
         //Actionbar setup
-//        toolbar = findViewById(R.id.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //toolbar = findViewById(R.id.toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
     }

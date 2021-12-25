@@ -1,16 +1,29 @@
 package com.ikea.myapp;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 
-public class UpcomingFragment extends Fragment {
 
+public class UpcomingFragment<recyclerViewInit> extends Fragment {
+
+    //Variables
+    private ArrayList<String> mNames = new ArrayList<String>();
+    RecyclerView recyclerView;
+    RecyclerViewAdapter adapter;
+    Context thiscontext;
 
 
     public UpcomingFragment() {
@@ -21,13 +34,33 @@ public class UpcomingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        thiscontext = context;
+        super.onAttach(context);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_upcoming, container, false);
+        View view =  inflater.inflate(R.layout.fragment_upcoming, container, false);
+        recyclerView = (RecyclerView) view.findViewById(R.id.rvTrips);
+        recyclerViewInit();
+        return view;
+    }
+
+    public void recyclerViewInit(){
+        mNames.add("London");
+        mNames.add("Australia");
+        mNames.add("Amsterdam");
+        mNames.add("Russia");
+        adapter = new RecyclerViewAdapter(mNames, thiscontext);
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
     }
 }

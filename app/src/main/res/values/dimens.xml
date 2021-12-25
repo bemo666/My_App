@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="elev">3dp</dimen>
-    <dimen name="margin_side">20dp</dimen>
-    <dimen name="card_radius"></dimen>
+    <dimen name="margin_side">15dp</dimen>
+    <dimen name="card_radius">20dp</dimen>
     <dimen name="card_radius_thin">12dp</dimen>
     <dimen name="circle_radius">20dp</dimen>
 

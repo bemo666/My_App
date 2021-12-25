@@ -15,20 +15,22 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/margin_side">
 
-            <TextView
-                android:id="@+id/txt"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTrips"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Fragment under construction"
-                android:textSize="50sp"
-                android:layout_marginBottom="500dp"/>
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/margin_side"
+                />
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_below="@id/txt"
+                android:layout_below="@id/rvTrips"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/margin_side"
                 android:scaleType="centerCrop"
                 android:src="@drawable/p"/>
 

@@ -39,6 +39,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import io.alterac.blurkit.BlurLayout;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Initializing variables
@@ -143,5 +145,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         }
     }
-
 }
