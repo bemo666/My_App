@@ -22,15 +22,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="@dimen/margin_side" />
+                android:layout_marginTop="@dimen/spacing"
+                android:layout_marginBottom="@dimen/spacing" />
+            <!---
+            <RelativeLayout
+                android:id="@+id/planBar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rvTrips">
 
-            <ImageView
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start|top"
+                     />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/edit_cardview"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_alignParentEnd="true"
+                    android:clickable="true"
+                    android:elevation="8dp"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/circle_radius">
+
+                    <ImageView
+                        android:id="@+id/search_icon"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/ic_search"
+                        app:tint="?attr/colorOnSecondary" />
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTripDetails"
                 android:layout_width="match_parent"
-                android:layout_below="@id/rvTrips"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/margin_side"
-                android:scaleType="centerCrop"
-                android:src="@drawable/p"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/planBar"
+                android:layout_marginTop="@dimen/spacing" />
+-->
 
         </RelativeLayout>
 

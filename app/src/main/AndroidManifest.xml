@@ -11,7 +11,8 @@
         android:theme="@style/Theme.MyApp">
         <activity
             android:name=".SignUp"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SignIn"
             android:exported="false"
@@ -22,7 +23,7 @@
         <activity
             android:name=".NewTrip"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
