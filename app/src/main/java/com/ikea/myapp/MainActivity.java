@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         });
+        viewPage2.setUserInputEnabled(false);
 
     }
 
