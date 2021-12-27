@@ -86,6 +86,27 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
+                        android:hint="Birthday"
+                        android:inputType="date"
+                        app:boxCornerRadiusBottomEnd="@dimen/card_radius_thin"
+                        app:boxCornerRadiusBottomStart="@dimen/card_radius_thin"
+                        app:boxCornerRadiusTopEnd="@dimen/card_radius_thin"
+                        app:boxCornerRadiusTopStart="@dimen/card_radius_thin">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/BirthdayField"
+                            android:clickable="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/orange"
+                            android:focusableInTouchMode="false"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
                         android:hint="Username"
                         android:inputType="text"
                         app:boxCornerRadiusBottomEnd="@dimen/card_radius_thin"
