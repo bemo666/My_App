@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.ActivityOptions;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,9 +24,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
+import android.transition.ChangeBounds;
+import android.transition.Explode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -39,7 +43,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import io.alterac.blurkit.BlurLayout;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -53,8 +56,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView backdrop;
 
     protected void onCreate(Bundle savedInstanceState) {
+        //Enable Activity Transitions
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         //Disable dark mode ONLY ONCE
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         //Linking xml objects to java objects
@@ -107,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         });
-        viewPage2.setUserInputEnabled(false);
+        //viewPage2.setUserInputEnabled(false);
 
     }
 
@@ -127,8 +134,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         switch (id) {
             case R.id.profile:
+                getWindow().setExitTransition(new ChangeBounds());
                 Intent intent = new Intent(this, Profile.class);
-                startActivity(intent);
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+
                 return true;
 
             case R.id.search:
@@ -144,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view == add) {
             Intent intent = new Intent(this, NewTrip.class);
             startActivity(intent);
+
         }
     }
 }

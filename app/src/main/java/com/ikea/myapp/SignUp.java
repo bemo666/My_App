@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -13,14 +14,23 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUp extends AppCompatActivity {
-    TextInputEditText birthday;
+    TextInputEditText birthday, name, username, email, password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         getSupportActionBar().hide();
+        name = findViewById(R.id.inputName);
+        email = findViewById(R.id.inputEmail);
+        password = findViewById(R.id.inputPassword);
+        username = findViewById(R.id.inputUsername);
 
-        birthday = findViewById(R.id.BirthdayField);
+        name.setInputType(InputType.TYPE_CLASS_TEXT);
+        email.setInputType(InputType.TYPE_CLASS_TEXT);
+        password.setInputType(InputType.TYPE_CLASS_TEXT);
+        username.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        birthday = findViewById(R.id.inputBirthday);
 
         DatePickerDialog datePicker = new DatePickerDialog(this);
 

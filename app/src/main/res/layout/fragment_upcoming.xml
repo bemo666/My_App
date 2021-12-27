@@ -24,25 +24,30 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="@dimen/spacing"
                 android:layout_marginBottom="@dimen/spacing" />
-            <!---
+
             <RelativeLayout
                 android:id="@+id/planBar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rvTrips">
+                android:layout_below="@+id/rvTrips"
+                android:layout_marginHorizontal="@dimen/margin_side">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="start|top"
-                     />
+                    android:text="Plan"
+                    android:textSize="20sp"
+                    android:textColor="@color/darkGrey" />
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/edit_cardview"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerInParent="true"
                     android:layout_marginHorizontal="15dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="5dp"
                     android:clickable="true"
                     android:elevation="8dp"
                     android:focusable="true"
@@ -55,7 +60,7 @@
                         android:layout_height="25dp"
                         android:layout_gravity="center"
                         app:srcCompat="@drawable/ic_search"
-                        app:tint="?attr/colorOnSecondary" />
+                        app:tint="@color/orange" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -68,7 +73,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/planBar"
                 android:layout_marginTop="@dimen/spacing" />
--->
 
         </RelativeLayout>
 

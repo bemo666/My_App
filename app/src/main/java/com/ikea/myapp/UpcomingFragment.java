@@ -12,9 +12,12 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 
 import java.util.ArrayList;
 
@@ -23,7 +26,7 @@ public class UpcomingFragment<recyclerViewInit> extends Fragment {
 
     //Variables
     private ArrayList<String> mNames = new ArrayList<String>();
-    RecyclerView recyclerView;
+    RecyclerView rv_trips, rv_details;
     RecyclerViewAdapter adapter;
 
 
@@ -37,12 +40,12 @@ public class UpcomingFragment<recyclerViewInit> extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_upcoming, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.rvTrips);
+         rv_trips=  view.findViewById(R.id.rvTrips);
+         rv_details = view.findViewById(R.id.rvTripDetails);
         recyclerViewInit();
 
         SnapHelper helper = new LinearSnapHelper();
-        helper.attachToRecyclerView(recyclerView);
-
+        helper.attachToRecyclerView(rv_trips);
         return view;
     }
 
@@ -52,9 +55,16 @@ public class UpcomingFragment<recyclerViewInit> extends Fragment {
         mNames.add("Amsterdam");
         mNames.add("Russia");
         adapter = new RecyclerViewAdapter(mNames, requireContext());
-        recyclerView.setAdapter(adapter);
+        rv_trips.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
+        rv_trips.setLayoutManager(layoutManager);
+
+        TripDetailsAdapter adapter2 = new TripDetailsAdapter(requireContext());
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        rv_details.setAdapter(adapter2);
+        rv_details.setLayoutManager(layoutManager2);
+
+
 
     }
 }

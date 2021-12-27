@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable-v24/card_mask_inverted.xml" value="0.1675925925925926" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.24375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/card_background.xml" value="0.22962962962962963" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/card_mask.xml" value="0.24375" />
@@ -18,7 +19,8 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_sign_in.xml" value="0.2" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_sign_up.xml" value="0.1" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_past.xml" value="0.2234375" />
-        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_upcoming.xml" value="0.14234620886981403" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_upcoming.xml" value="0.264" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_trip_details.xml" value="0.6" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_trips.xml" value="0.264" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/menu/main_menu.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/menu/menu.xml" value="0.2234375" />

@@ -6,13 +6,18 @@ import androidx.appcompat.app.AppCompatDelegate;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 public class SignIn extends AppCompatActivity implements View.OnClickListener {
     TextView createAccount;
     Button signInButton;
+    TextInputEditText email, password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +26,12 @@ public class SignIn extends AppCompatActivity implements View.OnClickListener {
         getSupportActionBar().hide();
         signInButton = findViewById(R.id.sign_in_button);
         createAccount = findViewById(R.id.createAccount);
+        email = findViewById(R.id.inputEmail);
+        password = findViewById(R.id.inputPassword);
+
+        email.setInputType(InputType.TYPE_CLASS_TEXT);
+        password.setInputType(InputType.TYPE_CLASS_TEXT);
+
         createAccount.setOnClickListener(this);
 
     }
