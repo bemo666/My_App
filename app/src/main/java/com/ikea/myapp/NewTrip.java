@@ -17,8 +17,9 @@ public class NewTrip extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_trip);
         //Actionbar setup
-        //toolbar = findViewById(R.id.toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
     }
@@ -26,8 +27,7 @@ public class NewTrip extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
+                finish();
         }
         return super.onOptionsItemSelected(item);
     }

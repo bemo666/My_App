@@ -19,14 +19,16 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Profile"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".NewTrip"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/MainTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

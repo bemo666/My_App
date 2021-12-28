@@ -37,8 +37,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="start|top"
                     android:text="Plan"
-                    android:textSize="20sp"
-                    android:textColor="@color/darkGrey" />
+                    android:textColor="@color/darkGrey"
+                    android:textSize="20sp" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/edit_cardview"
@@ -56,10 +56,10 @@
 
                     <ImageView
                         android:id="@+id/search_icon"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
                         android:layout_gravity="center"
-                        app:srcCompat="@drawable/ic_search"
+                        app:srcCompat="@drawable/ic_calendar"
                         app:tint="@color/orange" />
 
                 </androidx.cardview.widget.CardView>

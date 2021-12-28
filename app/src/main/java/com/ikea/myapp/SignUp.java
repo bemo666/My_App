@@ -1,10 +1,12 @@
 package com.ikea.myapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -15,11 +17,15 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUp extends AppCompatActivity {
     TextInputEditText birthday, name, username, email, password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         name = findViewById(R.id.inputName);
         email = findViewById(R.id.inputEmail);
         password = findViewById(R.id.inputPassword);
@@ -51,5 +57,14 @@ public class SignUp extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
