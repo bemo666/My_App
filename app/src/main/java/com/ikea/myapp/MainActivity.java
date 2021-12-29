@@ -24,8 +24,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
+import android.transition.AutoTransition;
 import android.transition.ChangeBounds;
 import android.transition.Explode;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +39,7 @@ import android.widget.RelativeLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.transition.platform.MaterialElevationScale;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         switch (id) {
             case R.id.profile:
-                getWindow().setExitTransition(new ChangeBounds());
+                getWindow().setExitTransition(new MaterialElevationScale(true));
                 Intent intent = new Intent(this, Profile.class);
                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
 

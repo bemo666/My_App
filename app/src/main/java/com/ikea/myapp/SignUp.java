@@ -1,5 +1,6 @@
 package com.ikea.myapp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
@@ -17,14 +18,17 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class SignUp extends AppCompatActivity {
     TextInputEditText birthday, name, username, email, password;
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         //getSupportActionBar().hide();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setTitle("Sign Up");
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
 
         name = findViewById(R.id.inputName);
         email = findViewById(R.id.inputEmail);

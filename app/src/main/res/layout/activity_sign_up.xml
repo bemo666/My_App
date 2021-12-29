@@ -6,20 +6,12 @@
     tools:context=".SignIn">
 
     <LinearLayout
+        android:id="@+id/back"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="2">
-
-        <LinearLayout
-            android:id="@+id/back"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/card_background"
-            android:backgroundTint="@color/blue"
-            android:orientation="horizontal" />
-    </LinearLayout>
+        android:layout_height="300dp"
+        android:background="@drawable/card_background"
+        android:backgroundTint="@color/blue"
+        android:orientation="horizontal" />
 
 
     <ScrollView
@@ -36,7 +28,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="50dp"
                 android:src="@mipmap/ic_launcher_round" />
 
             <androidx.cardview.widget.CardView
@@ -99,7 +91,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/orange"
-                            android:focusableInTouchMode="false"/>
+                            android:focusableInTouchMode="false" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
