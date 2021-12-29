@@ -13,11 +13,12 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/circle"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginTop="5dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginTop="7dp"
             android:layout_gravity="center_horizontal"
-            android:backgroundTint="@color/blue"
+            android:backgroundTint="@color/lighterBlue"
+            app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/circle_radius" />
 
         <View

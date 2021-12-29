@@ -9,28 +9,40 @@ import android.transition.Slide;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 
-public class Profile extends AppCompatActivity implements View.OnClickListener {
+import com.google.android.material.transition.platform.MaterialElevationScale;
 
+public class Profile extends AppCompatActivity implements View.OnClickListener {
+    //Declaring Variables
     Button signInButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Enable Activity Transitions
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
+        //Initializing the activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //Setting the Actionbar attributes
         setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        //Linking xml objects to java objects
         signInButton = findViewById(R.id.sign_in_button);
+
+        //OnClick Listeners
         signInButton.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
+        getWindow().setExitTransition(new MaterialElevationScale(true));
         Intent intent = new Intent(this, SignIn.class);
-        startActivity(intent);
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
     @Override

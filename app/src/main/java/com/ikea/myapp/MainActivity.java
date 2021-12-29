@@ -50,7 +50,7 @@ import java.util.ListIterator;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //Initializing variables
+    //Declaring Variables
     FloatingActionButton add;
     TabLayout tabLayout;
     ViewPager2 viewPage2;
@@ -63,24 +63,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Enable Activity Transitions
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
+        //Initializing the activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //Disable dark mode ONLY ONCE
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         //Linking xml objects to java objects
         tabLayout = findViewById(R.id.tab_view);
         viewPage2 = findViewById(R.id.viewpager);
         add = findViewById(R.id.add_button);
         nst = findViewById(R.id.nest_scrollview);
         backdrop = findViewById(R.id.backdrop);
-
-        //Link ActionBar, set it and change its color to transparent
         toolbar = findViewById(R.id.toolbar);
+
+        //Setting the Actionbar attributes
         setSupportActionBar(toolbar);
         toolbar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
 
-        //OnClick Listener
+        //OnClick listeners
         add.setOnClickListener(this);
 
         //Fragments setup
@@ -118,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tabLayout.selectTab(tabLayout.getTabAt(position));
             }
         });
-        //viewPage2.setUserInputEnabled(false);
+        //Disabling swiping on view pager viewPage2.setUserInputEnabled(false);
 
     }
 
