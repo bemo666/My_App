@@ -9,7 +9,7 @@ import androidx.core.app.NavUtils;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-public class NewTrip extends AppCompatActivity {
+public class NewTripActivity extends AppCompatActivity {
 //    Toolbar toolbar;
 
     @Override

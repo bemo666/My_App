@@ -16,18 +16,20 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 
 import java.util.ArrayList;
 
 
-public class UpcomingFragment<recyclerViewInit> extends Fragment {
+public class UpcomingFragment extends Fragment {
 
     //Variables
     private ArrayList<String> mNames = new ArrayList<String>();
     RecyclerView rv_trips, rv_details;
     RecyclerViewAdapter adapter;
+    ScrollView scrollView;
 
 
     public UpcomingFragment() {
@@ -39,17 +41,18 @@ public class UpcomingFragment<recyclerViewInit> extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_upcoming, container, false);
-         rv_trips=  view.findViewById(R.id.rvTrips);
-         rv_details = view.findViewById(R.id.rvTripDetails);
+        View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
+        rv_trips = view.findViewById(R.id.rvTrips);
+        rv_details = view.findViewById(R.id.rvTripDetails);
+        scrollView = view.findViewById(R.id.scrollView);
         recyclerViewInit();
 
-        SnapHelper helper = new LinearSnapHelper();
+        SnapHelper helper = new GravitySnapHelper(Gravity.CENTER);
         helper.attachToRecyclerView(rv_trips);
         return view;
     }
 
-    public void recyclerViewInit(){
+    public void recyclerViewInit() {
         mNames.add("London");
         mNames.add("Australia");
         mNames.add("Amsterdam");
@@ -66,5 +69,9 @@ public class UpcomingFragment<recyclerViewInit> extends Fragment {
 
 
 
+    }
+
+    public ScrollView getScrollView() {
+        return scrollView;
     }
 }

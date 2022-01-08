@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "488455591009",
+    "project_id": "trip-planner-9ae02",
+    "storage_bucket": "trip-planner-9ae02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488455591009:android:67d03c0cfb8c285d090620",
+        "android_client_info": {
+          "package_name": "com.ikea.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "488455591009-l4hob0bbdndr36p09fq4ibupqf5lp2mh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPsAO9nrvtm_fdL3BR501n255wNVXxows"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "488455591009-l4hob0bbdndr36p09fq4ibupqf5lp2mh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

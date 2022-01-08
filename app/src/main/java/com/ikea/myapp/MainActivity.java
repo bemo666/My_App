@@ -1,52 +1,41 @@
 package com.ikea.myapp;
 
-import static java.security.AccessController.getContext;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.app.ActivityOptions;
-import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Html;
-import android.transition.AutoTransition;
-import android.transition.ChangeBounds;
-import android.transition.Explode;
-import android.transition.Slide;
-import android.view.Gravity;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.transition.platform.MaterialElevationScale;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -55,9 +44,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TabLayout tabLayout;
     ViewPager2 viewPage2;
     Toolbar toolbar;
-    NestedScrollView nst;
     FragmentAdapter fragmentAdapter;
     ImageView backdrop;
+    AppBarLayout appBarLayout;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
 
     protected void onCreate(Bundle savedInstanceState) {
         //Enable Activity Transitions
@@ -70,13 +61,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Disable dark mode ONLY ONCE
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        //Linking xml objects to java objects
+        //Linking xml objects to java ints
         tabLayout = findViewById(R.id.tab_view);
         viewPage2 = findViewById(R.id.viewpager);
         add = findViewById(R.id.add_button);
-        nst = findViewById(R.id.nest_scrollview);
         backdrop = findViewById(R.id.backdrop);
         toolbar = findViewById(R.id.toolbar);
+        appBarLayout = findViewById(R.id.app_bar);
 
         //Setting the Actionbar attributes
         setSupportActionBar(toolbar);
@@ -99,6 +90,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPage2.setCurrentItem(tab.getPosition());
+                appBarLayout.setExpanded(true);
+
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (fragmentAdapter.getItem(0) != null && tab.getPosition() == 1)
+                            ((UpcomingFragment) fragmentAdapter.getItem(0)).getScrollView().fullScroll(ScrollView.FOCUS_UP);
+
+                        else if ( fragmentAdapter.getItem(1) != null && tab.getPosition() == 0)
+                            ((PastFragment) fragmentAdapter.getItem(1)).getScrollView().fullScroll(ScrollView.FOCUS_UP);
+
+                        //Do something after 100ms
+                    }
+                }, 500);
+
 
             }
 
@@ -141,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.profile:
                 getWindow().setExitTransition(new MaterialElevationScale(true));
-                Intent intent = new Intent(this, Profile.class);
+                Intent intent = new Intent(this, ProfileActivity.class);
                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
 
                 return true;
@@ -157,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == add) {
-            Intent intent = new Intent(this, NewTrip.class);
+            Intent intent = new Intent(this, NewTripActivity.class);
             startActivity(intent);
 
         }

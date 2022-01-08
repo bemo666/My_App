@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/Theme.MyApp"
             app:layout_scrollFlags="scroll|snap|enterAlways"
-            app:title="@string/app_name" />
+            app:title="@string/home_actionbar_name" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_view"

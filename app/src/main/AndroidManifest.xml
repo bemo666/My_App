@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ikea.myapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,19 +13,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp">
         <activity
-            android:name=".SignUp"
+            android:name=".ForgotPasswordActivity"
             android:exported="false"
+            android:parentActivityName=".SignInActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignIn"
+            android:name=".SignUpActivity"
             android:exported="false"
+            android:parentActivityName=".ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Profile"
+            android:name=".SignInActivity"
             android:exported="false"
+            android:parentActivityName=".ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NewTrip"
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".NewTripActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

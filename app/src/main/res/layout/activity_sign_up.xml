@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignIn">
+    tools:context=".SignInActivity">
 
     <LinearLayout
         android:id="@+id/back"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="350dp"
         android:background="@drawable/card_background"
         android:backgroundTint="@color/blue"
         android:orientation="horizontal" />
@@ -20,7 +20,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <ImageView
@@ -30,12 +30,20 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="50dp"
                 android:src="@mipmap/ic_launcher_round" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"/>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="20dp"
@@ -52,19 +60,21 @@
                     android:layout_gravity="center"
                     android:orientation="vertical"
                     android:paddingHorizontal="30dp"
-                    android:paddingTop="30dp">
+                    android:paddingTop="20dp">
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutInputName"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
+                        android:autofillHints="name"
                         android:hint="Full Name"
-                        android:inputType="text"
                         app:boxCornerRadiusBottomEnd="@dimen/card_radius_thin"
                         app:boxCornerRadiusBottomStart="@dimen/card_radius_thin"
                         app:boxCornerRadiusTopEnd="@dimen/card_radius_thin"
-                        app:boxCornerRadiusTopStart="@dimen/card_radius_thin">
+                        app:boxCornerRadiusTopStart="@dimen/card_radius_thin"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputName"
@@ -75,6 +85,7 @@
 
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutInputBirthday"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -84,7 +95,8 @@
                         app:boxCornerRadiusBottomEnd="@dimen/card_radius_thin"
                         app:boxCornerRadiusBottomStart="@dimen/card_radius_thin"
                         app:boxCornerRadiusTopEnd="@dimen/card_radius_thin"
-                        app:boxCornerRadiusTopStart="@dimen/card_radius_thin">
+                        app:boxCornerRadiusTopStart="@dimen/card_radius_thin"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputBirthday"
@@ -94,26 +106,9 @@
                             android:focusableInTouchMode="false" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:hint="Username"
-                        android:inputType="text"
-                        app:boxCornerRadiusBottomEnd="@dimen/card_radius_thin"
-                        app:boxCornerRadiusBottomStart="@dimen/card_radius_thin"
-                        app:boxCornerRadiusTopEnd="@dimen/card_radius_thin"
-                        app:boxCornerRadiusTopStart="@dimen/card_radius_thin">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/inputUsername"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="@color/orange" />
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutInputEmail"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -123,23 +118,23 @@
                         app:boxCornerRadiusBottomEnd="@dimen/card_radius_thin"
                         app:boxCornerRadiusBottomStart="@dimen/card_radius_thin"
                         app:boxCornerRadiusTopEnd="@dimen/card_radius_thin"
-                        app:boxCornerRadiusTopStart="@dimen/card_radius_thin">
+                        app:boxCornerRadiusTopStart="@dimen/card_radius_thin"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/inputEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:autofillHints="emailAddress"
                             android:backgroundTint="@color/orange" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutInputPassword"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:hint="Password"
-                        android:inputType="textPassword"
                         app:boxCornerRadiusBottomEnd="@dimen/card_radius_thin"
                         app:boxCornerRadiusBottomStart="@dimen/card_radius_thin"
                         app:boxCornerRadiusTopEnd="@dimen/card_radius_thin"
@@ -152,7 +147,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:autofillHints="password"
-                            android:backgroundTint="@color/orange" />
+                            android:backgroundTint="@color/orange"
+                            android:inputType="textPassword" />
                     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -179,4 +175,10 @@
 
     </ScrollView>
 
+    <ProgressBar
+        android:id="@+id/signUp_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 </RelativeLayout>

@@ -1,5 +1,8 @@
 package com.ikea.myapp;
 
+import android.util.Log;
+import android.widget.ScrollView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -28,5 +31,9 @@ public class FragmentAdapter extends FragmentStateAdapter {
     @Override
     public int getItemCount() {
         return fragments.size();
+    }
+
+    public Fragment getItem(int position){
+        return fragments.get(position);
     }
 }

@@ -18,5 +18,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="almostWhite">#fefefe</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="semiTransparent">#80FFFFFF</color>
 
 </resources>
