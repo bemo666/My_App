@@ -1,18 +1,41 @@
 <resources>
     <string name="app_name">Trip Planner</string>
-    <string name="home_actionbar_name">My trips</string>
-    <string name="ui_required_field">Required Field</string>
-    <string name="ui_not_valid_email">Invalid email-address</string>
-    <string name="ui_password_minimum">Password needs at least 6 characters</string>
-    <string name="ui_password_has_space">Password can not contain a space</string>
-    <string name="ui_account_created_successfully">Account created successfully</string>
-    <string name="ui_email_in_use">This email is already registered</string>
-    <string name="ui_encountered_problem">It seems we\'ve hit a snag</string>
-    <string name="ui_incorrect_details">Email and/or password incorrect</string>
-    <string name="ui_signed_in">Logged in successfully</string>
-    <string name="ui_reset_link_sent">Password reset link sent to your email</string>
-    <string name="ui_incorrect_email">We don\'t recognise that email</string>
+    <string name="main_actionbar_name">My trips</string>
+    <string name="googles_api_key">AIzaSyC3z6kto91p1vCcF2S-YdkBuFLIz92ir9s</string>
+    <string name="amadeus_api_key">LfJ2NUYqZem6gViuUawStfaCq47ReML8</string>
+    <string name="amadeus_api_secret">qs4wqJJMM8KRP5ox</string>
+
+    <string name="login_required_field">Required Field</string>
+    <string name="login_not_valid_email">Invalid email-address</string>
+    <string name="login_password_minimum">Password needs at least 6 characters</string>
+    <string name="login_password_has_space">Password can not contain a space</string>
+    <string name="login_account_created_successfully">Account created successfully</string>
+    <string name="login_email_in_use">This email is already registered</string>
+    <string name="login_encountered_problem">It seems we\'ve hit a snag</string>
+    <string name="login_incorrect_details">Email and/or password incorrect</string>
+    <string name="login_signed_in">Logged in successfully</string>
+    <string name="login_reset_link_sent">Password reset link sent to your email</string>
+    <string name="login_incorrect_email">We don\'t recognise that email</string>
+    <string name="login_sign_up">Sign Up</string>
+    <string name="login_dont_have_an_account">Don\'t have an account?\u0020\u0020</string>
+    <string name="login_create_one">Create One</string>
+    <string name="login_forgot_password">Forgot my Password</string>
+
+    <string name="ui_email">Email</string>
+    <string name="ui_password">Password</string>
+    <string name="ui_sign_in">Sign In</string>
+    <string name="ui_first_name">First Name</string>
+    <string name="ui_destination">Destination</string>
+    <string name="ui_origin">Origin</string>
+
+    <string name="no_internet">No internet connection</string>
+
+    <string name="newtrip_destination">Need some inspiration?\u0020</string>
+    <string name="newtrip_lets_plan_your_trip">Let\'s plan your trip!</string>
+    <string name="newtrip_hi">Hi,</string>
 
     <string name="large_text"></string>
+    <string name="ui_create_new_trip">Create New Trip</string>
+
 
 </resources>

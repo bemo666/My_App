@@ -33,11 +33,11 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
@@ -47,13 +47,23 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
     //blurry card
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
-    //Recyclerview snaphelper
+    //Recyclerview snap helper
     implementation 'com.github.rubensousa:gravitysnaphelper:2.2.2'
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:29.0.3')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth:21.0.1'
     implementation 'com.google.firebase:firebase-database:20.0.3'
+    //Shimmer animation
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    //Google's api
+    implementation 'com.google.android.libraries.places:places:2.5.0'
+    //Amadeus api
+    implementation "com.amadeus:amadeus-java:5.8.2"
+    implementation 'com.google.code.gson:gson:2.8.6'
 
-    implementation 'com.github.rubensousa:gravitysnaphelper:2.2.2'
+
+
+
 }
+

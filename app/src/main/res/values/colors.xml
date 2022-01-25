@@ -2,6 +2,7 @@
 <resources>
 
     <color name="orange">#FFAA8D</color>
+    <color name="red">#D21D10</color>
     <color name="blue">#7FABF6</color>
     <color name="lighterBlue">#96BAF9</color>
     <color name="green">#3AD57F</color>
@@ -19,5 +20,7 @@
     <color name="almostWhite">#fefefe</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="semiTransparent">#80FFFFFF</color>
+
+    <color name="grayShimmer">#808080</color> <!-- 5e5f62-->
 
 </resources>

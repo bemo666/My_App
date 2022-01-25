@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nest_scrollview"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#00FFFFFF"
     android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:animateLayoutChanges="true">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -16,21 +16,59 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvTrips"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/trips"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="@dimen/spacing"
-                android:layout_marginBottom="@dimen/spacing" />
+                android:layout_marginBottom="@dimen/spacing"
+                android:paddingHorizontal="25dp"
+                android:visibility="invisible" />
+
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container_trip"
+                android:layout_width="match_parent"
+                android:layout_height="225dp"
+                android:layout_alignTop="@id/trips"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                app:shimmer_base_color="@color/grayShimmer"
+                app:shimmer_colored="true"
+                app:shimmer_duration="@integer/loading_time"
+                app:shimmer_highlight_color="@color/semiTransparent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="30dp"
+                        android:layout_height="191.25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="16.875dp"
+                        android:translationX="20dp"
+                        app:cardCornerRadius="@dimen/card_radius" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/main_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="225dp"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="25dp"
+                        app:cardCornerRadius="@dimen/card_radius" />
+                </RelativeLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <RelativeLayout
                 android:id="@+id/planBar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rvTrips"
+                android:layout_below="@+id/trips"
                 android:layout_marginHorizontal="@dimen/margin_side">
 
                 <TextView
@@ -73,7 +111,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/planBar"
-                android:layout_marginTop="@dimen/spacing" />
+                android:layout_marginTop="@dimen/spacing"
+                android:visibility="gone" />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container_trip_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/planBar"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/spacing"
+                android:orientation="vertical"
+                app:shimmer_base_color="@color/grayShimmer"
+                app:shimmer_colored="true"
+                app:shimmer_duration="@integer/loading_time"
+                app:shimmer_highlight_color="@color/semiTransparent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/loading_trip_details" />
+
+                    <include layout="@layout/loading_trip_details" />
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
         </RelativeLayout>
 

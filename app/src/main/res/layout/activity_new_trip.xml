@@ -1,9 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewTripActivity">
+    android:clickable="true"
+    android:orientation="vertical"
+    tools:context=".UI.NewTripActivity">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_side"
+        android:layout_marginTop="@dimen/spacing"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/welcomeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/newtrip_hi"
+            android:textColor="@color/black"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/secondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/newtrip_lets_plan_your_trip"
+            android:textColor="@color/darkGrey"
+            android:textSize="30sp" />
+
+    </LinearLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutInputDestination"
+        style="@style/TextBoxes"
+        android:layout_marginHorizontal="@dimen/margin_side"
+        android:layout_marginTop="@dimen/spacing"
+        android:hint="@string/ui_destination"
+        app:startIconDrawable="@drawable/ic_edit_location">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputDestination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPostalAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_side"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/inspirationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/newtrip_destination"
+            android:textColor="@color/darkGrey"
+            android:textSize="20sp" />
+
+
+        <RelativeLayout
+            android:id="@+id/origin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutInputOrigin"
+                style="@style/TextBoxes"
+                android:layout_toLeftOf="@id/getLocation"
+                android:hint="@string/ui_origin"
+                app:startIconDrawable="@drawable/ic_edit_location">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputOrigin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/getLocation"
+                android:layout_width="55dp"
+                android:layout_height="60dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/green"
+                app:cornerRadius="@dimen/card_radius_thin"
+                app:elevation="@dimen/button_elevation"
+                app:icon="@drawable/ic_location"
+                app:iconPadding="20dp"
+                app:iconSize="25dp" />
+        </RelativeLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/placesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_side"
+            android:background="#FFF"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,8 +1,10 @@
-package com.ikea.myapp;
+package com.ikea.myapp.UI;
 
 import android.app.ActivityOptions;
-import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -10,39 +12,51 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.transition.Slide;
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.ikea.myapp.R;
+import com.ikea.myapp.UserData;
+import com.ikea.myapp.Utils;
 
-import java.util.Date;
 import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
     //Declaring Variables
     ActionBar actionBar;
-    DatePickerDialog datePicker;
-    Button button;
-    TextInputEditText inputName, inputBirthday, inputEmail, inputPassword;
-    TextInputLayout layoutInputName, layoutInputBirthday, layoutInputEmail, layoutInputPassword;
-    ProgressBar signUp_progress;
-    private boolean isDataSet;
+    Button sign_up_button;
+    TextInputEditText inputName, inputEmail, inputPassword;
+    TextInputLayout layoutInputName, layoutInputEmail, layoutInputPassword;
+    RelativeLayout relativeLayout;
     private DatabaseReference databaseReference;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth mAuth;
-    private String name, birthday, email, password;
+    private FirebaseUser firebaseUser;
+    private String name, email, password;
+    ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +70,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         //Initiating firebase
         mAuth = FirebaseAuth.getInstance();
+        firebaseUser = mAuth.getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("UserData");
 
@@ -67,40 +82,26 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         actionBar.setDisplayShowHomeEnabled(true);
 
         //Linking xml objects to java ints
-        button = findViewById(R.id.sign_up_button);
+        sign_up_button = findViewById(R.id.sign_up_button);
+        relativeLayout = findViewById(R.id.signUpRelativeLayout);
         inputName = findViewById(R.id.inputName);
-        inputBirthday = findViewById(R.id.inputBirthday);
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
         layoutInputName = findViewById(R.id.layoutInputName);
-        layoutInputBirthday = findViewById(R.id.layoutInputBirthday);
         layoutInputEmail = findViewById(R.id.layoutInputEmail);
         layoutInputPassword = findViewById(R.id.layoutInputPassword);
-        signUp_progress = findViewById(R.id.signUp_progress);
 
         //Setting 'enter as next' for input fields
         inputName.setInputType(InputType.TYPE_CLASS_TEXT);
         inputEmail.setInputType(InputType.TYPE_CLASS_TEXT);
+        inputPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
 
-        //Initializing the date picker dialog
-        datePicker = new DatePickerDialog(this);
-        isDataSet = false;  // this is used by the onDismiss handler
-        datePicker.setOnDateSetListener((datePicker, i, i1, i2) -> {
-            i1 += 1;
-            String date = i2 + "/" + i1 + "/" + i;
-            inputBirthday.setText(date);
-
-        });
-        datePicker.setOnDismissListener(dialogInterface -> {
-            if (!isDataSet) {
-                validateBirthday();
-            }
-        });
+        //Initializing the progress dialog
+        progressDialog = new ProgressDialog(this);
 
         //OnClick listeners
-        button.setOnClickListener(this);
-        inputBirthday.setOnClickListener(this);
+        sign_up_button.setOnClickListener(this);
 
         //Text Boxes validations on several occasions
         inputName.setOnFocusChangeListener((v, hasFocus) -> {
@@ -160,6 +161,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 validatePassword();
             }
         });
+        inputPassword.setOnKeyListener((view, i, keyEvent) -> {
+            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                if (i == KeyEvent.KEYCODE_ENTER) {
+                    onClick(sign_up_button);
+                }
+            }
+            return false;
+        });
 
 
     }
@@ -176,44 +185,48 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        if (view == inputBirthday) {
-            datePicker.getDatePicker().setMaxDate(new Date().getTime());
-            datePicker.show();
-        }
+
         //Signing up process
-        if (view == button) {
-            if (!validateName() | !validateEmail() | !validatePassword() | !validateBirthday()) {
+        if (view == sign_up_button) {
+            if (!validateName() | !validateEmail() | !validatePassword()) {
                 return;
             }
-            //    progressbar VISIBLE
-            signUp_progress.setVisibility(View.VISIBLE);
+            showProgressDialogWithTitle("Signing Up");
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener
                     (task -> {
                         if (task.isSuccessful()) {
-                            UserData data = new UserData(name, birthday, email);
-                            FirebaseDatabase.getInstance().getReference("UserData")
-                                    .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).setValue(data).
+                            UserData data = new UserData(name, email);
+                            databaseReference.child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid()).setValue(data).
                                     addOnCompleteListener(task1 -> {
-                                        //    progressbar GONE
-                                        signUp_progress.setVisibility(View.GONE);
-                                        Toast.makeText(getApplicationContext(), R.string.ui_account_created_successfully, Toast.LENGTH_SHORT).show();
+                                        hideProgressDialogWithTitle();
+                                        Toast.makeText(getApplicationContext(), R.string.login_account_created_successfully, Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                                         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SignUpActivity.this).toBundle());
                                     });
                         } else {
-                            //    progressbar GONE
-                            signUp_progress.setVisibility(View.GONE);
-                            AlertDialog.Builder b = new AlertDialog.Builder(SignUpActivity.this);
-                            b.setTitle(R.string.ui_encountered_problem);
-                            b.setMessage(R.string.ui_email_in_use);
+                            hideProgressDialogWithTitle();
+                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignUpActivity.this);
+                                alertDialog.setTitle(R.string.login_encountered_problem);
+                                alertDialog.setMessage(R.string.login_email_in_use);
 
-                            b.setPositiveButton("Sign In", (dialog, which) -> {
-                                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SignUpActivity.this).toBundle());
-                            });
-                            b.setNegativeButton("Try again", (dialog, which) -> dialog.cancel());
-                            AlertDialog dialog = b.create();
-                            dialog.show();
+                                alertDialog.setPositiveButton("Sign In", (dialog, which) -> {
+                                    Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(SignUpActivity.this).toBundle());
+                                });
+                                alertDialog.setNegativeButton("Try again", (dialog, which) -> dialog.cancel());
+                                AlertDialog dialog = alertDialog.create();
+                                dialog.show();
+                            } else if (!Utils.isNetworkConnected(this)) {
+                                Toast.makeText(getApplicationContext(), R.string.no_internet, Toast.LENGTH_SHORT).show();
+                            } else if (task.getException() instanceof FirebaseAuthInvalidUserException ||
+                                    task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                Toast.makeText(getApplicationContext(), R.string.login_incorrect_email, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Snackbar snackbar = Snackbar
+                                        .make(relativeLayout, Objects.requireNonNull(task.getException()).toString(), Snackbar.LENGTH_LONG);
+                                snackbar.show();
+                            }
                         }
                     });
         }
@@ -222,7 +235,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private boolean validateName() {
         name = Objects.requireNonNull(inputName.getText()).toString().trim();
         if (TextUtils.isEmpty(name)) {
-            layoutInputName.setError(getString(R.string.ui_required_field));
+            layoutInputName.setError(getString(R.string.login_required_field));
             return false;
         } else {
             layoutInputName.setError(null);
@@ -231,25 +244,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private boolean validateBirthday() {
-        birthday = Objects.requireNonNull(inputBirthday.getText()).toString().trim();
-        if (TextUtils.isEmpty(birthday)) {
-            layoutInputBirthday.setError(getString(R.string.ui_required_field));
-            return false;
-        } else {
-            layoutInputBirthday.setError(null);
-            layoutInputBirthday.setErrorEnabled(false);
-            return true;
-        }
-    }
-
     private boolean validateEmail() {
         email = Objects.requireNonNull(inputEmail.getText()).toString().trim();
         if (TextUtils.isEmpty(email)) {
-            layoutInputEmail.setError(getString(R.string.ui_required_field));
+            layoutInputEmail.setError(getString(R.string.login_required_field));
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            layoutInputEmail.setError(getString(R.string.ui_not_valid_email));
+            layoutInputEmail.setError(getString(R.string.login_not_valid_email));
             return false;
         } else {
             layoutInputEmail.setError(null);
@@ -262,13 +263,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         password = Objects.requireNonNull(inputPassword.getText()).toString();
 
         if (TextUtils.isEmpty(password)) {
-            layoutInputPassword.setError(getString(R.string.ui_required_field));
+            layoutInputPassword.setError(getString(R.string.login_required_field));
             return false;
         } else if (password.contains(" ")) {
-            layoutInputPassword.setError(getString(R.string.ui_password_has_space));
+            layoutInputPassword.setError(getString(R.string.login_password_has_space));
             return false;
         } else if (password.length() < 6) {
-            layoutInputPassword.setError(getString(R.string.ui_password_minimum));
+            layoutInputPassword.setError(getString(R.string.login_password_minimum));
             return false;
         } else {
             layoutInputPassword.setError(null);
@@ -284,8 +285,37 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onStart();
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            finishAfterTransition();
         }
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    private void showProgressDialogWithTitle(String substring) {
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(substring);
+        progressDialog.show();
+    }
+
+    private void hideProgressDialogWithTitle() {
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.dismiss();
     }
 }

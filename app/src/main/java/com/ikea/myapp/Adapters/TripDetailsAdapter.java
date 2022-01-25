@@ -1,4 +1,4 @@
-package com.ikea.myapp;
+package com.ikea.myapp.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikea.myapp.R;
+
 import java.util.ArrayList;
 
 public class TripDetailsAdapter extends RecyclerView.Adapter<TripDetailsAdapter.ViewHolder> {
@@ -17,11 +19,11 @@ public class TripDetailsAdapter extends RecyclerView.Adapter<TripDetailsAdapter.
     ArrayList<String> sampleText;
     Context context;
 
-    public TripDetailsAdapter( Context context) {
+    public TripDetailsAdapter(Context context) {
         this.sampleText = new ArrayList<>();
         sampleText.add("Cool Place");
         sampleText.add("Even Cooler place");
-        sampleText.add("Didnt know it could get this cool");
+        sampleText.add("Didn't know it could get this cool");
         sampleText.add("Not that cool");
         this.context = context;
     }
@@ -42,7 +44,7 @@ public class TripDetailsAdapter extends RecyclerView.Adapter<TripDetailsAdapter.
         return sampleText.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView image;
         TextView dates, placeName, stayName;
         public ViewHolder(@NonNull View itemView) {

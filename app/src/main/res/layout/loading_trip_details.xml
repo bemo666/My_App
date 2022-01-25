@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="150dp">
+
+    <LinearLayout
+        android:id="@+id/left_side"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/circle"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="7dp"
+            android:background="@color/grayShimmer"
+            app:cardCornerRadius="@dimen/circle_radius" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="110dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:background="@color/grayShimmer" />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dates2"
+        android:layout_width="120dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="@dimen/loading_margin"
+        android:layout_toEndOf="@+id/left_side"
+        android:background="@color/grayShimmer"
+        app:cardCornerRadius="@dimen/loading_radius" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imageHolder"
+        android:layout_width="160dp"
+        android:layout_height="90dp"
+        android:layout_below="@+id/dates2"
+        android:layout_alignStart="@id/dates2"
+        android:layout_marginTop="5dp"
+        android:background="@color/grayShimmer"
+        app:cardCornerRadius="@dimen/card_radius_thin" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageHolder"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toEndOf="@id/imageHolder">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/stayName"
+            android:layout_width="110dp"
+            android:layout_height="20dp"
+            android:background="@color/grayShimmer"
+            app:cardCornerRadius="@dimen/loading_radius" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/locationIcon"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_below="@+id/stayName"
+            android:layout_marginTop="5dp"
+            android:background="@color/grayShimmer"
+            app:cardCornerRadius="@dimen/circle_radius"
+            app:cardElevation="0dp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="60dp"
+            android:layout_height="@dimen/loading_line_height"
+            android:layout_alignTop="@+id/locationIcon"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/locationIcon"
+            android:background="@color/grayShimmer"
+            app:cardCornerRadius="@dimen/loading_radius" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/callIcon"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_below="@+id/locationIcon"
+            android:layout_marginTop="10dp"
+            android:background="@color/grayShimmer"
+            app:cardCornerRadius="@dimen/circle_radius"
+            app:cardElevation="0dp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="60dp"
+            android:layout_height="@dimen/loading_line_height"
+            android:layout_alignTop="@+id/callIcon"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/callIcon"
+            android:background="@color/grayShimmer"
+            app:cardCornerRadius="@dimen/loading_radius" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    android:fitsSystemWindows="true"
+    tools:context=".UI.MainActivity"
     tools:ignore="contentDescription">
 
     <ImageView
@@ -12,25 +13,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/backdrop"
-        android:scaleX="4"
-        android:scaleType="centerInside" />
+        android:scaleType="centerInside"
+        android:scaleX="4" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        app:liftOnScroll="true"
         app:elevation="0dp">
 
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/Theme.MyApp"
-            app:layout_scrollFlags="scroll|snap|enterAlways"
-            app:title="@string/home_actionbar_name" />
+            android:layout_height="150dp"
+            app:expandedTitleGravity="bottom|start"
+            app:expandedTitleMargin="15dp"
+            app:expandedTitleTextAppearance="@style/Main.Toolbar.Expanded.Text"
+            app:layout_scrollFlags="scroll|snap|enterAlways|enterAlwaysCollapsed">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:titleTextAppearance="@style/Main.Toolbar.Collapsed.Text"
+                app:title="@string/app_name" />
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_view"
@@ -57,7 +65,7 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="start|bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_scrollFlags="scroll"/>
+        app:layout_scrollFlags="scroll" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission. ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -13,31 +14,40 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp">
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".EditTripActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/googles_api_key" />
+
+        <activity
+            android:name=".UI.ForgotPasswordActivity"
             android:exported="false"
-            android:parentActivityName=".SignInActivity"
+            android:parentActivityName=".UI.SignInActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".UI.SignUpActivity"
             android:exported="false"
-            android:parentActivityName=".ProfileActivity"
+            android:parentActivityName=".UI.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignInActivity"
+            android:name=".UI.SignInActivity"
             android:exported="false"
-            android:parentActivityName=".ProfileActivity"
+            android:parentActivityName=".UI.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".UI.ProfileActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".UI.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NewTripActivity"
+            android:name=".UI.NewTripActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/NewTripTheme"/>
         <activity
-            android:name=".MainActivity"
+            android:name=".UI.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme">

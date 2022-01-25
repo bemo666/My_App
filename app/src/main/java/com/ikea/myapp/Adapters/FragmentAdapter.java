@@ -1,4 +1,4 @@
-package com.ikea.myapp;
+package com.ikea.myapp.Adapters;
 
 import android.util.Log;
 import android.widget.ScrollView;
