@@ -61,8 +61,8 @@ dependencies {
     //Amadeus api
     implementation "com.amadeus:amadeus-java:5.8.2"
     implementation 'com.google.code.gson:gson:2.8.6'
-
-
+    //Spin kit
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
 
 }

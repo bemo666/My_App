@@ -1,17 +1,17 @@
-package com.ikea.myapp;
+package com.ikea.myapp.utils;
 
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 
+import com.ikea.myapp.AmadeusApi;
+
 public class Utils {
-    final static String textWatcher_name = "name";
-    final static String textWatcher_email = "email";
-    final static String textWatcher_password = "password";
 
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
+
 }

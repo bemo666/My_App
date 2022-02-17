@@ -14,17 +14,13 @@
         android:text="Account email: "
         android:textSize="20sp" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
 
-        <Button
-            android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/roundedbutton"
-            android:gravity="center"
-            android:text="Sign In" />
-    </RelativeLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/firebase_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="10dp"
+        android:text="Sign In"
+        app:cornerRadius="@dimen/card_radius_thin" />
 </RelativeLayout>

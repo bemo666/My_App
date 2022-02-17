@@ -1,61 +1,43 @@
 package com.ikea.myapp;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
 
 import com.amadeus.Amadeus;
 import com.amadeus.Params;
 import com.amadeus.exceptions.ResponseException;
 import com.amadeus.resources.Location;
+import com.ikea.myapp.utils.AppExecutors;
 
 
 public class AmadeusApi {
 
     private static Amadeus amadeus;
 
-    public static Amadeus getAmadeus(Context context){
-        if(amadeus == null){
-            amadeus = Amadeus.builder(context.getString(R.string.amadeus_api_key), context.getString(R.string.amadeus_api_secret))
+    public AmadeusApi(Context context) {
+        if (amadeus == null) {
+            amadeus = Amadeus.builder(context.getString(R.string.a_apiKey), context.getString(R.string.a_apiSecret))
                     .build();
         }
-        return amadeus;
     }
-    public static class RecommendedLocations extends AsyncTask<Void, Void, Location[]> {
-        private final Amadeus amadeus;
-        Location[] locations;
 
-        public RecommendedLocations(Amadeus amadeus) {
-            this.amadeus = amadeus;
-        }
+    public MutableLiveData<Location[]> getLocations(String code) {
 
-        @Override
-        public Location[] doInBackground(Void... voids) {
-            try {
-                Location[] tmp = amadeus.referenceData.recommendedLocations.get(Params.with("cityCodes", "PAR"));
+        MutableLiveData<Location[]> locations = new MutableLiveData<>();
+        AppExecutors.getInstance().networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    locations.postValue(amadeus.referenceData.recommendedLocations.get(Params.with("cityCodes", code)));
 
-                for (Location l : tmp) {
-                    Log.d("tag", "name: " + l.getName());
-                    Log.d("tag", "Analytics: " + l.getAnalytics());
-                    Log.d("tag", "DetailedName: " + l.getDetailedName());
-                    Log.d("tag", "IataCode: " + l.getIataCode());
-                    Log.d("tag", "SubType: " + l.getSubType());
-                    Log.d("tag", "TimezoneOffset: " + l.getTimeZoneOffset());
-                    Log.d("tag", "Type: " + l.getType());
-                    Log.d("tag", "Distance: " + l.getDistance());
-                    Log.d("tag", "Relevance: " + l.getRelevance());
-                    Log.d("tag", "GeoCode: " + l.getGeoCode());
+                } catch (ResponseException e) {
+                    e.printStackTrace();
                 }
-                return tmp;
-
-            } catch (ResponseException e) {
-                e.printStackTrace();
             }
-            return null;
-        }
-
-        public Location[] getLocations() {
-            return locations;
-        }
+        });
+        return locations;
     }
+
 }

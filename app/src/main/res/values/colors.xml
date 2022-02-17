@@ -8,6 +8,7 @@
     <color name="green">#3AD57F</color>
     <color name="grey">#B5B7C6</color>
     <color name="darkGrey">#474851</color>
+    <color name="barelyGrey">#F5F5F5</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
@@ -21,6 +22,9 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="semiTransparent">#80FFFFFF</color>
 
-    <color name="grayShimmer">#808080</color> <!-- 5e5f62-->
+    <color name="greyShimmer">#808080</color> <!-- 5e5f62-->
+
+    <color name="mtrl_textinput_default_box_stroke_color">@color/blue</color>
+
 
 </resources>

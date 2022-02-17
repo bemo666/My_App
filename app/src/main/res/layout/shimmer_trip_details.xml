@@ -16,7 +16,7 @@
             android:layout_height="12dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="7dp"
-            android:background="@color/grayShimmer"
+            android:background="@color/greyShimmer"
             app:cardCornerRadius="@dimen/circle_radius" />
 
         <View
@@ -24,7 +24,7 @@
             android:layout_height="110dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
-            android:background="@color/grayShimmer" />
+            android:background="@color/greyShimmer" />
 
     </LinearLayout>
 
@@ -36,7 +36,7 @@
         android:layout_marginTop="3dp"
         android:layout_marginBottom="@dimen/loading_margin"
         android:layout_toEndOf="@+id/left_side"
-        android:background="@color/grayShimmer"
+        android:background="@color/greyShimmer"
         app:cardCornerRadius="@dimen/loading_radius" />
 
 
@@ -47,7 +47,7 @@
         android:layout_below="@+id/dates2"
         android:layout_alignStart="@id/dates2"
         android:layout_marginTop="5dp"
-        android:background="@color/grayShimmer"
+        android:background="@color/greyShimmer"
         app:cardCornerRadius="@dimen/card_radius_thin" />
 
     <RelativeLayout
@@ -63,7 +63,7 @@
             android:id="@+id/stayName"
             android:layout_width="110dp"
             android:layout_height="20dp"
-            android:background="@color/grayShimmer"
+            android:background="@color/greyShimmer"
             app:cardCornerRadius="@dimen/loading_radius" />
 
         <androidx.cardview.widget.CardView
@@ -72,7 +72,7 @@
             android:layout_height="15dp"
             android:layout_below="@+id/stayName"
             android:layout_marginTop="5dp"
-            android:background="@color/grayShimmer"
+            android:background="@color/greyShimmer"
             app:cardCornerRadius="@dimen/circle_radius"
             app:cardElevation="0dp" />
 
@@ -82,7 +82,7 @@
             android:layout_alignTop="@+id/locationIcon"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/locationIcon"
-            android:background="@color/grayShimmer"
+            android:background="@color/greyShimmer"
             app:cardCornerRadius="@dimen/loading_radius" />
 
         <androidx.cardview.widget.CardView
@@ -91,7 +91,7 @@
             android:layout_height="15dp"
             android:layout_below="@+id/locationIcon"
             android:layout_marginTop="10dp"
-            android:background="@color/grayShimmer"
+            android:background="@color/greyShimmer"
             app:cardCornerRadius="@dimen/circle_radius"
             app:cardElevation="0dp" />
 
@@ -101,7 +101,7 @@
             android:layout_alignTop="@+id/callIcon"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/callIcon"
-            android:background="@color/grayShimmer"
+            android:background="@color/greyShimmer"
             app:cardCornerRadius="@dimen/loading_radius" />
 
     </RelativeLayout>

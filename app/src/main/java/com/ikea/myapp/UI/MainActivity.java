@@ -2,26 +2,24 @@ package com.ikea.myapp.UI;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.transition.Fade;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -29,11 +27,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.transition.platform.MaterialElevationScale;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.ikea.myapp.Adapters.FragmentAdapter;
-import com.ikea.myapp.FirebaseManager;
 import com.ikea.myapp.R;
 
 import java.util.ArrayList;
@@ -41,47 +35,47 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Declaring Variables
-    FloatingActionButton add;
-    TabLayout tabLayout;
-    ViewPager2 fragments;
-    Toolbar toolbar;
-    FragmentAdapter fragmentAdapter;
-    ImageView backdrop;
-    AppBarLayout appBarLayout;
-    FirebaseDatabase database;
-    DatabaseReference myRef;
+    private FloatingActionButton addFab;
+    private TabLayout tabLayout;
+    private ViewPager2 fragments;
+    private Toolbar toolbar;
+    private FragmentAdapter fragmentAdapter;
+    private ImageView backdrop;
+    private AppBarLayout appBarLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         //Enable Activity Transitions
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        Fade fade = new Fade();
+        View decor = getWindow().getDecorView();
+        fade.excludeTarget(android.R.id.statusBarBackground, true);
+        fade.excludeTarget(android.R.id.navigationBarBackground, true);
+        fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
+        getWindow().setEnterTransition(fade);
+        getWindow().setExitTransition(fade);
 
         //Initializing the activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Disable dark mode
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
-
-
         //Linking xml objects to java variables
         tabLayout = findViewById(R.id.tab_view);
         fragments = findViewById(R.id.viewpager);
-        add = findViewById(R.id.add_button);
+        addFab = findViewById(R.id.add_button);
         backdrop = findViewById(R.id.backdrop);
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.app_bar);
 
         //Setting the Actionbar attributes
         setSupportActionBar(toolbar);
-        toolbar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+        toolbar.setBackground(new ColorDrawable(ContextCompat.getColor(getApplicationContext(), R.color.transparent)));
 
         //OnClick listeners
-        add.setOnClickListener(this);
+        addFab.setOnClickListener(this);
 
         //Fragments setup
         FragmentManager fm = getSupportFragmentManager();
-        ArrayList<Fragment> list = new ArrayList<Fragment>();
+        ArrayList<Fragment> list = new ArrayList<>();
         list.add(new UpcomingFragment());
         list.add(new PastFragment());
         fragmentAdapter = new FragmentAdapter(fm, getLifecycle(), list);
@@ -89,39 +83,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabLayout.addTab(tabLayout.newTab().setText("Upcoming"));
         tabLayout.addTab(tabLayout.newTab().setText("Past"));
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 fragments.setCurrentItem(tab.getPosition());
                 appBarLayout.setExpanded(true);
-
-                final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (fragmentAdapter.getItem(0) != null && tab.getPosition() == 1)
-                            ((UpcomingFragment) fragmentAdapter.getItem(0)).getScrollView().fullScroll(ScrollView.FOCUS_UP);
-
-                        else if ( fragmentAdapter.getItem(1) != null && tab.getPosition() == 0)
-                            ((PastFragment) fragmentAdapter.getItem(1)).getScrollView().fullScroll(ScrollView.FOCUS_UP);
-
-                        //Do something after 100ms
-                    }
-                }, 500);
-
-
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
-
         });
 
         fragments.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -131,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         fragments.setUserInputEnabled(false);
-
     }
 
     @Override
@@ -140,7 +114,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getMenuInflater().inflate(R.menu.main_menu, menu);
         //Get profile button and change its color
         Drawable drawable = menu.findItem(R.id.profile).getIcon();
-        drawable.setColorFilter(getResources().getColor(R.color.orange), PorterDuff.Mode.SRC_IN);
+        drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.orange),
+                PorterDuff.Mode.SRC_IN);
 
         return true;
     }
@@ -148,28 +123,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.profile:
-                getWindow().setExitTransition(new MaterialElevationScale(true));
-                Intent intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-
-                return true;
-
-            case R.id.search:
-                return true;
-
-            default:
-                return true;
+        if (id == R.id.profile) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            return true;
+        } else if (id == R.id.search) {
+            return true;
         }
+        return true;
     }
 
     @Override
     public void onClick(View view) {
-        if (view == add) {
-            Intent intent = new Intent(this, NewTripActivity.class);
-            startActivity(intent);
-
+        if (view == addFab) {
+            startActivity(new Intent(this, NewTripActivity.class));
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
+    }
+
 }
