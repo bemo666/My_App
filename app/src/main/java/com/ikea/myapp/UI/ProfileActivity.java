@@ -14,13 +14,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.transition.platform.MaterialElevationScale;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ikea.myapp.Managers.FirebaseRequestManager;
+import com.ikea.myapp.UI.main.MainActivity;
+import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UserData;
 
@@ -49,8 +49,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
 
         //
-        if (FirebaseRequestManager.loggedIn()) {
-            userRef = FirebaseDatabase.getInstance().getReference("UserData/" + FirebaseRequestManager.getUid());
+        if (FirebaseManager.loggedIn()) {
+            userRef = FirebaseDatabase.getInstance().getReference("UserData/" + FirebaseManager.getUid());
             updateData();
         }
 
@@ -76,8 +76,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         } else if (id == R.id.accountEmail) {
-            if (FirebaseRequestManager.loggedIn()) {
-                FirebaseRequestManager.SignOut();
+            if (FirebaseManager.loggedIn()) {
+                FirebaseManager.SignOut();
                 accountEmail.setText("Account email: ");
                 Toast.makeText(ProfileActivity.this, getString(R.string.login_logout_successful), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
@@ -100,7 +100,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!FirebaseRequestManager.loggedIn()) {
+                if (!FirebaseManager.loggedIn()) {
                     userRef.removeEventListener(this);
                 } else {
                     UserData value = snapshot.getValue(UserData.class);
@@ -111,7 +111,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                if (!FirebaseRequestManager.loggedIn()) {
+                if (!FirebaseManager.loggedIn()) {
                     userRef.removeEventListener(this);
                 } else
                     Toast.makeText(getApplicationContext(), "Failed to update account info.", Toast.LENGTH_SHORT).show();

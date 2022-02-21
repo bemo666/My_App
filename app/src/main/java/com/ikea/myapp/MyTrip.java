@@ -1,13 +1,23 @@
 package com.ikea.myapp;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class MyTrip {
+@Entity(tableName = "trips")
+public class MyTrip implements Serializable {
+
+    @PrimaryKey
+    @NonNull
     private String id;
     private String placeId;
-    private Date startDate, endDate;
+    private String startDate, endDate, startStamp, endStamp;
     private String origin;
     private Double originLat = null;
     private Double originLon = null;
@@ -20,7 +30,8 @@ public class MyTrip {
 
 
     public MyTrip(String origin, String destination, LatLng originLatLng, LatLng destinationLatLng,
-                  Date startDate, Date endDate, String placeId, String id) {
+                  String startDate, String startStamp, String endDate, String endStamp, String placeId,
+                  String id) {
         this.origin = origin;
         this.destination = destination;
         this.originLat = originLatLng.latitude;
@@ -30,19 +41,26 @@ public class MyTrip {
         this.startDate = startDate;
         this.endDate = endDate;
         this.placeId = placeId;
+        this.startStamp = startStamp;
+        this.endStamp = endStamp;
         this.id = id;
     }
 
-    public MyTrip(String destination, LatLng destinationLatLng, Date startDate, Date endDate,
-                  String placeId, String id) {
+    public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
+                  String endStamp, String placeId, String id) {
         this.destination = destination;
         this.destinationLat = destinationLatLng.latitude;
         this.destinationLon = destinationLatLng.longitude;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.startStamp = startStamp;
+        this.endStamp = endStamp;
         this.placeId = placeId;
         this.id = id;
     }
+
+
+
 
     public String getId() {
         return id;
@@ -60,20 +78,36 @@ public class MyTrip {
         this.placeId = placeId;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getStartStamp() {
+        return startStamp;
+    }
+
+    public void setStartStamp(String startStamp) {
+        this.startStamp = startStamp;
+    }
+
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public String getEndStamp() {
+        return endStamp;
+    }
+
+    public void setEndStamp(String endStamp) {
+        this.endStamp = endStamp;
     }
 
     public String getOrigin() {

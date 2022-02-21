@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ikea.myapp.R;
+import com.ikea.myapp.UI.main.MainActivity;
 
 public class SplashScreen extends AppCompatActivity {
 

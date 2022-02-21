@@ -23,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.ikea.myapp.Managers.FirebaseRequestManager;
+import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.R;
 
 import java.util.Objects;
@@ -234,15 +234,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (bSignIn) {
                 if (!validateEmail() | !validatePassword()) {
                 } else
-                    FirebaseRequestManager.SignIn(email, password, LoginActivity.this, this, relativeLayout);
+                    FirebaseManager.SignIn(email, password, LoginActivity.this, this, relativeLayout);
             } else if (bSignUp) {
                 if (!validateName() | !validateEmail() | !validatePassword()) {
                 } else
-                    FirebaseRequestManager.SignUp(name, email, password, LoginActivity.this, this, relativeLayout);
+                    FirebaseManager.SignUp(name, email, password, LoginActivity.this, this, relativeLayout);
             } else if (bForgotPassword) {
                 if (!validateEmail()) {
                 } else
-                    FirebaseRequestManager.ForgotPassword(email, LoginActivity.this, this, relativeLayout);
+                    FirebaseManager.ForgotPassword(email, LoginActivity.this, this, relativeLayout);
             }
         }
     }
@@ -260,7 +260,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onPostResume() {
         super.onPostResume();
-        if (FirebaseRequestManager.loggedIn())
+        if (FirebaseManager.loggedIn())
             finishAfterTransition();
     }
 

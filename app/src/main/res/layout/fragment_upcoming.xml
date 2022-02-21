@@ -42,8 +42,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/welcome_card_bg"
-                    android:foreground="#1A000000">
+                    android:background="@drawable/welcome_card_bg">
 
                     <ImageView
                         android:id="@+id/ic_luggage"
@@ -91,7 +90,8 @@
                         android:text="@string/ui_create_new_trip"
                         android:textAllCaps="false"
                         android:textColor="@color/orange"
-                        app:cornerRadius="40dp" />
+                        app:cornerRadius="40dp"
+                        app:rippleColor="@color/lightGrey" />
 
 
                 </RelativeLayout>

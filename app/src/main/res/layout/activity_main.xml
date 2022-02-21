@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".UI.MainActivity"
+    tools:context=".UI.main.MainActivity"
     tools:ignore="contentDescription">
 
     <ImageView
@@ -82,5 +82,6 @@
         app:elevation="@dimen/elev"
         app:fabCustomSize="50dp"
         app:maxImageSize="30dp"
+        app:rippleColor="@color/almostWhite"
         app:tint="@color/white" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

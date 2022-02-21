@@ -1,10 +1,15 @@
-package com.ikea.myapp.UI;
+package com.ikea.myapp.UI.main;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,11 +31,12 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.button.MaterialButton;
 import com.ikea.myapp.Adapters.SliderAdapter;
 import com.ikea.myapp.Adapters.TripDetailsAdapter;
-import com.ikea.myapp.Managers.FirebaseRequestManager;
 import com.ikea.myapp.R;
-import com.ikea.myapp.ViewModels.UpcomingFragmentViewModel;
+import com.ikea.myapp.UI.editTrip.EditTripActivity;
+import com.ikea.myapp.UI.newTrip.NewTripActivity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class UpcomingFragment extends Fragment {
@@ -46,7 +52,7 @@ public class UpcomingFragment extends Fragment {
     private final Handler handler = new Handler();
     private UpcomingFragmentViewModel viewmodel;
     private SliderAdapter adapter;
-    private boolean first;
+    private Point touch;
 
     public UpcomingFragment() {
         // Required empty public constructor
@@ -68,32 +74,30 @@ public class UpcomingFragment extends Fragment {
         createTrip = view.findViewById(R.id.create_trip);
         welcomeCard = view.findViewById(R.id.welcomeCard);
         viewmodel = new ViewModelProvider(requireActivity()).get(UpcomingFragmentViewModel.class);
-        //Log.d("tag", "OnCreate2");
 
         extraIcon.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), EditTripActivity.class)));
-        if (!FirebaseRequestManager.loggedIn()) {
-            showWelcomeCard();
-            //Log.d("tag", "notLoggedIn");
 
-        } else {
-            trips.setVisibility(View.GONE);
-            rv_details.setVisibility(View.GONE);
-            //Log.d("tag", "LoggedIn");
-
-        }
         tripDetailsInit();
 
         sliderInit();
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void sliderInit() {
-        trips.setOnClickListener(view -> {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        trips.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getX() < 50 && trips.getCurrentItem() != 0) {
+                trips.setCurrentItem(trips.getCurrentItem() - 1);
+            } else if (motionEvent.getX() > width-50 && trips.getCurrentItem() != trips.getChildCount()) {
+                trips.setCurrentItem(trips.getCurrentItem() + 1);
 
-            Toast.makeText(getContext(), trips.getCurrentItem() + "", Toast.LENGTH_SHORT).show();
-            //Intent intent = new Intent(getContext(), EditTripActivity.class);
-            //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getContext(), trips.getImage());
+            }
+            return false;
         });
+
         trips.setAdapter(adapter);
         trips.setClipToPadding(false);
         trips.setClipChildren(false);
@@ -101,35 +105,27 @@ public class UpcomingFragment extends Fragment {
         trips.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         trips.setNestedScrollingEnabled(true);
 
-        first = true;
 
-        viewmodel.getToast().observe(getViewLifecycleOwner(), s -> {
-//            if (first)
-//                first = false;
-//            else
-                if (s != null) {
-                    Toast.makeText(requireContext(), s, Toast.LENGTH_SHORT).show();
-                }
-        });
-//        Log.d("tag", "observer created");
         viewmodel.getTrips().observe(getViewLifecycleOwner(), myTrips -> {
             if (myTrips != null) {
-
                 trip_shimmer.setVisibility(View.GONE);
-
-                if (!myTrips.isEmpty()) {
-                    trips.setVisibility(View.VISIBLE);
+                if (myTrips.getErrorMessage() != null) {
+                    Toast.makeText(requireContext(), myTrips.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                    myTrips.setErrorMessage(null);
+                }
+                if (!myTrips.getTrips().isEmpty()) {
+                    Log.d("tag", "UpcomFrag, observe !mytrips.empty");
                     hideWelcomeCard();
-                    adapter.setSliderItems(myTrips);
-//                    Log.d("tag", "vm hiding");
+                    adapter.setTrips(myTrips.getTrips());
                 } else {
                     showWelcomeCard();
-                    Log.d("tag", "vm showing");
-
+                    Log.d("tag", "UpcomFrag, observe mytrips.empty");
                 }
+            } else {
+                Log.d("tag", "UpcomFrag, observe mytrips == null");
+                showWelcomeCard();
             }
         });
-
 
         CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
         compositePageTransformer.addTransformer(new MarginPageTransformer(40));
@@ -138,17 +134,17 @@ public class UpcomingFragment extends Fragment {
             page.setScaleY(0.85f + r * 0.15f);
         });
         trips.setPageTransformer(compositePageTransformer);
-        trips.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                details_shimmer.setVisibility(View.VISIBLE);
-                rv_details.setVisibility(View.GONE);
-                handler.postDelayed(() -> {
-                    details_shimmer.setVisibility(View.GONE);
-                    rv_details.setVisibility(View.VISIBLE);
-                }, 100);
-            }
-        });
+//        trips.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+//            @Override
+//            public void onPageSelected(int position) {
+//                details_shimmer.setVisibility(View.VISIBLE);
+//                rv_details.setVisibility(View.GONE);
+//                handler.postDelayed(() -> {
+//                    details_shimmer.setVisibility(View.GONE);
+//                    rv_details.setVisibility(View.VISIBLE);
+//                }, 100);
+//            }
+//        });
 
     }
 
@@ -164,6 +160,8 @@ public class UpcomingFragment extends Fragment {
     private void hideWelcomeCard() {
         welcomeCard.setVisibility(View.GONE);
         planBar.setVisibility(View.VISIBLE);
+        trips.setVisibility(View.VISIBLE);
+        rv_details.setVisibility(View.VISIBLE);
     }
 
     private void tripDetailsInit() {
@@ -174,10 +172,13 @@ public class UpcomingFragment extends Fragment {
         rv_details.setLayoutManager(layoutManager2);
     }
 
-    public void goToEditTripActivity(ImageView imageView) {
+    public void goToEditTripActivity(ImageView imageView, int position) {
         Intent intent = new Intent(getContext(), EditTripActivity.class);
+        intent.putExtra("trip", viewmodel.getTripAt(position));
+        Log.d("tag", String.valueOf(position));
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), imageView, ViewCompat.getTransitionName(imageView));
         this.startActivity(intent, options.toBundle());
+
     }
 
     @Override
@@ -190,6 +191,13 @@ public class UpcomingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         //Log.d("tag", "onResume");
+    }
+
+    public boolean onTouch(View v, MotionEvent event) {
+        touch.x = (int) event.getX();
+        touch.y = (int) event.getY();
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package com.ikea.myapp.UI;
+package com.ikea.myapp.UI.main;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
@@ -6,15 +6,12 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.transition.Fade;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +26,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.ikea.myapp.Adapters.FragmentAdapter;
 import com.ikea.myapp.R;
+import com.ikea.myapp.UI.ProfileActivity;
+import com.ikea.myapp.UI.newTrip.NewTripActivity;
 
 import java.util.ArrayList;
 

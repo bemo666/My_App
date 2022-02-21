@@ -37,6 +37,7 @@
                 app:tabIndicatorGravity="stretch"
                 app:tabRippleColor="@color/white"
                 app:tabSelectedTextColor="@color/white"
+                style="@style/LoginTablayout"
                 app:tabTextColor="@color/darkGrey" />
 
             <ImageView

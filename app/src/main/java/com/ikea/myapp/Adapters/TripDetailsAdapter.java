@@ -4,10 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikea.myapp.R;
@@ -44,15 +47,18 @@ public class TripDetailsAdapter extends RecyclerView.Adapter<TripDetailsAdapter.
         return sampleText.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView dates, placeName, stayName;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.img2);
             dates = itemView.findViewById(R.id.dates2);
             placeName = itemView.findViewById(R.id.place_name);
             stayName = itemView.findViewById(R.id.stayName);
+
+
         }
     }
 }

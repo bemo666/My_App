@@ -1,22 +1,20 @@
-package com.ikea.myapp.UI;
+package com.ikea.myapp.UI.newTrip;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -40,14 +38,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ikea.myapp.CustomProgressDialog;
-import com.ikea.myapp.Managers.FirebaseRequestManager;
+import com.ikea.myapp.UI.editTrip.EditTripActivity;
+import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
-import com.ikea.myapp.ViewModels.NewTripActivityViewModel;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class NewTripActivity extends AppCompatActivity implements View.OnClickListener {
@@ -57,14 +58,13 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private Toolbar toolbar;
     private TextView welcomeText, inspirationText;
     private LinearLayout linearLayout;
-    private RelativeLayout layoutOrigin;
     private MaterialButton getLocation;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseUser firebaseUser;
     private DatabaseReference userRef;
     private String origin = "", placeId = "", destination = "";
     private LatLng originLatLng, destinationLatLng;
-    private Date startDate, endDate;
+    private String startDate, endDate, startStamp, endStamp;
     private MaterialButton createButton;
     private boolean isDestination;
     private CustomProgressDialog progressDialog;
@@ -83,15 +83,15 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_trip);
 
+        setTitle("");
+
         //Linking xml objects to java variables
         inputDestination = findViewById(R.id.inputDestination);
         layoutInputDestination = findViewById(R.id.layoutInputDestination);
         inputOrigin = findViewById(R.id.inputOrigin);
         layoutInputOrigin = findViewById(R.id.layoutInputOrigin);
         welcomeText = findViewById(R.id.welcomeText);
-        getLocation = findViewById(R.id.getLocation);
         inspirationText = findViewById(R.id.inspirationText);
-        layoutOrigin = findViewById(R.id.origin);
         linearLayout = findViewById(R.id.linearLayout);
         layoutInputDates = findViewById(R.id.layoutInputDates);
         inputDates = findViewById(R.id.inputDates);
@@ -100,18 +100,13 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
         //Set welcome text
         firebaseDatabase = FirebaseDatabase.getInstance();
-        if (FirebaseRequestManager.loggedIn()) {
+        if (FirebaseManager.loggedIn()) {
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             userRef = firebaseDatabase.getReference("UserData/" + firebaseUser.getUid());
         }
         viewmodel = new ViewModelProvider(this).get(NewTripActivityViewModel.class);
         first = true;
-        viewmodel.getToast().observe(this, s -> {
-            if (first)
-                first = false;
-            else if (s != null)
-                Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-        });
+
 
         viewmodel.getName().observe(this, name -> {
             if (name != null) {
@@ -125,9 +120,13 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         inputDates.setOnClickListener(view -> datePicker.show(getSupportFragmentManager(), "DATE_PICKER"));
         datePicker.addOnPositiveButtonClickListener(selection -> {
             inputDates.setText(datePicker.getHeaderText());
-            final Pair<Date, Date> rangeDate = new Pair<>(new Date((Long) ((Pair) selection).first), new Date((Long) ((Pair) selection).second));
-            startDate = rangeDate.first;
-            endDate = rangeDate.second;
+            final Pair<Date, Date> rangeDate = new Pair<>(new Date((Long) selection.first), new Date((Long) ((Pair) selection).second));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
+            startDate = dateFormat.format(rangeDate.first);
+            endDate = dateFormat.format(rangeDate.second);
+            startStamp = String.valueOf(rangeDate.first.getTime());
+            endStamp = String.valueOf(rangeDate.second.getTime());
+
         });
         createButton.setOnClickListener(this);
         initializeAPIs();
@@ -146,7 +145,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.g_apiKey));
         }
-//            TripRepo tripRepo = new TripRepo();
+//            AmadeusRequests tripRepo = new AmadeusRequests();
 //            tripRepo.getLocations().observe(NewTripActivity.this, locations -> {
 //                if (locations != null) {
 //                    for (Location l : locations) {
@@ -252,30 +251,47 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             {
                 String str = verifyInput();
                 if (!str.equals("false")) {
-                    if (FirebaseRequestManager.loggedIn()) {
+                    MyTrip data = null;
+                    if (FirebaseManager.loggedIn()) {
                         progressDialog = new CustomProgressDialog(NewTripActivity.this, "Creating Trip", this);
                         progressDialog.show();
-                        MyTrip data = null;
+
                         DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData/" + firebaseUser.getUid()).child("Trips").push();
 
                         if (str.equals("dest"))
-                            data = new MyTrip(destination, destinationLatLng, startDate, endDate, placeId, pushedTrip.getKey());
+                            data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey());
                         else if (str.equals("orig"))
-                            data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, endDate, placeId, pushedTrip.getKey());
+                            data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, startStamp, placeId, pushedTrip.getKey());
 
+                        MyTrip finalData = data;
                         pushedTrip.setValue(data).addOnCompleteListener(task -> {
                             progressDialog.hide();
                             if (task.isSuccessful()) {
                                 Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
-                                intent.putExtra("pushedTrip", pushedTrip.getKey());
+                                intent.putExtra("trip", finalData);
                                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
-                                handler.postDelayed(this::finishAfterTransition, 900);
+                                handler.postDelayed(this::finish, 900);
                             } else {
                                 Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    } else
-                        Toast.makeText(getApplicationContext(), "SQLite under construction, thanks for your patience", Toast.LENGTH_SHORT).show();
+                    } else{
+
+                        DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData").push();
+
+                        if (str.equals("dest"))
+                            data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey());
+                        else if (str.equals("orig"))
+                            data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey());
+
+                        viewmodel.insertTrip(data);
+
+                        Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
+                        intent.putExtra("trip", data);
+                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+                        handler.postDelayed(this::finish, 900);
+
+                    }
 
                 } else
                     Toast.makeText(getApplicationContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();

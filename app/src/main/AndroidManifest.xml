@@ -15,15 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp">
         <activity
-            android:name=".UI.MainActivity"
+            android:name=".UI.main.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".UI.EditTripActivity"
+            android:name=".UI.editTrip.EditTripActivity"
             android:exported="false"
-            android:parentActivityName=".UI.MainActivity"
+            android:parentActivityName=".UI.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/EditTripTheme" />
         <activity
@@ -34,10 +34,10 @@
         <activity
             android:name=".UI.ProfileActivity"
             android:exported="false"
-            android:parentActivityName=".UI.MainActivity"
+            android:parentActivityName=".UI.main.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".UI.NewTripActivity"
+            android:name=".UI.newTrip.NewTripActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/NewTripTheme" />

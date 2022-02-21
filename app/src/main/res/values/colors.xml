@@ -9,6 +9,7 @@
     <color name="grey">#B5B7C6</color>
     <color name="darkGrey">#474851</color>
     <color name="barelyGrey">#F5F5F5</color>
+    <color name="lightGrey">#D5D5D5</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

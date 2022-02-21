@@ -1,4 +1,4 @@
-package com.ikea.myapp.ViewModels;
+package com.ikea.myapp.UI.newTrip;
 
 import android.app.Application;
 
@@ -9,26 +9,31 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.ikea.myapp.Managers.FirebaseRequestManager;
+import com.ikea.myapp.MyTrip;
+import com.ikea.myapp.data.TripRepo;
+import com.ikea.myapp.data.remote.FirebaseManager;
 
 public class NewTripActivityViewModel extends AndroidViewModel {
 
-    FirebaseRequestManager firebaseRequestManager;
-    MutableLiveData<String> name, toast;
+    FirebaseManager firebaseManager;
+    MutableLiveData<String> name;
+    TripRepo tripRepo;
+
 
     public NewTripActivityViewModel(@NonNull Application application) {
         super(application);
         name = new MutableLiveData<>();
-        toast = new MutableLiveData<>();
-        if (FirebaseRequestManager.loggedIn()) {
-            firebaseRequestManager = new FirebaseRequestManager();
+        if (FirebaseManager.loggedIn()) {
+            firebaseManager = new FirebaseManager();
             fetchName();
-        } else
+        } else{
             name.setValue(null);
+            tripRepo = new TripRepo(application);
+        }
     }
 
     private void fetchName() {
-        firebaseRequestManager.getNameRef().addValueEventListener(new ValueEventListener() {
+        firebaseManager.getNameRef().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 name.setValue(snapshot.getValue(String.class));
@@ -36,16 +41,17 @@ public class NewTripActivityViewModel extends AndroidViewModel {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                toast.setValue(error.getMessage());
+
             }
         });
+    }
+
+    public void insertTrip(MyTrip trip){
+        tripRepo.insertTrip(trip);
     }
 
     public MutableLiveData<String> getName() {
         return name;
     }
 
-    public MutableLiveData<String> getToast() {
-        return toast;
-    }
 }

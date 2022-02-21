@@ -1,4 +1,4 @@
-package com.ikea.myapp.UI;
+package com.ikea.myapp.UI.main;
 
 import android.os.Bundle;
 

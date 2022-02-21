@@ -1,4 +1,4 @@
-package com.ikea.myapp;
+package com.ikea.myapp.data.remote;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,6 +9,7 @@ import com.amadeus.Amadeus;
 import com.amadeus.Params;
 import com.amadeus.exceptions.ResponseException;
 import com.amadeus.resources.Location;
+import com.ikea.myapp.R;
 import com.ikea.myapp.utils.AppExecutors;
 
 

@@ -1,8 +1,9 @@
-package com.ikea.myapp.Managers;
+package com.ikea.myapp.data.remote;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -15,16 +16,18 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.ikea.myapp.CustomProgressDialog;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.LoginActivity;
-import com.ikea.myapp.UI.MainActivity;
+import com.ikea.myapp.UI.main.MainActivity;
 import com.ikea.myapp.UserData;
+import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.utils.Utils;
 
 import java.util.Objects;
 
-public class FirebaseRequestManager {
+public class FirebaseManager {
 
     private static CustomProgressDialog progressDialog;
     private static final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -33,8 +36,10 @@ public class FirebaseRequestManager {
 
 
 
-    public FirebaseRequestManager() {
+    public FirebaseManager() {
+        if(loggedIn())
         userdata = UsersReference.child(firebaseAuth.getUid());
+        else userdata = null;
     }
 
 
@@ -58,17 +63,22 @@ public class FirebaseRequestManager {
         firebaseAuth.signInWithEmailAndPassword(email, password).
                 addOnCompleteListener(task -> {
                     progressDialog.hide();
+                    new TripRepo(activity.getApplication()).deleteTable();
+
                     if (task.isSuccessful()) {
                         Toast.makeText(context, R.string.login_signed_in, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);
                     } else if (!Utils.isNetworkConnected(context)) {
+                        Log.d("tag", task.getException().toString());
                         Toast.makeText(context, R.string.ui_no_internet, Toast.LENGTH_SHORT).show();
                     } else if (task.getException() instanceof FirebaseAuthInvalidUserException ||
                             task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                        Log.d("tag", task.getException().toString());
                         Toast.makeText(context, R.string.login_incorrect_details, Toast.LENGTH_SHORT).show();
                     } else {
+                        Log.d("tag", task.getException().toString());
                         Snackbar snackbar = Snackbar
                                 .make(relativeLayout, Objects.requireNonNull(task.getException()).toString(), Snackbar.LENGTH_LONG);
                         snackbar.show();
@@ -140,13 +150,14 @@ public class FirebaseRequestManager {
                         snackbar.show();
                     }
                 });
+
     }
 
     public static void SignOut() {
         firebaseAuth.signOut();
     }
 
-    public DatabaseReference getTripsRef(){ return  userdata.child("Trips");  }
+    public Query getTripsRef(){ return  userdata.child("Trips").orderByChild("startStamp");  }
     public DatabaseReference getNameRef(){ return  userdata.child("firstName"); }
 
 
