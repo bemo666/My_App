@@ -12,9 +12,12 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/edittrip_ctr_bg.xml" value="0.1" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_add.xml" value="0.24375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_arrow_back.xml" value="0.24375" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_calendar.xml" value="0.1545" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_dollar.xml" value="0.1545" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_edit_location.xml" value="0.24375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_eye.xml" value="0.24375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_image_failed.xml" value="0.1545" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_info.xml" value="0.1545" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.24375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_profile.xml" value="0.24375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/roundedbutton.xml" value="0.20833333333333334" />
@@ -22,7 +25,7 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout-land/activity_login.xml" value="0.17239583333333333" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout-w1240dp/content_scrolling.xml" value="0.1" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout-w936dp/content_scrolling.xml" value="0.1" />
-        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_edit_trip.xml" value="0.20634920634920634" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_edit_trip.xml" value="0.25" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_forgot_password.xml" value="0.21910112359550563" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_login.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_main.xml" value="0.2" />
@@ -37,9 +40,10 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_upcoming.xml" value="0.264" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/ic_image_failed.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_line_short_center.xml" value="0.2234375" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_live_dot.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_suggested_destinations.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_trip_details.xml" value="0.6" />
-        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_trips.xml" value="0.8800000000000001" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_trips.xml" value="0.2952158693115519" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/loading_circle.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/loading_layout.xml" value="0.6" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/loading_line_short.xml" value="0.2234375" />

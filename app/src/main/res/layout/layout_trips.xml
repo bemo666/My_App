@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginHorizontal="0dp"
-    app:cardCornerRadius="@dimen/card_radius">
+    app:cardCornerRadius="@dimen/card_radius"
+    tools:ignore="HardcodedText">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,7 +26,7 @@
 
         <TextView
             android:id="@+id/placeName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="20dp"
@@ -35,7 +37,8 @@
             android:text="London"
             android:textColor="@color/almostWhite"
             android:textSize="25sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:transitionName="edit_trip_text_transition" />
 
         <TextView
             android:id="@+id/dates"
@@ -50,40 +53,11 @@
             android:textColor="@color/almostWhite"
             android:textSize="16sp" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/live_badge"
+        <include layout="@layout/layout_live_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/placeName"
-            android:layout_alignStart="@+id/placeName"
-            android:visibility="gone"
-            app:cardBackgroundColor="@color/black"
-            app:cardCornerRadius="@dimen/card_radius_thin">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/live_dot"
-                    android:layout_width="7dp"
-                    android:layout_height="7dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="5dp"
-                    app:cardBackgroundColor="@color/red"
-                    app:cardCornerRadius="@dimen/card_radius" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="10dp"
-                    android:text="LIVE"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            android:layout_alignStart="@+id/placeName"/>
 
     </RelativeLayout>
 

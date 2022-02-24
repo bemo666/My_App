@@ -85,7 +85,7 @@ public class TripRepo {
                     }
                 }
 
-                list.getTrips().add(i, snapshot.getValue(MyTrip.class));
+                list.getTrips().set(i, snapshot.getValue(MyTrip.class));
                 trips.setValue(list);
             }
 

@@ -1,7 +1,8 @@
 package com.ikea.myapp.UI.main;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -9,15 +10,17 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,7 +39,6 @@ import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.ikea.myapp.UI.newTrip.NewTripActivity;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class UpcomingFragment extends Fragment {
@@ -47,12 +49,13 @@ public class UpcomingFragment extends Fragment {
     private CardView extraIcon, welcomeCard;
     private RelativeLayout planBar;
     private MaterialButton createTrip;
-    private ViewPager2 trips;
+    private ViewPager2 tripSlider;
     private ShimmerFrameLayout trip_shimmer, details_shimmer;
     private final Handler handler = new Handler();
     private UpcomingFragmentViewModel viewmodel;
     private SliderAdapter adapter;
     private Point touch;
+    private String receivedId = null;
 
     public UpcomingFragment() {
         // Required empty public constructor
@@ -65,7 +68,7 @@ public class UpcomingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
         adapter = new SliderAdapter(this);
-        trips = view.findViewById(R.id.trips);
+        tripSlider = view.findViewById(R.id.trips);
         planBar = view.findViewById(R.id.planBar);
         rv_details = view.findViewById(R.id.rvTripDetails);
         extraIcon = view.findViewById(R.id.edit_cardview);
@@ -80,6 +83,7 @@ public class UpcomingFragment extends Fragment {
         tripDetailsInit();
 
         sliderInit();
+
         return view;
     }
 
@@ -88,22 +92,21 @@ public class UpcomingFragment extends Fragment {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
-        trips.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getX() < 50 && trips.getCurrentItem() != 0) {
-                trips.setCurrentItem(trips.getCurrentItem() - 1);
-            } else if (motionEvent.getX() > width-50 && trips.getCurrentItem() != trips.getChildCount()) {
-                trips.setCurrentItem(trips.getCurrentItem() + 1);
-
+        tripSlider.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getX() < width / 2) {
+                tripSlider.setCurrentItem(tripSlider.getCurrentItem() - 1);
+            } else if (motionEvent.getX() > width / 2 ) {
+                tripSlider.setCurrentItem(tripSlider.getCurrentItem() + 1);
             }
             return false;
         });
 
-        trips.setAdapter(adapter);
-        trips.setClipToPadding(false);
-        trips.setClipChildren(false);
-        trips.setOffscreenPageLimit(3);
-        trips.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
-        trips.setNestedScrollingEnabled(true);
+        tripSlider.setAdapter(adapter);
+        tripSlider.setClipToPadding(false);
+        tripSlider.setClipChildren(false);
+        tripSlider.setOffscreenPageLimit(3);
+        tripSlider.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+        tripSlider.setNestedScrollingEnabled(true);
 
 
         viewmodel.getTrips().observe(getViewLifecycleOwner(), myTrips -> {
@@ -114,7 +117,6 @@ public class UpcomingFragment extends Fragment {
                     myTrips.setErrorMessage(null);
                 }
                 if (!myTrips.getTrips().isEmpty()) {
-                    Log.d("tag", "UpcomFrag, observe !mytrips.empty");
                     hideWelcomeCard();
                     adapter.setTrips(myTrips.getTrips());
                 } else {
@@ -133,7 +135,7 @@ public class UpcomingFragment extends Fragment {
             float r = 1 - Math.abs(position);
             page.setScaleY(0.85f + r * 0.15f);
         });
-        trips.setPageTransformer(compositePageTransformer);
+        tripSlider.setPageTransformer(compositePageTransformer);
 //        trips.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
 //            @Override
 //            public void onPageSelected(int position) {
@@ -149,18 +151,18 @@ public class UpcomingFragment extends Fragment {
     }
 
     private void showWelcomeCard() {
-        trips.setVisibility(View.GONE);
+        tripSlider.setVisibility(View.GONE);
         trip_shimmer.setVisibility(View.GONE);
         welcomeCard.setVisibility(View.VISIBLE);
         planBar.setVisibility(View.GONE);
         rv_details.setVisibility(View.GONE);
-        createTrip.setOnClickListener(v -> startActivity(new Intent(getActivity(), NewTripActivity.class)));
+        createTrip.setOnClickListener(v -> startActivityForResult(new Intent(getActivity(), NewTripActivity.class), 200));
     }
 
     private void hideWelcomeCard() {
         welcomeCard.setVisibility(View.GONE);
         planBar.setVisibility(View.VISIBLE);
-        trips.setVisibility(View.VISIBLE);
+        tripSlider.setVisibility(View.VISIBLE);
         rv_details.setVisibility(View.VISIBLE);
     }
 
@@ -172,11 +174,13 @@ public class UpcomingFragment extends Fragment {
         rv_details.setLayoutManager(layoutManager2);
     }
 
-    public void goToEditTripActivity(ImageView imageView, int position) {
+    public void goToEditTripActivity(ImageView imageView, TextView textView, CardView cardView, int position) {
         Intent intent = new Intent(getContext(), EditTripActivity.class);
         intent.putExtra("trip", viewmodel.getTripAt(position));
-        Log.d("tag", String.valueOf(position));
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), imageView, ViewCompat.getTransitionName(imageView));
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                Pair.create(imageView, ViewCompat.getTransitionName(imageView)),
+                Pair.create(textView, ViewCompat.getTransitionName(textView)),
+                Pair.create(cardView, ViewCompat.getTransitionName(cardView)));
         this.startActivity(intent, options.toBundle());
 
     }
@@ -195,9 +199,23 @@ public class UpcomingFragment extends Fragment {
         //Log.d("tag", "onResume");
     }
 
-    public boolean onTouch(View v, MotionEvent event) {
-        touch.x = (int) event.getX();
-        touch.y = (int) event.getY();
-        return true;
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 200 && resultCode == RESULT_OK)
+//            receivedId = data.getStringExtra("id");
+//        Log.d("tag", "onActivityResult");
+//        if (receivedId != null) {
+//            int i;
+//            Log.d("tag", "childrencount: " + tripSlider.getChildCount());
+//            Log.d("tag", "childid: " + tripSlider.getChildAt(0).getId());
+//            for (i = 0; i < tripSlider.getChildCount(); i++) {
+////                if(tripSlider.getChildAt(i)  == receivedId)
+////                    break;
+//            }
+//            //tripSlider.setCurrentItem(i);
+//            receivedId = null;
+//
+//        }
+//    }
 }

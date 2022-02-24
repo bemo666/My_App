@@ -10,21 +10,23 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/editTripAppBar"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="350dp"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/editTripCollapsingToolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
             android:fitsSystemWindows="true"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.MyApp.Title"
             app:collapsedTitleTextColor="@color/white"
             app:contentScrim="@color/transparent"
-            app:expandedTitleTextColor="@color/white"
+            app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.Title"
             app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
             app:titleCollapseMode="fade">
 
             <ImageView
+                android:id="@+id/editTrip_mainImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -35,32 +37,102 @@
                 android:transitionName="edit_trip_transition"
                 app:layout_collapseMode="none" />
 
-            <ImageView
-                android:id="@+id/editTrip_mainImage"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="end"
-                android:layout_marginTop="17dp"
-                android:layout_marginEnd="12dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_image_search"
-                app:layout_collapseMode="none"
-                app:tint="@color/white" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="15dp"
+                android:orientation="vertical"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.5">
+
+                <include
+                    layout="@layout/layout_live_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start" />
+
+                <TextView
+                    android:id="@+id/editTrip_placeName"
+                    style="@style/TextAppearance.MyApp.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:transitionName="edit_trip_text_transition" />
+            </LinearLayout>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/editTripToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/EditTripTheme"
-                app:layout_collapseMode="pin" />
+                app:layout_collapseMode="pin">
+
+                <ImageView
+                    android:id="@+id/editTrip_changeImage"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="7dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_image_search"
+                    app:tint="@color/white" />
+
+
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/editTripTabLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:tabGravity="start"
+            app:tabIconTint="@color/edittrip_tab_icon_selector"
+            app:tabIndicatorColor="@color/orange"
+            app:tabIndicatorFullWidth="true"
+            app:tabInlineLabel="true"
+            app:tabRippleColor="#00000000"
+            app:tabIndicatorHeight="3dp"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            app:tabTextColor="@color/edittrip_tab_icon_selector">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/editTripOverviewTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:icon="@drawable/ic_info"
+                android:text="@string/edit_trip_overview" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/editTripItineraryTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_calendar"
+                android:text="@string/edit_trip_itinerary" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/editTripBudgetTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_money"
+                android:text="@string/edit_trip_budget" />
+        </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
@@ -68,15 +140,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             tools:ignore="Hardcodedtext">
-
-            <TextView
-                android:id="@+id/editTrip_placeName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/editTrip_dates"
@@ -95,6 +158,43 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+
+    <View
+        android:id="@+id/editTrip_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/semiTransparentDark"
+        android:clickable="true"
+        android:visibility="gone" />
+
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/add_hotel"
+        style="@style/extendedFABappearance"
+        android:text="@string/edit_trip_hotels"
+        android:translationY="-70dp"
+        app:icon="@drawable/ic_bed_side"
+        app:layout_anchor="@id/add_flights"
+        app:layout_anchorGravity="center" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/add_flights"
+        style="@style/extendedFABappearance"
+        android:text="@string/edit_trip_flights"
+        android:translationY="-70dp"
+        app:icon="@drawable/ic_airplane"
+        app:layout_anchor="@id/add_notes"
+        app:layout_anchorGravity="center" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/add_notes"
+        style="@style/extendedFABappearance"
+        android:layout_marginEnd="100dp"
+        android:text="@string/edit_trip_notes"
+        app:icon="@drawable/ic_edit"
+        app:layout_anchor="@id/add_button"
+        app:layout_anchorGravity="center_vertical" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"
         android:layout_width="50dp"
@@ -103,49 +203,13 @@
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         android:src="@android:drawable/ic_input_add"
+        android:stateListAnimator="@null"
         app:backgroundTint="@color/orange"
         app:elevation="@dimen/elev"
         app:fabCustomSize="50dp"
         app:maxImageSize="30dp"
+        app:rippleColor="@color/lightGrey"
         app:tint="@color/white" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/right_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:src="@drawable/ic_edit"
-        app:backgroundTint="@color/blue"
-        app:fabSize="mini"
-        app:layout_anchor="@id/editTripAppBar"
-        app:layout_anchorGravity="bottom|end"
-        app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
-        app:tint="@color/white" />
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/middle_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="70dp"
-        android:src="@drawable/ic_eye"
-        app:backgroundTint="@color/grey"
-        app:fabSize="mini"
-        app:layout_anchor="@id/editTripAppBar"
-        app:layout_anchorGravity="bottom|end"
-        app:tint="@color/white" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/left_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="125dp"
-        android:src="@drawable/ic_phone"
-        app:backgroundTint="@color/grey"
-        app:behavior_autoHide="false"
-        app:fabSize="mini"
-        app:layout_anchor="@id/editTripAppBar"
-        app:layout_anchorGravity="bottom|end"
-        app:tint="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

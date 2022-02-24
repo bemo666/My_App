@@ -33,6 +33,8 @@
     <string name="ui_create_new_trip">Create New Trip</string>
     <string name="ui_plan">Plan</string>
     <string name="ui_no_internet">No internet connection</string>
+    <string name="ui_dash">\u0020-\u0020</string>
+
 
     <string name="newtrip_actionbar_name">Plan a new Trip</string>
     <string name="newtrip_destination"><b>Where to?</b>\u0020 e.g. Paris, New York, Japan</string>
@@ -43,6 +45,12 @@
     <string name="newtrip_origin"><b>Origin</b></string>
     <string name="newtrip_create_new_trip"><b>Start planning</b></string>
     <string name="newtrip_inspiration_text"><b>Need some flight inspiration?</b>\nFill in your city of origin to find a destination that suits you!</string>
+    <string name="edit_trip_hotels">Hotels</string>
+    <string name="edit_trip_flights">Flights</string>
+    <string name="edit_trip_notes">Notes</string>
+    <string name="edit_trip_overview">Overview</string>
+    <string name="edit_trip_itinerary">Itinerary</string>
+    <string name="edit_trip_budget">Budget</string>
 
 
 </resources>

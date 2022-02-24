@@ -269,7 +269,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                             if (task.isSuccessful()) {
                                 Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
                                 intent.putExtra("trip", finalData);
-                                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+                                startActivityForResult(intent, 200, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
                                 handler.postDelayed(this::finish, 900);
                             } else {
                                 Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
@@ -288,7 +288,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
                         Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
                         intent.putExtra("trip", data);
-                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+                        startActivityForResult(intent, 200, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
                         handler.postDelayed(this::finish, 900);
 
                     }

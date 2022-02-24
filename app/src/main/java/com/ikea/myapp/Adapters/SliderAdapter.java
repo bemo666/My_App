@@ -43,9 +43,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     @Override
     public SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new SliderViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.layout_trips,
-                parent,
-                false)
+                R.layout.layout_trips, parent, false)
         );
     }
 
@@ -53,7 +51,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
 
         holder.setCardView(sliderItems.get(position));
-        holder.itemView.setOnClickListener(view -> fragment.goToEditTripActivity(holder.imageView, position));
+        holder.itemView.setOnClickListener(view -> fragment.goToEditTripActivity(holder.imageView, holder.placeName, holder.liveBadge, position));
 
     }
 
@@ -88,7 +86,6 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
             Long.valueOf(trip.getEndStamp())> Calendar.getInstance().getTimeInMillis()){
                 liveBadge.setVisibility(View.VISIBLE);
                 liveDot.startAnimation(AnimationUtils.loadAnimation(context, R.anim.blink));
-
             }
             SimpleDateFormat simpleFormatMonth = new SimpleDateFormat("EEE MMM dd", Locale.ENGLISH);
             SimpleDateFormat simpleFormatYear = new SimpleDateFormat("EEE MMM dd, yyyy", Locale.ENGLISH);
@@ -117,7 +114,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                     startDate = simpleFormatMonth.format(tripStart);
                 }
             }
-            dates.setText(startDate + " - " + endDate);
+            dates.setText(startDate + context.getResources().getString(R.string.ui_dash) + endDate);
         }
     }
 
