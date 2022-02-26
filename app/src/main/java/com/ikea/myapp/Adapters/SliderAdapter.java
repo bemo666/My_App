@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.main.UpcomingFragment;
+import com.ikea.myapp.getCorrectDate;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.text.DateFormat;
@@ -49,11 +50,10 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-
         holder.setCardView(sliderItems.get(position));
         holder.itemView.setOnClickListener(view -> fragment.goToEditTripActivity(holder.imageView, holder.placeName, holder.liveBadge, position));
-
     }
+
 
     @Override
     public int getItemCount() {
@@ -87,34 +87,8 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                 liveBadge.setVisibility(View.VISIBLE);
                 liveDot.startAnimation(AnimationUtils.loadAnimation(context, R.anim.blink));
             }
-            SimpleDateFormat simpleFormatMonth = new SimpleDateFormat("EEE MMM dd", Locale.ENGLISH);
-            SimpleDateFormat simpleFormatYear = new SimpleDateFormat("EEE MMM dd, yyyy", Locale.ENGLISH);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
-            String startDate, endDate;
-            Date tripStart, tripEnd;
-            try {
-                tripStart = dateFormat.parse(trip.getStartDate());
-                tripEnd = dateFormat.parse(trip.getEndDate());
-            } catch (ParseException e) {
-                tripEnd = null;
-                tripStart = null;
-            }
-
-            if (tripStart.getYear() == Calendar.getInstance().get(Calendar.YEAR)-1900) {
-                startDate = simpleFormatMonth.format(tripStart);
-                endDate = simpleFormatMonth.format(tripEnd);
-                if (tripEnd.getYear() > tripStart.getYear()) {
-                    startDate = simpleFormatYear.format(tripStart);
-                    endDate = simpleFormatYear.format(tripEnd);
-                }
-            } else {
-                startDate = simpleFormatYear.format(tripStart);
-                endDate = simpleFormatYear.format(tripEnd);
-                if (tripEnd.getYear() == tripStart.getYear()) {
-                    startDate = simpleFormatMonth.format(tripStart);
-                }
-            }
-            dates.setText(startDate + context.getResources().getString(R.string.ui_dash) + endDate);
+            getCorrectDate date = new getCorrectDate(trip);
+            dates.setText(date.getStartDate() + context.getResources().getString(R.string.ui_dash) + date.getEndDate());
         }
     }
 

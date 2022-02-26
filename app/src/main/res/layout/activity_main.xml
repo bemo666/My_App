@@ -15,8 +15,7 @@
         android:background="@drawable/backdrop"
         android:scaleType="fitXY"
         android:scaleX="4"
-        android:translationX="100dp"
-        />
+        android:translationX="100dp" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -38,8 +37,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:titleTextAppearance="@style/Main.Toolbar.Collapsed.Text"
-                app:title="@string/app_name" />
+                app:title="@string/app_name"
+                app:titleTextAppearance="@style/Main.Toolbar.Collapsed.Text" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         <com.google.android.material.tabs.TabLayout
@@ -56,6 +55,7 @@
             app:tabPaddingTop="5dp"
             app:tabRippleColor="#00000000"
             app:tabSelectedTextColor="@color/blue"
+            app:tabTextAppearance="@style/MainTabWidget"
             app:tabTextColor="@color/grey" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -68,7 +68,7 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="start|bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_scrollFlags="scroll"/>
+        app:layout_scrollFlags="scroll" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"

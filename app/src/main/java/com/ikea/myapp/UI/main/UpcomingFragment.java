@@ -78,7 +78,7 @@ public class UpcomingFragment extends Fragment {
         welcomeCard = view.findViewById(R.id.welcomeCard);
         viewmodel = new ViewModelProvider(requireActivity()).get(UpcomingFragmentViewModel.class);
 
-        extraIcon.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), EditTripActivity.class)));
+        extraIcon.setOnClickListener(view1 -> {});
 
         tripDetailsInit();
 

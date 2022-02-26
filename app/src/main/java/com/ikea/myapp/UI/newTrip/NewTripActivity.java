@@ -1,10 +1,8 @@
 package com.ikea.myapp.UI.newTrip;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,8 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -38,12 +34,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ikea.myapp.CustomProgressDialog;
-import com.ikea.myapp.UI.editTrip.EditTripActivity;
-import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
+import com.ikea.myapp.UI.editTrip.EditTripActivity;
+import com.ikea.myapp.data.remote.FirebaseManager;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -71,6 +66,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private final Handler handler = new Handler();
     private NewTripActivityViewModel viewmodel;
     private boolean first;
+    private Place dest, orig;
 
     //Location Permission
     private final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -170,7 +166,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         inputOrigin.setFocusable(false);
         inputDestination.setOnClickListener(view -> {
             initializeAPIs();
-            List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID);
+            List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID, Place.Field.PHOTO_METADATAS);
             Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY
                     , fieldList).build(NewTripActivity.this);
             isDestination = true;
@@ -215,15 +211,18 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK) {
             //When successful, initialize place
-            Place place = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
-            destination = place.getName();
-            inputDestination.setText(place.getName());
-            destinationLatLng = place.getLatLng();
-            placeId = place.getId();
-            if (!isDestination) {
-                origin = place.getName();
-                inputOrigin.setText(place.getName());
-                originLatLng = place.getLatLng();
+            if (isDestination) {
+                dest = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+                destination = dest.getName();
+                inputDestination.setText(dest.getName());
+                destinationLatLng = dest.getLatLng();
+                placeId = dest.getId();
+            }
+            else {
+                orig = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+                origin = orig.getName();
+                inputOrigin.setText(orig.getName());
+                originLatLng = orig.getLatLng();
             }
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             //When Error, initiate status
@@ -233,18 +232,6 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_LOCATION);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.create_trip) {
@@ -252,6 +239,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                 String str = verifyInput();
                 if (!str.equals("false")) {
                     MyTrip data = null;
+
                     if (FirebaseManager.loggedIn()) {
                         progressDialog = new CustomProgressDialog(NewTripActivity.this, "Creating Trip", this);
                         progressDialog.show();
@@ -275,7 +263,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                                 Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    } else{
+                    } else {
 
                         DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData").push();
 

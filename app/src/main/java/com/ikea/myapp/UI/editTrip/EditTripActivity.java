@@ -3,9 +3,7 @@ package com.ikea.myapp.UI.editTrip;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -17,31 +15,33 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+import com.ikea.myapp.Adapters.FragmentAdapter;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class EditTripActivity extends AppCompatActivity implements View.OnClickListener {
 
     private CardView fabLeft, fabMiddle, fabRight;
     private Toolbar toolbar;
+    private ViewPager2 fragments;
     private ImageView changeImage, mainImage;
-    private TextView placeName, dates;
+    private TextView placeName;
     private CollapsingToolbarLayout collapsingToolbar;
     private MyTrip trip;
     private AppBarLayout appBarLayout;
+    private TabLayout tabLayout;
     private Animation rotateOpen, rotateClose, slideIn, slideOut, fadeIn, fadeOut;
     private FloatingActionButton addButton;
     private ExtendedFloatingActionButton notes, flights, hotels;
@@ -66,13 +66,10 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_edit_trip);
 
         changeImage = findViewById(R.id.editTrip_changeImage);
-//        fabLeft = findViewById(R.id.left_button);
-//        fabMiddle = findViewById(R.id.middle_button);
-//        fabRight = findViewById(R.id.right_button);
+        fragments = findViewById(R.id.editTrip_viewpager);
         toolbar = findViewById(R.id.editTripToolbar);
         collapsingToolbar = findViewById(R.id.editTripCollapsingToolbar);
         placeName = findViewById(R.id.editTrip_placeName);
-        dates = findViewById(R.id.editTrip_dates);
         appBarLayout = findViewById(R.id.editTripAppBar);
         addButton = findViewById(R.id.add_button);
         notes = findViewById(R.id.add_notes);
@@ -82,6 +79,36 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         liveBadge = findViewById(R.id.live_badge);
         liveDot = findViewById(R.id.live_dot);
         mainImage = findViewById(R.id.editTrip_mainImage);
+        tabLayout = findViewById(R.id.editTripTabLayout);
+
+        //Fragments setup
+        FragmentManager fm = getSupportFragmentManager();
+        ArrayList<Fragment> list = new ArrayList<>();
+        list.add(new OverviewFragment(trip));
+        list.add(new OverviewFragment(trip));
+        list.add(new OverviewFragment(trip));
+        FragmentAdapter fragmentAdapter = new FragmentAdapter(fm, getLifecycle(), list);
+        fragments.setAdapter(fragmentAdapter);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                fragments.setCurrentItem(tab.getPosition());
+                if (tab.getPosition() != 0)
+                    appBarLayout.setExpanded(false, true);
+                else
+                    appBarLayout.setExpanded(true, true);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+        fragments.setUserInputEnabled(false);
 
         rotateOpen = AnimationUtils.loadAnimation(this, R.anim.rotate_open);
         rotateClose = AnimationUtils.loadAnimation(this, R.anim.rotate_close);
@@ -139,7 +166,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 //        } catch (ParseException e) {
 //            e.printStackTrace();
 //        }
-        dates.setText(trip.getStartDate() + getResources().getString(R.string.ui_dash) + trip.getEndDate());
 
 
     }
