@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.ikea.myapp.MyTrip;
 
@@ -19,7 +20,13 @@ public interface TripDao {
     @Query("SELECT * from trips ORDER BY startStamp ASC")
     LiveData<List<MyTrip>> getTrips();
 
+    @Update
+    void updateTrip(MyTrip trip);
+
     @Query("DELETE from trips")
     void deleteTable();
+
+    @Query("Update trips Set image = :image Where id = :id")
+    void setImage(String id, byte[] image);
 
 }

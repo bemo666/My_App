@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,13 +23,13 @@ public class PastFragment extends Fragment {
         // Required empty public constructor
     }
 
-    NestedScrollView scrollView;
+    TripsViewModel viewModel;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        scrollView = view.findViewById(R.id.nest_scrollview);
+        viewModel = ViewModelProviders.of(requireActivity()).get(TripsViewModel.class);
     }
 
     @Override
@@ -37,7 +39,4 @@ public class PastFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_past, container, false);
     }
 
-    public NestedScrollView getScrollView() {
-        return scrollView;
-    }
 }

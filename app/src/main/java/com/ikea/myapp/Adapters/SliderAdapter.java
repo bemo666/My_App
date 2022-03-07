@@ -1,6 +1,9 @@
 package com.ikea.myapp.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -87,8 +91,18 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                 liveBadge.setVisibility(View.VISIBLE);
                 liveDot.startAnimation(AnimationUtils.loadAnimation(context, R.anim.blink));
             }
+            else{
+                liveBadge.setVisibility(View.GONE);
+            }
             getCorrectDate date = new getCorrectDate(trip);
             dates.setText(date.getStartDate() + context.getResources().getString(R.string.ui_dash) + date.getEndDate());
+
+            try{
+                byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+                imageView.setImageBitmap(bitmap);
+            }catch (Exception e){
+            }
         }
     }
 

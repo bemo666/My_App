@@ -1,5 +1,7 @@
 package com.ikea.myapp;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -24,6 +26,7 @@ public class MyTrip implements Serializable {
     private String destination;
     private Double destinationLat;
     private Double destinationLon;
+    private byte[] image;
 
     public MyTrip() {
     }
@@ -31,7 +34,7 @@ public class MyTrip implements Serializable {
 
     public MyTrip(String origin, String destination, LatLng originLatLng, LatLng destinationLatLng,
                   String startDate, String startStamp, String endDate, String endStamp, String placeId,
-                  String id) {
+                  String id, byte[] image) {
         this.origin = origin;
         this.destination = destination;
         this.originLat = originLatLng.latitude;
@@ -44,10 +47,11 @@ public class MyTrip implements Serializable {
         this.startStamp = startStamp;
         this.endStamp = endStamp;
         this.id = id;
+        this.image = image;
     }
 
     public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
-                  String endStamp, String placeId, String id) {
+                  String endStamp, String placeId, String id, byte[] image) {
         this.destination = destination;
         this.destinationLat = destinationLatLng.latitude;
         this.destinationLon = destinationLatLng.longitude;
@@ -57,6 +61,7 @@ public class MyTrip implements Serializable {
         this.endStamp = endStamp;
         this.placeId = placeId;
         this.id = id;
+        this.image = image;
     }
 
 
@@ -156,5 +161,13 @@ public class MyTrip implements Serializable {
 
     public void setDestinationLon(Double destinationLon) {
         this.destinationLon = destinationLon;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

@@ -29,10 +29,10 @@
         <activity
             android:name=".UI.LoginActivity"
             android:exported="false"
-            android:parentActivityName=".UI.ProfileActivity"
+            android:parentActivityName=".UI.profile.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".UI.ProfileActivity"
+            android:name=".UI.profile.ProfileActivity"
             android:exported="false"
             android:parentActivityName=".UI.main.MainActivity"
             android:screenOrientation="portrait" />

@@ -2,8 +2,12 @@ package com.ikea.myapp.UI.editTrip;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.transition.Fade;
+import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -11,12 +15,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -48,6 +54,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     private boolean clicked = false;
     private View mask;
     private CardView liveBadge, liveDot;
+    private EditTripViewModel viewModel;
 
 
     @Override
@@ -80,6 +87,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         liveDot = findViewById(R.id.live_dot);
         mainImage = findViewById(R.id.editTrip_mainImage);
         tabLayout = findViewById(R.id.editTripTabLayout);
+        viewModel = ViewModelProviders.of(this).get(EditTripViewModel.class);
 
         //Fragments setup
         FragmentManager fm = getSupportFragmentManager();
@@ -166,6 +174,14 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 //        } catch (ParseException e) {
 //            e.printStackTrace();
 //        }
+
+        try{
+            byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            mainImage.setImageBitmap(bitmap);
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(), "No image", Toast.LENGTH_SHORT).show();
+        }
 
 
     }

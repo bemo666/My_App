@@ -54,4 +54,12 @@ public class NewTripActivityViewModel extends AndroidViewModel {
         return name;
     }
 
+    public void setLocalImage(String id, byte[] image){
+        tripRepo.setLocalImage(id, image );
+    }
+
+    public void setRemoteImage(String id, byte[] image){
+        tripRepo.setLocalImage(id, image);
+    }
+
 }

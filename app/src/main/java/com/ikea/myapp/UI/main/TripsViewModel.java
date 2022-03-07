@@ -24,13 +24,13 @@ import com.ikea.myapp.utils.AppExecutors;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpcomingFragmentViewModel extends AndroidViewModel {
+public class TripsViewModel extends AndroidViewModel {
 
     FirebaseManager firebaseManager;
     TripRepo tripRepo;
     LiveData<TripList> trips;
 
-    public UpcomingFragmentViewModel(@NonNull Application application) {
+    public TripsViewModel(@NonNull Application application) {
         super(application);
         trips = new MutableLiveData<TripList>();
         tripRepo = new TripRepo(application);

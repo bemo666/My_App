@@ -9,19 +9,21 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.ikea.myapp.CustomProgressDialog;
+import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.LoginActivity;
 import com.ikea.myapp.UI.main.MainActivity;
-import com.ikea.myapp.UserData;
 import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.utils.Utils;
 
@@ -31,29 +33,39 @@ public class FirebaseManager {
 
     private static CustomProgressDialog progressDialog;
     private static final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private static final DatabaseReference UsersReference = FirebaseDatabase.getInstance().getReference("UserData");
     private final DatabaseReference userdata;
 
 
 
     public FirebaseManager() {
         if(loggedIn())
-        userdata = UsersReference.child(firebaseAuth.getUid());
+            userdata = FirebaseDatabase.getInstance().getReference("UserData").child(Objects.requireNonNull(firebaseAuth.getUid()));
         else userdata = null;
     }
 
 
     public static boolean loggedIn() {
-
         return firebaseAuth.getCurrentUser() != null;
     }
 
-    public static String getUid() {
-        return firebaseAuth.getCurrentUser().getUid();
+    public String getEmail() {
+        return Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail();
     }
-
-    public static String getEmail() {
-        return firebaseAuth.getCurrentUser().getEmail();
+    public static void DeleteAccount(Context context){
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
+        if(user != null){
+            user.delete().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    //userdata.removeValue()
+                    Toast.makeText(context, R.string.profile_account_deleted, Toast.LENGTH_SHORT).show();
+                    context.startActivity(new Intent(context, MainActivity.class));
+                }else{
+                    Toast.makeText(context, task.getException().toString(), Toast.LENGTH_LONG).show();
+                }
+            });
+        } else{
+            Toast.makeText(context, R.string.profile_not_signed_in_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -93,8 +105,7 @@ public class FirebaseManager {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener
                 (task -> {
                     if (task.isSuccessful()) {
-                        UserData data = new UserData(name, email);
-                        UsersReference.child(getUid()).setValue(data).
+                        new FirebaseManager().setUsername(name).
                                 addOnCompleteListener(task1 -> {
                                     progressDialog.hide();
                                     Toast.makeText(context, R.string.login_account_created_successfully, Toast.LENGTH_SHORT).show();
@@ -158,8 +169,15 @@ public class FirebaseManager {
     }
 
     public Query getTripsRef(){ return  userdata.child("Trips").orderByChild("startStamp");  }
+
+    public void updateTrip(MyTrip trip){
+        userdata.child("Trips").child(trip.getId()).setValue(trip);
+    }
+
     public DatabaseReference getNameRef(){ return  userdata.child("firstName"); }
 
-
+    public Task<Void> setUsername(String name){
+        return userdata.child("firstName").setValue(name);
+    }
 
 }

@@ -1,7 +1,5 @@
 package com.ikea.myapp.UI.main;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Point;
@@ -17,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
@@ -52,7 +49,7 @@ public class UpcomingFragment extends Fragment {
     private ViewPager2 tripSlider;
     private ShimmerFrameLayout trip_shimmer, details_shimmer;
     private final Handler handler = new Handler();
-    private UpcomingFragmentViewModel viewmodel;
+    private TripsViewModel viewmodel;
     private SliderAdapter adapter;
     private Point touch;
     private String receivedId = null;
@@ -76,7 +73,7 @@ public class UpcomingFragment extends Fragment {
         details_shimmer = view.findViewById(R.id.shimmer_view_container_trip_details);
         createTrip = view.findViewById(R.id.create_trip);
         welcomeCard = view.findViewById(R.id.welcomeCard);
-        viewmodel = new ViewModelProvider(requireActivity()).get(UpcomingFragmentViewModel.class);
+        viewmodel = new ViewModelProvider(requireActivity()).get(TripsViewModel.class);
 
         extraIcon.setOnClickListener(view1 -> {});
 

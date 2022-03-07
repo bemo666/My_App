@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         tabLayout = findViewById(R.id.login_switcher);
 
 
-        LinearLayout linearLayout = findViewById(R.id.scroll_view);
+        LinearLayout linearLayout = findViewById(R.id.login_linear_layout);
         linearLayout.setOnClickListener(view -> {
             view.clearFocus();
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

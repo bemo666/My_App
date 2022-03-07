@@ -29,12 +29,13 @@
     <string name="ui_destination">Destination</string>
     <string name="ui_origin">Origin</string>
     <string name="ui_comma">,</string>
-    <string name="ui_profile">Profile</string>
+    <string name="ui_account">Account</string>
     <string name="ui_create_new_trip">Create New Trip</string>
     <string name="ui_plan">Itinerary</string>
     <string name="ui_no_internet">No internet connection</string>
+    <string name="ui_save">save</string>
+    <string name="ui_sign_out">Sign out</string>
     <string name="ui_dash">\u0020-\u0020</string>
-
 
     <string name="newtrip_actionbar_name">Plan a new Trip</string>
     <string name="newtrip_destination"><b>Where to?</b>\u0020 e.g. Paris, New York, Japan</string>
@@ -45,14 +46,21 @@
     <string name="newtrip_origin"><b>Origin</b></string>
     <string name="newtrip_create_new_trip"><b>Start planning</b></string>
     <string name="newtrip_inspiration_text"><b>Need some flight inspiration?</b>\nFill in your city of origin to find a destination that suits you!</string>
+
     <string name="edit_trip_hotels">Hotels</string>
     <string name="edit_trip_flights">Flights</string>
     <string name="edit_trip_notes">Notes</string>
     <string name="edit_trip_overview">Overview</string>
     <string name="edit_trip_itinerary">Itinerary</string>
     <string name="edit_trip_budget">Budget</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="profile_not_signed_in"><b>It appears you aren\'t signed in</b>\n\nCreate an account or sign in to have your trips sync across all your devices!</string>
+    <string name="profile_delete_account">Delete Account</string>
+    <string name="profile_account_deleted">Account Deleted Successfully</string>
+    <string name="profile_not_signed_in_error">It appears you aren\'t signed in</string>
+    <string name="profile_delete_account_dialog_text">Are you absolutely sure you want to delete your account?</string>
+    <string name="profile_account_info_text">Change your account details below:</string>
+    <string name="profile_sign_in_create_account">Sign In / Create Account</string>
 
 
 </resources>
