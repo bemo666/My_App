@@ -91,6 +91,8 @@
     </style>
 
     <style name="AccountTextBoxes" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">text</item>
         <item name="boxCornerRadiusBottomEnd">8dp</item>
         <item name="boxCornerRadiusBottomStart">8dp</item>
         <item name="boxCornerRadiusTopEnd">8dp</item>

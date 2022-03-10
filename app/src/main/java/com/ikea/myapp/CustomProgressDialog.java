@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 
 
 public class CustomProgressDialog extends Dialog {
-    public CustomProgressDialog(@NonNull Context context, String string, Activity activity) {
+    public CustomProgressDialog(@NonNull Context context, String string) {
         super(context);
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER_HORIZONTAL;

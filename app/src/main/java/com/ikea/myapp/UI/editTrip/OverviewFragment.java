@@ -13,16 +13,13 @@ import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.getCorrectDate;
 
-
 public class OverviewFragment extends Fragment {
     private TextView dates;
     private MyTrip trip;
 
-
     public OverviewFragment(MyTrip trip) {
         this.trip = trip;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,7 +28,7 @@ public class OverviewFragment extends Fragment {
         dates = view.findViewById(R.id.editTrip_dates);
 
         getCorrectDate date = new getCorrectDate(trip);
-        dates.setText(date.getStartDate() + getResources().getString(R.string.ui_dash) + date.getEndDate());
+        dates.setText(date.getStartDateUpcomingFormat() + getResources().getString(R.string.ui_dash) + date.getEndDateUpcomingFormat());
         return view;
     }
 }

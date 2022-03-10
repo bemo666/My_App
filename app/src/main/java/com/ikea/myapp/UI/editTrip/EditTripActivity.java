@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.transition.Fade;
 import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -39,7 +38,6 @@ import java.util.Calendar;
 
 public class EditTripActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private CardView fabLeft, fabMiddle, fabRight;
     private Toolbar toolbar;
     private ViewPager2 fragments;
     private ImageView changeImage, mainImage;
@@ -50,7 +48,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     private TabLayout tabLayout;
     private Animation rotateOpen, rotateClose, slideIn, slideOut, fadeIn, fadeOut;
     private FloatingActionButton addButton;
-    private ExtendedFloatingActionButton notes, flights, hotels;
+    private ExtendedFloatingActionButton notes, flights, hotels, rentals;
     private boolean clicked = false;
     private View mask;
     private CardView liveBadge, liveDot;
@@ -82,6 +80,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         notes = findViewById(R.id.add_notes);
         flights = findViewById(R.id.add_flights);
         hotels = findViewById(R.id.add_hotel);
+        rentals = findViewById(R.id.add_rental);
         mask = findViewById(R.id.editTrip_mask);
         liveBadge = findViewById(R.id.live_badge);
         liveDot = findViewById(R.id.live_dot);
@@ -94,18 +93,23 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         ArrayList<Fragment> list = new ArrayList<>();
         list.add(new OverviewFragment(trip));
         list.add(new OverviewFragment(trip));
-        list.add(new OverviewFragment(trip));
+        list.add(new BudgetFragment(trip));
         FragmentAdapter fragmentAdapter = new FragmentAdapter(fm, getLifecycle(), list);
         fragments.setAdapter(fragmentAdapter);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+
                 fragments.setCurrentItem(tab.getPosition());
-                if (tab.getPosition() != 0)
+                if (tab.getPosition() != 0) {
                     appBarLayout.setExpanded(false, true);
-                else
+                    addButton.hide();
+                }
+                else {
                     appBarLayout.setExpanded(true, true);
+                    addButton.show();
+                }
             }
 
             @Override
@@ -126,11 +130,15 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
 
-        if (Long.valueOf(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
-                Long.valueOf(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
+
+
+        if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
+                Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
             liveBadge.setVisibility(View.VISIBLE);
             liveDot.startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink));
-
+        } else{
+            liveDot.clearAnimation();
+            liveBadge.setVisibility(View.GONE);
         }
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false, set = false;
@@ -230,12 +238,14 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             notes.startAnimation(slideOut);
             flights.startAnimation(slideOut);
             hotels.startAnimation(slideOut);
+            rentals.startAnimation(slideOut);
             addButton.startAnimation(rotateOpen);
             mask.startAnimation(fadeIn);
         } else {
             notes.startAnimation(slideIn);
             flights.startAnimation(slideIn);
             hotels.startAnimation(slideIn);
+            rentals.startAnimation(slideIn);
             addButton.startAnimation(rotateClose);
             mask.startAnimation(fadeOut);
         }
@@ -243,15 +253,17 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
     private void setVisibility() {
         if (!clicked) {
-            notes.setVisibility(View.VISIBLE);
-            flights.setVisibility(View.VISIBLE);
-            hotels.setVisibility(View.VISIBLE);
+            notes.show();
+            flights.show();
+            hotels.show();
+            rentals.show();
             mask.setVisibility(View.VISIBLE);
 
         } else {
-            notes.setVisibility(View.GONE);
-            flights.setVisibility(View.GONE);
-            hotels.setVisibility(View.GONE);
+            notes.hide();
+            flights.hide();
+            hotels.hide();
+            rentals.hide();
             mask.setVisibility(View.GONE);
 
         }

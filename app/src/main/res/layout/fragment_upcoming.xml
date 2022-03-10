@@ -23,7 +23,7 @@
             android:orientation="vertical">
 
             <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/trips"
+                android:id="@+id/current_trips_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/spacing"

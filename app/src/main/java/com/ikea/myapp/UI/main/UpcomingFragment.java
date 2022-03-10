@@ -2,9 +2,7 @@ package com.ikea.myapp.UI.main;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,29 +27,22 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.button.MaterialButton;
-import com.ikea.myapp.Adapters.SliderAdapter;
-import com.ikea.myapp.Adapters.TripDetailsAdapter;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.ikea.myapp.UI.newTrip.NewTripActivity;
-
-import java.util.ArrayList;
 
 
 public class UpcomingFragment extends Fragment {
 
     //Variables
-    private ArrayList<String> mNames = new ArrayList<String>();
     private RecyclerView rv_details;
     private CardView extraIcon, welcomeCard;
     private RelativeLayout planBar;
     private MaterialButton createTrip;
     private ViewPager2 tripSlider;
     private ShimmerFrameLayout trip_shimmer, details_shimmer;
-    private final Handler handler = new Handler();
     private TripsViewModel viewmodel;
-    private SliderAdapter adapter;
-    private Point touch;
+    private UpcomingTripsRVAdapter adapter;
     private String receivedId = null;
 
     public UpcomingFragment() {
@@ -64,8 +55,8 @@ public class UpcomingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
-        adapter = new SliderAdapter(this);
-        tripSlider = view.findViewById(R.id.trips);
+        adapter = new UpcomingTripsRVAdapter(this);
+        tripSlider = view.findViewById(R.id.current_trips_rv);
         planBar = view.findViewById(R.id.planBar);
         rv_details = view.findViewById(R.id.rvTripDetails);
         extraIcon = view.findViewById(R.id.edit_cardview);
@@ -75,7 +66,8 @@ public class UpcomingFragment extends Fragment {
         welcomeCard = view.findViewById(R.id.welcomeCard);
         viewmodel = new ViewModelProvider(requireActivity()).get(TripsViewModel.class);
 
-        extraIcon.setOnClickListener(view1 -> {});
+        extraIcon.setOnClickListener(view1 -> {
+        });
 
         tripDetailsInit();
 
@@ -92,7 +84,7 @@ public class UpcomingFragment extends Fragment {
         tripSlider.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getX() < width / 2) {
                 tripSlider.setCurrentItem(tripSlider.getCurrentItem() - 1);
-            } else if (motionEvent.getX() > width / 2 ) {
+            } else if (motionEvent.getX() > width / 2) {
                 tripSlider.setCurrentItem(tripSlider.getCurrentItem() + 1);
             }
             return false;
@@ -118,10 +110,8 @@ public class UpcomingFragment extends Fragment {
                     adapter.setTrips(myTrips.getTrips());
                 } else {
                     showWelcomeCard();
-                    Log.d("tag", "UpcomFrag, observe mytrips.empty");
                 }
             } else {
-                Log.d("tag", "UpcomFrag, observe mytrips == null");
                 showWelcomeCard();
             }
         });
@@ -165,7 +155,7 @@ public class UpcomingFragment extends Fragment {
 
     private void tripDetailsInit() {
         //Setting trip details
-        TripDetailsAdapter adapter2 = new TripDetailsAdapter(requireContext());
+        UpcomingTripDetailsRVAdapter adapter2 = new UpcomingTripDetailsRVAdapter(requireContext());
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
         rv_details.setAdapter(adapter2);
         rv_details.setLayoutManager(layoutManager2);
@@ -176,27 +166,15 @@ public class UpcomingFragment extends Fragment {
         intent.putExtra("trip", viewmodel.getTripAt(position));
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
                 Pair.create(imageView, ViewCompat.getTransitionName(imageView)),
-                Pair.create(textView, ViewCompat.getTransitionName(textView)),
-                Pair.create(cardView, ViewCompat.getTransitionName(cardView)));
+                Pair.create(textView, ViewCompat.getTransitionName(textView))
+//                ,Pair.create(cardView, ViewCompat.getTransitionName(cardView))
+        );
         this.startActivity(intent, options.toBundle());
 
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        //Log.d("tag", "onPause");
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //Log.d("tag", "onResume");
-    }
-
-//    @Override
+    //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);
 //        if (requestCode == 200 && resultCode == RESULT_OK)

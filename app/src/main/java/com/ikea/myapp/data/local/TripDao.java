@@ -29,4 +29,5 @@ public interface TripDao {
     @Query("Update trips Set image = :image Where id = :id")
     void setImage(String id, byte[] image);
 
+
 }

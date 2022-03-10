@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/live_badge"
@@ -29,8 +28,8 @@
             android:layout_height="wrap_content"
             android:paddingStart="5dp"
             android:paddingEnd="10dp"
-            android:text="LIVE"
+            android:text="@string/ui_live_badge_text"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="10sp"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

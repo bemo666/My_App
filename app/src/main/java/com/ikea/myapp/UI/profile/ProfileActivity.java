@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.transition.Fade;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,10 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -43,21 +48,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Enable Activity Transitions
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        Fade fade = new Fade();
-        View decor = getWindow().getDecorView();
-        fade.excludeTarget(android.R.id.statusBarBackground, true);
-        fade.excludeTarget(android.R.id.navigationBarBackground, true);
-        fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
-        getWindow().setEnterTransition(fade);
-        getWindow().setExitTransition(fade);
 
         //Initializing the activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-        //
 
 
         //Setting the Actionbar attributes
@@ -109,6 +103,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     layoutAccountEmail.setError(null);
                     layoutAccountEmail.setErrorEnabled(false);
                 }
+                Log.d("tag", "email changed");
                 emailChanged = true;
                 saveButton.setEnabled(true);
             }
@@ -127,6 +122,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void afterTextChanged(Editable editable) {
                 nameChanged = true;
+                Log.d("tag", "email changed");
                 saveButton.setEnabled(true);
             }
         });
@@ -148,14 +144,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.firebase_button) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            startActivity(new Intent(this, LoginActivity.class));
         } else if (id == R.id.sign_out_button) {
             if (FirebaseManager.loggedIn()) {
                 FirebaseManager.SignOut();
                 Toast.makeText(ProfileActivity.this, getString(R.string.login_logout_successful), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, MainActivity.class));
             }
         } else if (id == R.id.delete_account_button) {
             if (FirebaseManager.loggedIn()) {
@@ -163,7 +157,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 alertDialog.setTitle(R.string.profile_delete_account);
                 alertDialog.setMessage(R.string.profile_delete_account_dialog_text);
 
-                alertDialog.setPositiveButton("Delete", (dialog, which) -> FirebaseManager.DeleteAccount(this));
+                alertDialog.setPositiveButton("Delete", (dialog, which) ->
+                        FirebaseManager.DeleteAccount().addOnCompleteListener(task -> {
+                            //userdata.removeValue()
+                            if(task.isSuccessful()) {
+                                Toast.makeText(this, R.string.profile_account_deleted, Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(this, MainActivity.class));
+                            } else{
+                                Toast.makeText(this, task.getException().toString(), Toast.LENGTH_LONG).show();
+                                Log.d("tag", "Account deletion failed: " + task.getException().toString());
+                            }
+                        }));
                 alertDialog.setNegativeButton("Never Mind", (dialog, which) -> dialog.cancel());
                 AlertDialog dialog = alertDialog.create();
                 dialog.show();
@@ -172,12 +176,27 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             if (nameChanged) {
                 nameChanged = false;
                 saveButton.setEnabled(false);
+                viewModel.setName(Objects.requireNonNull(accountFirstName.getText()).toString()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(ProfileActivity.this, "Name updated Successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "Failed to update Name", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
             if (emailChanged) {
                 emailChanged = false;
                 if (validateEmail()) {
                     saveButton.setEnabled(false);
+                    viewModel.setEmail(email).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(ProfileActivity.this, "Email updated Successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Failed to update Email", Toast.LENGTH_SHORT).show();
+                            Log.d("tag", "email update failed: " + task.getException());
+                        }
+                    });
 
                 }
             }

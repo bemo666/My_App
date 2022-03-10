@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,30 +13,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.util.Pair;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
-import com.google.android.libraries.places.api.net.FetchPhotoResponse;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -76,7 +65,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private FirebaseDatabase firebaseDatabase;
     private FirebaseUser firebaseUser;
     private DatabaseReference userRef;
-    private String origin = "", placeId = "", destination = "";
+    private String origin = "", placeId = "", destination = "", tripType;
     private LatLng originLatLng, destinationLatLng;
     private String startDate, endDate, startStamp, endStamp;
     private MaterialButton createButton;
@@ -87,6 +76,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private boolean first;
     private Place dest, orig;
     private List<Place.Field> fieldList;
+    private byte[] image;
 
     //Location Permission
     private final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -254,88 +244,40 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         if (view.getId() == R.id.create_trip) {
             {
-                String str = verifyInput();
-                if (!str.equals("false")) {
-
-
+                tripType = verifyInput();
+                if (!tripType.equals("false")) {
                     final FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeId, fieldList);
                     PlacesClient placesClient = Places.createClient(this);
-
                     placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
                         final Place place = response.getPlace();
-
                         // Get the photo metadata.
                         final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
                         if (metadata == null || metadata.isEmpty()) {
                             Log.d("tag", "No photo metadata.");
-
+                            createTrip();
                         } else {
-
                             final PhotoMetadata photoMetadata = metadata.get(0);
-
                             // Get the attribution text.
                             final String attributions = photoMetadata.getAttributions();
-
                             // Create a FetchPhotoRequest.
                             final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
                                     .setMaxWidth(500) // Optional.
                                     .setMaxHeight(300) // Optional.
                                     .build();
-
+                            progressDialog = new CustomProgressDialog(this, "Creating Trip");
+                            progressDialog.show();
                             placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                                 Bitmap bitmap = fetchPhotoResponse.getBitmap();
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                                 Log.d("tag", "worked");
-                                byte[] image = baos.toByteArray();
+                                image = baos.toByteArray();
 
-                                MyTrip data = null;
-                                if (FirebaseManager.loggedIn()) {
-                                    DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData/" + firebaseUser.getUid()).child("Trips").push();
-
-                                    if (str.equals("dest"))
-                                        data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), image);
-                                    else if (str.equals("orig"))
-                                        data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, startStamp, placeId, pushedTrip.getKey(), image);
-
-                                    MyTrip finalData = data;
-                                    pushedTrip.setValue(data).addOnCompleteListener(task -> {
-                                        progressDialog.hide();
-                                        if (task.isSuccessful()) {
-                                            Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
-                                            intent.putExtra("trip", finalData);
-                                            startActivityForResult(intent, 200, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
-                                            handler.postDelayed(this::finish, 900);
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                } else {
-
-                                    DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData").push();
-
-                                    if (str.equals("dest"))
-                                        data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), image);
-                                    else if (str.equals("orig"))
-                                        data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), image);
-
-                                    viewmodel.insertTrip(data);
-
-                                    viewmodel.setLocalImage(data.getId(), image);
-
-                                    Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
-                                    intent.putExtra("trip", data);
-                                    startActivityForResult(intent, 200, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
-                                    handler.postDelayed(this::finish, 900);
-
-                                }
+                                createTrip();
 
                             }).addOnFailureListener((exception) -> {
                                 if (exception instanceof ApiException) {
-                                    final ApiException apiException = (ApiException) exception;
                                     Log.e("tag", "Place not found: " + exception.getMessage());
-                                    final int statusCode = apiException.getStatusCode();
-                                    // TODO: Handle error with given status code.
                                 }
                             });
                         }
@@ -351,6 +293,47 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+        private void createTrip(){
+            MyTrip data = null;
+            if (FirebaseManager.loggedIn()) {
+                DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData/" + firebaseUser.getUid()).child("Trips").push();
 
+                if (tripType.equals("dest"))
+                    data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey());
+                else if (tripType.equals("orig"))
+                    data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, startStamp, placeId, pushedTrip.getKey());
+
+                MyTrip finalData = data;
+                pushedTrip.setValue(data).addOnCompleteListener(task -> {
+                    progressDialog.hide();
+                    if (task.isSuccessful()) {
+                        Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
+                        intent.putExtra("trip", finalData);
+                        startActivityForResult(intent, 200, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+                        handler.postDelayed(this::finish, 900);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+
+                DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData").push();
+
+                if (tripType.equals("dest"))
+                    data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey());
+                else if (tripType.equals("orig"))
+                    data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey());
+
+                viewmodel.insertTrip(data);
+
+                viewmodel.setLocalImage(data.getId(), image);
+
+                Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
+                intent.putExtra("trip", data);
+                startActivityForResult(intent, 200, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+                handler.postDelayed(this::finish, 900);
+
+            }
+        }
 }
 

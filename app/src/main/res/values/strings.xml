@@ -61,6 +61,10 @@
     <string name="profile_delete_account_dialog_text">Are you absolutely sure you want to delete your account?</string>
     <string name="profile_account_info_text">Change your account details below:</string>
     <string name="profile_sign_in_create_account">Sign In / Create Account</string>
+    <string name="ui_live_badge_text"><i><b>NOW TRAVELING</b></i></string>
+    <string name="ui_expenses">Expenses</string>
+    <string name="edittrip_budget">"Budget: "</string>
+    <string name="edittrip_rentals">Rentals</string>
 
 
 </resources>

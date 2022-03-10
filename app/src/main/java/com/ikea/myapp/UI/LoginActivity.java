@@ -1,30 +1,40 @@
 package com.ikea.myapp.UI;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.transition.Fade;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.ikea.myapp.CustomProgressDialog;
+import com.ikea.myapp.UI.main.MainActivity;
+import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.R;
+import com.ikea.myapp.utils.Utils;
 
 import java.util.Objects;
 
@@ -37,20 +47,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private String name, email, password;
     private TextInputLayout layoutInputName, layoutInputEmail, layoutInputPassword;
     private RelativeLayout relativeLayout;
+    private CustomProgressDialog progressDialog;
     private boolean bSignIn = true, bSignUp, bForgotPassword;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Enable Activity Transitions
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        Fade fade = new Fade();
-        View decor = getWindow().getDecorView();
-        fade.excludeTarget(android.R.id.statusBarBackground, true);
-        fade.excludeTarget(android.R.id.navigationBarBackground, true);
-        fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
-        getWindow().setEnterTransition(fade);
-        getWindow().setExitTransition(fade);
 
         //Initializing the activity
         super.onCreate(savedInstanceState);
@@ -233,16 +235,97 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (id == R.id.firebase_button) {
             if (bSignIn) {
                 if (!validateEmail() | !validatePassword()) {
-                } else
-                    FirebaseManager.SignIn(email, password, LoginActivity.this, this, relativeLayout);
+                } else {
+                    progressDialog = new CustomProgressDialog(this, "Signing In");
+                    progressDialog.show();
+                    FirebaseManager.SignIn(email, password).addOnCompleteListener(task -> {
+                        new TripRepo(getApplication()).deleteTable();
+
+                        if (task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, R.string.login_signed_in, Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } else if (!Utils.isNetworkConnected(this)) {
+                            Log.d("tag", task.getException().toString());
+                            Toast.makeText(this, R.string.ui_no_internet, Toast.LENGTH_SHORT).show();
+                        } else if (task.getException() instanceof FirebaseAuthInvalidUserException ||
+                                task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            Log.d("tag", task.getException().toString());
+                            Toast.makeText(this, R.string.login_incorrect_details, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d("tag", task.getException().toString());
+                            Snackbar snackbar = Snackbar
+                                    .make(relativeLayout, Objects.requireNonNull(task.getException()).toString(), Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                        }
+                    });
+                }
             } else if (bSignUp) {
                 if (!validateName() | !validateEmail() | !validatePassword()) {
-                } else
-                    FirebaseManager.SignUp(name, email, password, LoginActivity.this, this, relativeLayout);
+                } else {
+                    progressDialog = new CustomProgressDialog(this, "Signing Up");
+                    progressDialog.show();
+                    FirebaseManager.SignUp(email, password).addOnCompleteListener
+                            (task -> {
+                                if (task.isSuccessful()) {
+                                    new FirebaseManager().setFirstName(name).
+                                            addOnCompleteListener(task1 -> {
+                                                progressDialog.hide();
+                                                Toast.makeText(this, R.string.login_account_created_successfully, Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(this, MainActivity.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                startActivity(intent);
+                                            });
+                                } else {
+                                    progressDialog.hide();
+                                    if (!Utils.isNetworkConnected(this)) {
+                                        Toast.makeText(this, R.string.ui_no_internet, Toast.LENGTH_SHORT).show();
+                                    } else if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                                        alertDialog.setTitle(R.string.login_encountered_problem);
+                                        alertDialog.setMessage(R.string.login_email_in_use);
+
+                                        alertDialog.setPositiveButton("Sign In", (dialog, which) -> {
+                                            setTabPos(0);
+                                        });
+                                        alertDialog.setNegativeButton("Try again", (dialog, which) -> dialog.cancel());
+                                        AlertDialog dialog = alertDialog.create();
+                                        dialog.show();
+                                    } else if (task.getException() instanceof FirebaseAuthInvalidUserException ||
+                                            task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                        Toast.makeText(this, R.string.login_incorrect_email, Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Snackbar snackbar = Snackbar
+                                                .make(relativeLayout, Objects.requireNonNull(task.getException()).toString(), Snackbar.LENGTH_LONG);
+                                        snackbar.show();
+                                    }
+                                }
+                            });
+                }
             } else if (bForgotPassword) {
                 if (!validateEmail()) {
-                } else
-                    FirebaseManager.ForgotPassword(email, LoginActivity.this, this, relativeLayout);
+                } else {
+                    progressDialog = new CustomProgressDialog(this, "Sending reset link");
+                    progressDialog.show();
+                    FirebaseManager.ForgotPassword(email)
+                            .addOnCompleteListener(task -> {
+                                progressDialog.hide();
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(this, R.string.login_reset_link_sent, Toast.LENGTH_LONG).show();
+                                    setTabPos(0);
+                                } else if (!Utils.isNetworkConnected(this)) {
+                                    Toast.makeText(this, R.string.ui_no_internet, Toast.LENGTH_SHORT).show();
+                                } else if (task.getException() instanceof FirebaseAuthInvalidUserException ||
+                                        task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                    Toast.makeText(this, R.string.login_incorrect_email, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Snackbar snackbar = Snackbar
+                                            .make(relativeLayout, Objects.requireNonNull(task.getException()).toString(), Snackbar.LENGTH_LONG);
+                                    snackbar.show();
+                                }
+                            });
+                }
             }
         }
     }
@@ -311,7 +394,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public static void setTabPos(int pos) {
+    public void setTabPos(int pos) {
         tabLayout.selectTab(tabLayout.getTabAt(pos));
     }
 }

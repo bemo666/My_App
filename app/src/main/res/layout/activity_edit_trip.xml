@@ -148,6 +148,14 @@
         android:clickable="true"
         android:visibility="gone" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/add_rental"
+        style="@style/extendedFABappearance"
+        android:text="@string/edittrip_rentals"
+        android:translationY="-70dp"
+        app:icon="@drawable/ic_car"
+        app:layout_anchor="@id/add_hotel"
+        app:layout_anchorGravity="center" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/add_hotel"

@@ -43,15 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AppBarLayout appBarLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
-        //Enable Activity Transitions
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        Fade fade = new Fade();
-        View decor = getWindow().getDecorView();
-        fade.excludeTarget(android.R.id.statusBarBackground, true);
-        fade.excludeTarget(android.R.id.navigationBarBackground, true);
-        fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
-        getWindow().setEnterTransition(fade);
-        getWindow().setExitTransition(fade);
 
         //Initializing the activity
         super.onCreate(savedInstanceState);
@@ -116,8 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.profile) {
-            Intent intent = new Intent(this, ProfileActivity.class);
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            startActivity(new Intent(this, ProfileActivity.class));
             return true;
         } else if (id == R.id.search) {
             return true;

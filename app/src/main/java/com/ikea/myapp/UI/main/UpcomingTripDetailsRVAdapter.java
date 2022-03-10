@@ -1,28 +1,25 @@
-package com.ikea.myapp.Adapters;
+package com.ikea.myapp.UI.main;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikea.myapp.R;
 
 import java.util.ArrayList;
 
-public class TripDetailsAdapter extends RecyclerView.Adapter<TripDetailsAdapter.ViewHolder> {
+public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingTripDetailsRVAdapter.ViewHolder> {
 
     ArrayList<String> sampleText;
     Context context;
 
-    public TripDetailsAdapter(Context context) {
+    public UpcomingTripDetailsRVAdapter(Context context) {
         this.sampleText = new ArrayList<>();
         sampleText.add("Cool Place");
         sampleText.add("Even Cooler place");
@@ -33,12 +30,12 @@ public class TripDetailsAdapter extends RecyclerView.Adapter<TripDetailsAdapter.
 
     @NonNull
     @Override
-    public TripDetailsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public UpcomingTripDetailsRVAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_trip_details, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TripDetailsAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull UpcomingTripDetailsRVAdapter.ViewHolder holder, int position) {
         holder.placeName.setText(sampleText.get(position));
     }
 

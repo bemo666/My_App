@@ -74,13 +74,16 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/sign_out_button"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/margin_side"
-                android:backgroundTint="@color/darkGrey"
-                android:padding="10dp"
+                android:backgroundTint="@color/red"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="20dp"
                 android:text="@string/ui_sign_out"
                 android:textAllCaps="false"
+                android:textSize="16sp"
                 app:cornerRadius="10dp" />
 
             <com.google.android.material.button.MaterialButton
@@ -89,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/margin_side"
-                android:backgroundTint="@color/red"
+                android:backgroundTint="@color/grey"
                 android:paddingVertical="5dp"
                 android:text="@string/profile_delete_account"
                 android:textAllCaps="false"
@@ -101,6 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="@dimen/spacing">
 
@@ -117,10 +121,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:textSize="16sp"
-                app:backgroundTint="@color/green"
                 android:text="@string/profile_sign_in_create_account"
                 android:textAllCaps="false"
+                android:textSize="16sp"
+                app:backgroundTint="@color/green"
                 app:cornerRadius="@dimen/card_radius_thin" />
         </LinearLayout>
     </LinearLayout>
