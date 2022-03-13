@@ -326,7 +326,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
                 viewmodel.insertTrip(data);
 
-                viewmodel.setLocalImage(data.getId(), image);
+//                viewmodel.setLocalImage(data.getId(), image);
 
                 Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
                 intent.putExtra("trip", data);

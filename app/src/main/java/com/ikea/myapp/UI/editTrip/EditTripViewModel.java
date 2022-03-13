@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.ikea.myapp.Expense;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.data.remote.FirebaseManager;

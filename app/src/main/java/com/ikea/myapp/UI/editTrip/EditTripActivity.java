@@ -183,13 +183,13 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 //            e.printStackTrace();
 //        }
 
-        try{
-            byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            mainImage.setImageBitmap(bitmap);
-        }catch (Exception e){
-            Toast.makeText(getApplicationContext(), "No image", Toast.LENGTH_SHORT).show();
-        }
+//        try{
+//            byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+//            mainImage.setImageBitmap(bitmap);
+//        }catch (Exception e){
+//            Toast.makeText(getApplicationContext(), "No image", Toast.LENGTH_SHORT).show();
+//        }
 
 
     }

@@ -79,12 +79,12 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
             getCorrectDate date = new getCorrectDate(trip);
             dates.setText(date.getStartDateUpcomingFormat() + context.getResources().getString(R.string.ui_dash) + date.getEndDateUpcomingFormat());
 
-            try {
-                byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-                imageView.setImageBitmap(bitmap);
-            } catch (Exception e) {
-            }
+//            try {
+//                byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+//                imageView.setImageBitmap(bitmap);
+//            } catch (Exception e) {
+//            }
         }
 
         void setBadge(MyTrip trip) {

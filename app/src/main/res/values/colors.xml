@@ -23,7 +23,7 @@
     <color name="almostWhite">#fefefe</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="semiTransparent">#80FFFFFF</color>
-    <color name="semiTransparentDark">#80666666</color>
+    <color name="semiTransparentDark">#80555555</color>
 
     <color name="greyShimmer">#808080</color> <!-- 5e5f62-->
 

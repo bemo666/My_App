@@ -177,17 +177,17 @@ public class TripRepo {
         appExecutors.diskIO().execute(tripDao::deleteTable);
     }
 
-    public void setLocalImage(String id, byte[] image){
-        appExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                tripDao.setImage(id, image);
-            }
-        });
-    }
-
-    public void setRemoteImage(String id, byte[] image){
-        ByteArrayInputStream bs = new ByteArrayInputStream(image);
-        storage.child(id + ".jpg").putStream(bs);
-    }
+//    public void setLocalImage(String id, byte[] image){
+//        appExecutors.diskIO().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                tripDao.setImage(id, image);
+//            }
+//        });
+//    }
+//
+//    public void setRemoteImage(String id, byte[] image){
+//        ByteArrayInputStream bs = new ByteArrayInputStream(image);
+//        storage.child(id + ".jpg").putStream(bs);
+//    }
 }

@@ -26,7 +26,7 @@ public class MyTrip implements Serializable {
     private String destination;
     private Double destinationLat;
     private Double destinationLon;
-    private byte[] image;
+    private Budget budget;
 
     public MyTrip() {
     }
@@ -46,6 +46,7 @@ public class MyTrip implements Serializable {
         this.startStamp = startStamp;
         this.endStamp = endStamp;
         this.id = id;
+        this.budget = new Budget();
     }
 
     public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
@@ -58,41 +59,9 @@ public class MyTrip implements Serializable {
         this.startStamp = startStamp;
         this.endStamp = endStamp;
         this.placeId = placeId;
+        this.budget = new Budget();
         this.id = id;
     }
-    public MyTrip(String origin, String destination, LatLng originLatLng, LatLng destinationLatLng,
-                  String startDate, String startStamp, String endDate, String endStamp, String placeId,
-                  String id, byte[] image) {
-        this.origin = origin;
-        this.destination = destination;
-        this.originLat = originLatLng.latitude;
-        this.originLon = originLatLng.longitude;
-        this.destinationLat = destinationLatLng.latitude;
-        this.destinationLon = destinationLatLng.longitude;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.placeId = placeId;
-        this.startStamp = startStamp;
-        this.endStamp = endStamp;
-        this.id = id;
-        this.image = image;
-    }
-
-    public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
-                  String endStamp, String placeId, String id, byte[] image) {
-        this.destination = destination;
-        this.destinationLat = destinationLatLng.latitude;
-        this.destinationLon = destinationLatLng.longitude;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startStamp = startStamp;
-        this.endStamp = endStamp;
-        this.placeId = placeId;
-        this.id = id;
-        this.image = image;
-    }
-
-
 
 
     public String getId() {
@@ -191,11 +160,7 @@ public class MyTrip implements Serializable {
         this.destinationLon = destinationLon;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
+    public Budget getBudget() { return budget; }
 
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
+    public void setBudget(Budget budget) { this.budget = budget; }
 }

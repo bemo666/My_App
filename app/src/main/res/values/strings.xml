@@ -33,7 +33,7 @@
     <string name="ui_create_new_trip">Create New Trip</string>
     <string name="ui_plan">Itinerary</string>
     <string name="ui_no_internet">No internet connection</string>
-    <string name="ui_save">save</string>
+    <string name="ui_save">Save</string>
     <string name="ui_sign_out">Sign out</string>
     <string name="ui_dash">\u0020-\u0020</string>
 
@@ -65,6 +65,10 @@
     <string name="ui_expenses">Expenses</string>
     <string name="edittrip_budget">"Budget: "</string>
     <string name="edittrip_rentals">Rentals</string>
+    <string name="past_you_ve_seen">You\'ve Seen</string>
+    <string name="ui_currency">Currency</string>
+    <string name="edittext_select_item_type">Select Item Type</string>
+    <string name="edittext_0_00">0.00</string>
 
 
 </resources>

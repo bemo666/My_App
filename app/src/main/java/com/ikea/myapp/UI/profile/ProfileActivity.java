@@ -40,11 +40,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     //Declaring Variables
     private ProfileViewModel viewModel;
     private MaterialButton signInButton, signOutButton, deleteAccountButton, saveButton;
-    private TextInputEditText accountEmail, accountFirstName;
-    private TextInputLayout layoutAccountEmail;
+    private TextInputEditText accountEmail, accountFirstName, accountCurrency;
     private LinearLayout signInLayout, accountInfoLayout;
-    private String email;
-    private boolean emailChanged = false, nameChanged = false;
+    private boolean nameChanged = false, currencyChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +60,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         //Linking xml objects to java variables
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
         accountEmail = findViewById(R.id.accountEmail);
-        layoutAccountEmail = findViewById(R.id.layoutAccountEmail);
         accountFirstName = findViewById(R.id.accountFirstName);
+        accountCurrency = findViewById(R.id.accountCurrency);
         signInButton = findViewById(R.id.firebase_button);
         signInLayout = findViewById(R.id.sign_in_linear_layout);
         accountInfoLayout = findViewById(R.id.account_info_linear_layout);
@@ -83,8 +81,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         });
-
-        accountEmail.addTextChangedListener(new TextWatcher() {
+        accountCurrency.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -97,14 +94,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().isEmpty())
-                    layoutAccountEmail.setError(getString(R.string.login_required_field));
-                else {
-                    layoutAccountEmail.setError(null);
-                    layoutAccountEmail.setErrorEnabled(false);
-                }
-                Log.d("tag", "email changed");
-                emailChanged = true;
+                currencyChanged = true;
+                Log.d("tag", "Currency changed");
                 saveButton.setEnabled(true);
             }
         });
@@ -122,7 +113,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void afterTextChanged(Editable editable) {
                 nameChanged = true;
-                Log.d("tag", "email changed");
+                Log.d("tag", "Name changed");
                 saveButton.setEnabled(true);
             }
         });
@@ -185,21 +176,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 });
 
             }
-            if (emailChanged) {
-                emailChanged = false;
-                if (validateEmail()) {
-                    saveButton.setEnabled(false);
-                    viewModel.setEmail(email).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(ProfileActivity.this, "Email updated Successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Failed to update Email", Toast.LENGTH_SHORT).show();
-                            Log.d("tag", "email update failed: " + task.getException());
-                        }
-                    });
-
-                }
-            }
         }
     }
 
@@ -221,18 +197,4 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    private boolean validateEmail() {
-        email = Objects.requireNonNull(accountEmail.getText()).toString().trim();
-        if (TextUtils.isEmpty(email)) {
-            layoutAccountEmail.setError(getString(R.string.login_required_field));
-            return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            layoutAccountEmail.setError(getString(R.string.login_not_valid_email));
-            return false;
-        } else {
-            layoutAccountEmail.setError(null);
-            layoutAccountEmail.setErrorEnabled(false);
-            return true;
-        }
-    }
 }

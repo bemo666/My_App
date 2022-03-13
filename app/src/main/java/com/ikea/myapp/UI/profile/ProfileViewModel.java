@@ -38,6 +38,4 @@ public class ProfileViewModel extends AndroidViewModel {
     }
 
     public Task<Void> setName(String name) { return manager.setFirstName(name); }
-
-    public Task<Void> setEmail(String email) { return manager.setEmail(email);}
 }

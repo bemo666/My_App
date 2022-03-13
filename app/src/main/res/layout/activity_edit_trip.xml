@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UI.editTrip.EditTripActivity"
-    tools:ignore="ContentDescription">
+    tools:ignore="ContentDescription"
+    style="@style/AppBottomSheetDialogTheme">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/editTripAppBar"
@@ -39,7 +40,7 @@
 
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
                 android:layout_marginStart="20dp"
@@ -196,6 +197,7 @@
         app:backgroundTint="@color/orange"
         app:elevation="@dimen/elev"
         app:fabCustomSize="50dp"
+        android:enabled="false"
         app:maxImageSize="30dp"
         app:rippleColor="@color/lightGrey"
         app:tint="@color/white" />

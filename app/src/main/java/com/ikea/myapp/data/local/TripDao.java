@@ -26,8 +26,8 @@ public interface TripDao {
     @Query("DELETE from trips")
     void deleteTable();
 
-    @Query("Update trips Set image = :image Where id = :id")
-    void setImage(String id, byte[] image);
+//    @Query("Update trips Set image = :image Where id = :id")
+//    void setImage(String id, byte[] image);
 
 
 }

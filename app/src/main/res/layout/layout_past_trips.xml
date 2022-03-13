@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/placeName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="20dp"
@@ -37,9 +37,9 @@
             android:text="London"
             android:textColor="@color/almostWhite"
             android:textSize="20sp"
-            android:typeface="monospace"
             android:textStyle="bold"
-            android:transitionName="edit_trip_text_transition" />
+            android:transitionName="edit_trip_text_transition"
+            android:typeface="monospace" />
 
         <TextView
             android:id="@+id/dates"

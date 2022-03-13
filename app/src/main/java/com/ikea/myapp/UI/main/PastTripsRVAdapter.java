@@ -70,12 +70,12 @@ public class PastTripsRVAdapter extends RecyclerView.Adapter<PastTripsRVAdapter.
             getCorrectDate date = new getCorrectDate(trip);
             dates.setText(date.getDatesPastFormat());
 
-            try {
-                byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-                imageView.setImageBitmap(bitmap);
-            } catch (Exception e) {
-            }
+//            try {
+//                byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+//                imageView.setImageBitmap(bitmap);
+//            } catch (Exception e) {
+//            }
         }
     }
 

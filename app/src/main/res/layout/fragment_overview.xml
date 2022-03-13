@@ -8,6 +8,7 @@
     android:animateLayoutChanges="true"
     android:background="#00FFFFFF"
     android:fillViewport="true"
+    android:clickable="true"
     tools:context=".UI.editTrip.OverviewFragment">
 
     <LinearLayout
