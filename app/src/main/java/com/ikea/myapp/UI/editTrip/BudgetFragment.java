@@ -19,7 +19,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
-import com.ikea.myapp.ViewModels.Currency;
 
 public class BudgetFragment extends Fragment {
     private MyTrip trip;
@@ -60,7 +59,7 @@ public class BudgetFragment extends Fragment {
         progressIndicator.setProgress(40, true);
 
         dialog = new BottomSheetDialog(requireContext());
-        dialog.setContentView(R.layout.dialog_budget);
+        dialog.setContentView(R.layout.dialog_add_expense);
         dialog.setCancelable(true);
         addExpenseButton.setOnClickListener(view1 -> dialog.show());
         return view;

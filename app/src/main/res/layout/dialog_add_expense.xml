@@ -9,9 +9,9 @@
     <View
         android:layout_width="40dp"
         android:layout_height="5dp"
-        android:layout_marginVertical="5dp"
         android:layout_gravity="center"
-        android:background="@drawable/shape_round_square"/>
+        android:layout_marginVertical="5dp"
+        android:background="@drawable/shape_round_square" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -21,34 +21,35 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="@string/places_cancel"
-            android:textColor="@color/grey"
-            android:layout_marginStart="10dp"/>
+            android:textColor="@color/grey" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
             android:text="Add Expense"
-            android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="10dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ui_save"
-            android:textColor="@color/orange"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:text="@string/ui_save"
+            android:textColor="@color/orange" />
     </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/expense_cost_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="7dp"
-        android:foreground="?android:attr/selectableItemBackground">
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingVertical="7dp">
 
         <ImageView
             android:id="@+id/expense_money_icon"
@@ -62,21 +63,23 @@
             android:id="@+id/expense_cost_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/edittext_0_00"
-            android:textSize="17sp"
-            android:textColor="@color/black"
             android:layout_marginStart="5dp"
-            android:inputType="numberDecimal"/>
+            android:hint="@string/edittext_0_00"
+            android:inputType="numberDecimal"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
     </LinearLayout>
+
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:id="@+id/expense_type_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="7dp"
-        android:foreground="?android:attr/selectableItemBackground">
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingVertical="7dp">
 
         <ImageView
             android:id="@+id/expense_type_icon"
@@ -91,10 +94,42 @@
             android:id="@+id/expense_type_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/edittext_select_item_type"
             android:layout_gravity="center"
-            android:textSize="17sp"
+            android:layout_marginStart="5dp"
+            android:text="@string/edittext_select_item_type"
             android:textColor="@color/darkGrey"
-            android:layout_marginStart="5dp" />
+            android:textSize="17sp" />
     </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/expense_description_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingVertical="7dp">
+
+        <ImageView
+            android:id="@+id/expense_description_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:padding="1dp"
+            android:src="@drawable/ic_add"
+            app:tint="@color/black" />
+
+        <EditText
+            android:id="@+id/expense_description_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:hint="@string/ui_description"
+            android:textColor="@color/darkGrey"
+            android:textSize="17sp" />
+    </LinearLayout>
+
 </LinearLayout>
