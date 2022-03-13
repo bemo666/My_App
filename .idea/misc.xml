@@ -11,6 +11,7 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ctr_bg.xml" value="0.1" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/edittrip_ctr_bg.xml" value="0.1" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_add.xml" value="0.24375" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_airplane.xml" value="0.1545" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_arrow_back.xml" value="0.24375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_calendar.xml" value="0.1545" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/ic_dollar.xml" value="0.1545" />
@@ -23,6 +24,7 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/roundedbutton.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/shape_round_square.xml" value="0.1545" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/shape_round_top.xml" value="0.1545" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/shape_roundish.xml" value="0.1545" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/drawable/welcome_card_bg.xml" value="0.1545" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout-land/activity_login.xml" value="0.17239583333333333" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout-w1240dp/content_scrolling.xml" value="0.1" />
@@ -41,11 +43,13 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/dialog_budget.xml" value="0.4" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/dialog_profile.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/edittext_blue_border.xml" value="0.2234375" />
-        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_budget.xml" value="0.536" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_budget.xml" value="0.43771626297577854" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_overview.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_past.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_upcoming.xml" value="0.264" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/ic_image_failed.xml" value="0.2234375" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_expense_type.xml" value="0.4" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_expense_types_dialog.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_line_short_center.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_live_dot.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_past_trips.xml" value="0.2234375" />
