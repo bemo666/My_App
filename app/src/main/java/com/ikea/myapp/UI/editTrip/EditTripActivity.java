@@ -87,7 +87,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         mainImage = findViewById(R.id.editTrip_mainImage);
         tabLayout = findViewById(R.id.editTripTabLayout);
         viewModel = ViewModelProviders.of(this).get(EditTripViewModel.class);
-
         //Fragments setup
         FragmentManager fm = getSupportFragmentManager();
         ArrayList<Fragment> list = new ArrayList<>();

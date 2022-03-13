@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/set_budget_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,9 +10,9 @@
     <View
         android:layout_width="40dp"
         android:layout_height="5dp"
-        android:layout_marginVertical="5dp"
         android:layout_gravity="center"
-        android:background="@drawable/shape_round_square"/>
+        android:layout_marginVertical="5dp"
+        android:background="@drawable/shape_round_square" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,11 +20,14 @@
         android:paddingVertical="7dp">
 
         <TextView
+            android:id="@+id/set_budget_cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
             android:text="@string/places_cancel"
-            android:textColor="@color/grey"
-            android:layout_marginStart="10dp"/>
+            android:textColor="@color/grey" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,24 +40,28 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/set_budget_save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
             android:text="@string/ui_save"
             android:textColor="@color/orange" />
     </RelativeLayout>
+
     <LinearLayout
-        android:id="@+id/expense_cost_layout"
+        android:id="@+id/set_budget_cost_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing"
+        android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
-        android:paddingVertical="7dp"
-        android:foreground="?android:attr/selectableItemBackground">
+        android:paddingVertical="7dp">
 
         <ImageView
-            android:id="@+id/expense_money_icon"
+            android:id="@+id/set_budget_money_icon"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_margin="5dp"
@@ -61,13 +69,13 @@
             app:tint="@color/black" />
 
         <EditText
-            android:id="@+id/expense_cost_edit_text"
+            android:id="@+id/set_budget_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/edittext_0_00"
-            android:textSize="30sp"
-            android:textColor="@color/black"
             android:layout_marginStart="5dp"
-            android:inputType="numberDecimal"/>
+            android:hint="@string/edittext_0_00"
+            android:inputType="numberDecimal"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
     </LinearLayout>
 </LinearLayout>

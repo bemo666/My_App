@@ -53,10 +53,6 @@ public class FirebaseManager {
         return userdata.child("firstName").setValue(name);
     }
 
-    public Task<Void> setEmail(String email) {
-        return firebaseAuth.getCurrentUser().updateEmail(email);
-    }
-
     public static Task<Void> DeleteAccount() {
         final FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {

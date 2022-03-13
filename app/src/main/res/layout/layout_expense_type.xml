@@ -6,6 +6,7 @@
     android:background="@drawable/shape_roundish"
     android:backgroundTint="@color/barelyGrey"
     android:orientation="vertical"
+    android:foreground="?android:attr/selectableItemBackground"
     android:paddingVertical="6dp"
     android:layout_marginBottom="8dp">
 

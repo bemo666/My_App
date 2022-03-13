@@ -16,8 +16,15 @@ public class TripList {
         this.trips = trips;
     }
 
-    public List<MyTrip> getTrips() {
-        return trips;
+    public List<MyTrip> getTrips() { return trips; }
+
+    public MyTrip getTripWithId(String id) {
+        for (MyTrip t : trips) {
+            if(t.getId().equals(id)){
+                return t;
+            }
+        }
+        return null;
     }
 
     public void setTrips(List<MyTrip> trips) {

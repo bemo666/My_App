@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/add_expense_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -19,9 +20,12 @@
         android:paddingVertical="7dp">
 
         <TextView
+            android:id="@+id/expense_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
             android:text="@string/places_cancel"
             android:textColor="@color/grey" />
 
@@ -36,18 +40,23 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/expense_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
             android:text="@string/ui_save"
             android:textColor="@color/orange" />
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/expense_cost_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingVertical="7dp">
 
@@ -63,21 +72,26 @@
             android:id="@+id/expense_cost_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:gravity="center"
             android:hint="@string/edittext_0_00"
             android:inputType="numberDecimal"
+            android:minWidth="80dp"
             android:textColor="@color/black"
-            android:textSize="17sp" />
-    </LinearLayout>
+            android:textSize="20sp" />
+    </RelativeLayout>
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/expense_type_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingVertical="7dp">
 
@@ -85,7 +99,10 @@
             android:id="@+id/expense_type_icon"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
             android:padding="1dp"
             android:src="@drawable/ic_receipt"
             app:tint="@color/black" />
@@ -94,12 +111,13 @@
             android:id="@+id/expense_type_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="20dp"
             android:text="@string/edittext_select_item_type"
             android:textColor="@color/darkGrey"
-            android:textSize="17sp" />
-    </LinearLayout>
+            android:textSize="18sp" />
+    </RelativeLayout>
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
@@ -123,13 +141,13 @@
 
         <EditText
             android:id="@+id/expense_description_edit_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:hint="@string/ui_description"
             android:textColor="@color/darkGrey"
-            android:textSize="17sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
 </LinearLayout>

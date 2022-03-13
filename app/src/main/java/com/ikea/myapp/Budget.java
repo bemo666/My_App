@@ -1,5 +1,7 @@
 package com.ikea.myapp;
 
+import android.util.Log;
+
 import com.ikea.myapp.ViewModels.ExpenseTypes;
 
 import java.io.Serializable;
@@ -9,21 +11,25 @@ import java.util.List;
 
 public class Budget implements Serializable {
 
-    private Double budget;
+    private Double budget, currentTally;
     private List<Expense> expenses;
 
     public Budget(Double budget) {
         this.budget = budget;
+        this.currentTally = new Double(0);
         expenses = new ArrayList<>();
     }
 
     public Budget() {
+        this.currentTally = new Double(0);
         expenses = new ArrayList<>();
+        this.budget = 0.0;
     }
 
     public Budget(Double budget, List<Expense> expenses) {
         this.budget = budget;
         this.expenses = expenses;
+        currentTally = 0.0;
     }
 
     public Double getBudget() {
@@ -40,5 +46,14 @@ public class Budget implements Serializable {
 
     public void addExpense(Expense expense) {
         expenses.add(expense);
+        currentTally += expense.getPrice();
+    }
+
+    public Double getCurrentTally() {
+        return currentTally;
+    }
+
+    public void setCurrentTally(Double currentTally) {
+        this.currentTally = currentTally;
     }
 }

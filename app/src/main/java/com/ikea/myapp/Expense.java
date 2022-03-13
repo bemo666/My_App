@@ -15,6 +15,12 @@ public class Expense implements Serializable {
         this.type = type;
         this.price = price;
     }
+    public Expense(ExpenseTypes type, Double price) {
+        this.type = type;
+        this.price = price;
+    }
+
+    public Expense() { }
 
     public String getDescription() {
         return description;

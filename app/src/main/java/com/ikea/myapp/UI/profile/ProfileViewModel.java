@@ -26,7 +26,6 @@ public class ProfileViewModel extends AndroidViewModel {
             name = repo.getUsername();
             email = repo.getEmail();
         }
-
     }
 
     public LiveData<String> getName() {
