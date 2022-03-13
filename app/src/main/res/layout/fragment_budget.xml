@@ -29,7 +29,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:indicatorColor="@color/blue"
+            app:indicatorColor="@color/white"
             app:indicatorDirectionLinear="startToEnd"
             app:trackColor="@color/blue"
             app:trackCornerRadius="5dp" />
