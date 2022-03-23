@@ -60,12 +60,28 @@
         android:gravity="center"
         android:paddingVertical="7dp">
 
+        <TextView
+            android:id="@+id/budget_money_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:paddingHorizontal="5dp"
+            android:text="$"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
         <ImageView
-            android:id="@+id/set_budget_money_icon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_margin="5dp"
-            android:src="@drawable/ic_money"
+            android:id="@+id/budget_money_symbol_arrow"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="5dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_arrow_down"
+            android:translationX="-5dp"
             app:tint="@color/black" />
 
         <EditText

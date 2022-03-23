@@ -1,19 +1,20 @@
 package com.ikea.myapp.UI.main;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +23,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
+import com.ikea.myapp.data.remote.FirebaseManager;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.ValueDependentColor;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.helper.GraphViewXML;
+import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.DataPoint;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 
 public class PastFragment extends Fragment {
@@ -31,6 +44,8 @@ public class PastFragment extends Fragment {
     //Variables
     private TripsViewModel viewmodel;
     private RecyclerView tripSlider;
+    private GraphView tripHistoryBarGraph;
+    private List<MyTrip> trips;
 
 
     public PastFragment() {
@@ -45,6 +60,7 @@ public class PastFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_past, container, false);
         tripSlider = view.findViewById(R.id.past_trips_rv);
+        tripHistoryBarGraph = view.findViewById(R.id.trip_history_graph);
         viewmodel = ViewModelProviders.of(requireActivity()).get(TripsViewModel.class);
 
 
@@ -59,11 +75,47 @@ public class PastFragment extends Fragment {
                     myTrips.setErrorMessage(null);
                 }
                 if (!myTrips.getTrips().isEmpty()) {
-                    adapter.setTrips(myTrips.getTrips());
+                    trips = myTrips.getTrips();
+                    adapter.setTrips(trips);
                 }
             }
         });
 
+//        Date d1 = new Date(FirebaseManager.getCreationStamp());
+//        Date d2 = new Date(Calendar.getInstance().getTimeInMillis());
+//        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
+//                new DataPoint(d1, 5),
+//                new DataPoint(d2, 8)
+//        });
+//        tripHistoryBarGraph.addSeries(series);
+//
+//// styling
+//        series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+//            @Override
+//            public int get(DataPoint data) {
+//                return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
+//            }
+//        });
+//
+//        series.setSpacing(30);
+//
+//// draw values on top
+//
+////        series.setDrawValuesOnTop(true);
+////        series.setValuesOnTopColor(ContextCompat.getColor(getContext(), R.color.darkGrey));
+////series.setValuesOnTopSize(50);
+//// set date label formatter
+//        tripHistoryBarGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
+//        tripHistoryBarGraph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+//
+//// set manual x bounds to have nice steps
+//        tripHistoryBarGraph.getViewport().setMinX(d1.getTime());
+//        tripHistoryBarGraph.getViewport().setMaxX(d2.getTime());
+//        tripHistoryBarGraph.getViewport().setXAxisBoundsManual(true);
+//
+//// as we use dates as labels, the human rounding to nice readable numbers
+//// is not necessary
+//        tripHistoryBarGraph.getGridLabelRenderer().setHumanRounding(false);
 
         return view;
     }

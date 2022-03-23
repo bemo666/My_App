@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/past_you_ve_seen"
+                android:text="@string/past_trip_frequency"
                 android:textColor="@color/darkNavyBlue"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -38,9 +38,16 @@
                 android:layout_height="150dp"
                 android:layout_marginTop="10dp"
                 android:background="@color/white"
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/card_radius">
+                app:contentPadding="15dp"
+                app:cardCornerRadius="@dimen/card_radius"
+                app:cardElevation="0dp">
 
+                <com.jjoe64.graphview.GraphView
+                    android:id="@+id/trip_history_graph"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:seriesColor="@color/blue"
+                    app:seriesType="bar" />
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </LinearLayout>

@@ -61,27 +61,14 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingVertical="7dp">
 
-        <TextView
-            android:id="@+id/expense_money_symbol"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:gravity="center"
-            android:text="$"
-            android:textColor="@color/black"
-            android:textSize="26sp"
-            android:textStyle="bold" />
-
         <ImageView
-            android:id="@+id/expense_money_symbol_arrow"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_toRightOf="@id/expense_money_symbol"
-            android:padding="10dp"
-            android:src="@drawable/ic_arrow_down"
-            android:translationX="-15dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/ic_dollar"
             app:tint="@color/black" />
 
         <EditText
@@ -91,7 +78,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
-            android:layout_toEndOf="@+id/expense_money_symbol_arrow"
+            android:layout_toEndOf="@+id/expense_money_symbol"
             android:background="@color/transparent"
             android:gravity="end"
             android:hint="@string/edittext_0_00"
@@ -171,8 +158,5 @@
             android:textColor="@color/darkGrey"
             android:textSize="18sp" />
     </LinearLayout>
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -25,6 +25,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.ikea.myapp.Adapters.FragmentAdapter;
+import com.ikea.myapp.MyApp;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.profile.ProfileActivity;
 import com.ikea.myapp.UI.newTrip.NewTripActivity;

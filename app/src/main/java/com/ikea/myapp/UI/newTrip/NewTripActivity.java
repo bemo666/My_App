@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.ikea.myapp.CustomCurrency;
 import com.ikea.myapp.CustomProgressDialog;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
@@ -48,6 +49,7 @@ import com.ikea.myapp.data.remote.FirebaseManager;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -77,6 +79,8 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private Place dest, orig;
     private List<Place.Field> fieldList;
     private byte[] image;
+    private CustomCurrency c;
+
 
     //Location Permission
     private final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -103,6 +107,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         inputDates = findViewById(R.id.inputDates);
         createButton = findViewById(R.id.create_trip);
         toolbar = findViewById(R.id.newTripToolbar);
+        c = new CustomCurrency(Currency.getInstance(Locale.US));
 
         //Set welcome text
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -297,11 +302,10 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             MyTrip data = null;
             if (FirebaseManager.loggedIn()) {
                 DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData/" + firebaseUser.getUid()).child("Trips").push();
-
                 if (tripType.equals("dest"))
-                    data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey());
+                    data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
                 else if (tripType.equals("orig"))
-                    data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, startStamp, placeId, pushedTrip.getKey());
+                    data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, startStamp, placeId, pushedTrip.getKey(), c);
 
                 MyTrip finalData = data;
                 pushedTrip.setValue(data).addOnCompleteListener(task -> {
@@ -320,9 +324,9 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                 DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData").push();
 
                 if (tripType.equals("dest"))
-                    data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey());
+                    data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
                 else if (tripType.equals("orig"))
-                    data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey());
+                    data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
 
                 viewmodel.insertTrip(data);
 

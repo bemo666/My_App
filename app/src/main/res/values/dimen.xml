@@ -18,4 +18,7 @@
     <integer name="loading_time">3000</integer>
     <dimen name="result_padding">15dp</dimen>
 
+    <dimen name="toolbar_expand_height">350dp</dimen>
+    <dimen name="toolbar_height">100dp</dimen>
+
 </resources>

@@ -78,6 +78,14 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
             placeName.setText(trip.getDestination());
             getCorrectDate date = new getCorrectDate(trip);
             dates.setText(date.getStartDateUpcomingFormat() + context.getResources().getString(R.string.ui_dash) + date.getEndDateUpcomingFormat());
+            if ((Long.valueOf(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
+                    Long.valueOf(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis())) {
+                liveBadge.setVisibility(View.VISIBLE);
+                liveDot.startAnimation(AnimationUtils.loadAnimation(context, R.anim.blink));
+            } else {
+                liveDot.clearAnimation();
+                liveBadge.setVisibility(View.GONE);
+            }
 
 //            try {
 //                byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
@@ -87,16 +95,7 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
 //            }
         }
 
-        void setBadge(MyTrip trip) {
-            if ((Long.valueOf(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
-                    Long.valueOf(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis())) {
-                liveBadge.setVisibility(View.VISIBLE);
-                liveDot.startAnimation(AnimationUtils.loadAnimation(context, R.anim.blink));
-            } else {
-                liveDot.clearAnimation();
-                liveBadge.setVisibility(View.GONE);
-            }
-        }
+
     }
 
     public void setTrips(List<MyTrip> sliderItems) {

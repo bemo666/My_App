@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.ikea.myapp.CustomProgressDialog;
+import com.ikea.myapp.MyApp;
 import com.ikea.myapp.UI.main.MainActivity;
 import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.data.remote.FirebaseManager;
@@ -49,6 +50,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private RelativeLayout relativeLayout;
     private CustomProgressDialog progressDialog;
     private boolean bSignIn = true, bSignUp, bForgotPassword;
+    private FirebaseManager firebaseManager;
 
 
     @Override
@@ -75,6 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         layoutInputPassword = findViewById(R.id.layoutInputPassword);
         relativeLayout = findViewById(R.id.signInRelativeLayout);
         tabLayout = findViewById(R.id.login_switcher);
+        firebaseManager = new FirebaseManager();
 
 
         LinearLayout linearLayout = findViewById(R.id.login_linear_layout);
@@ -238,7 +241,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else {
                     progressDialog = new CustomProgressDialog(this, "Signing In");
                     progressDialog.show();
-                    FirebaseManager.SignIn(email, password).addOnCompleteListener(task -> {
+                    firebaseManager.SignIn(email, password).addOnCompleteListener(task -> {
                         new TripRepo(getApplication()).deleteTable();
 
                         if (task.isSuccessful()) {
@@ -266,10 +269,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else {
                     progressDialog = new CustomProgressDialog(this, "Signing Up");
                     progressDialog.show();
-                    FirebaseManager.SignUp(email, password).addOnCompleteListener
+                    firebaseManager.SignUp(email, password).addOnCompleteListener
                             (task -> {
                                 if (task.isSuccessful()) {
-                                    new FirebaseManager().setFirstName(name).
+                                    firebaseManager.setFirstName(name).
                                             addOnCompleteListener(task1 -> {
                                                 progressDialog.hide();
                                                 Toast.makeText(this, R.string.login_account_created_successfully, Toast.LENGTH_SHORT).show();
@@ -308,7 +311,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else {
                     progressDialog = new CustomProgressDialog(this, "Sending reset link");
                     progressDialog.show();
-                    FirebaseManager.ForgotPassword(email)
+                    firebaseManager.ForgotPassword(email)
                             .addOnCompleteListener(task -> {
                                 progressDialog.hide();
                                 if (task.isSuccessful()) {
@@ -343,7 +346,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onPostResume() {
         super.onPostResume();
-        if (FirebaseManager.loggedIn())
+        if (firebaseManager.loggedIn())
             finishAfterTransition();
     }
 

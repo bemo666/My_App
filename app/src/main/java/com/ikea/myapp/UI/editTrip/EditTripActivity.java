@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
@@ -30,6 +31,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.ikea.myapp.Adapters.FragmentAdapter;
+import com.ikea.myapp.CustomAppBarLayoutBehaviour;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.R;
 
@@ -53,6 +55,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     private View mask;
     private CardView liveBadge, liveDot;
     private EditTripViewModel viewModel;
+    private CoordinatorLayout.LayoutParams layoutParams;
 
 
     @Override
@@ -96,18 +99,35 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         FragmentAdapter fragmentAdapter = new FragmentAdapter(fm, getLifecycle(), list);
         fragments.setAdapter(fragmentAdapter);
 
+//        layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+//        ((CustomAppBarLayoutBehaviour)layoutParams.getBehavior()).setScrollBehavior(true);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
                 fragments.setCurrentItem(tab.getPosition());
-                if (tab.getPosition() != 0) {
-                    appBarLayout.setExpanded(false, true);
-                    addButton.hide();
-                }
-                else {
-                    appBarLayout.setExpanded(true, true);
-                    addButton.show();
+                if(clicked){ click(); }
+                switch (tab.getPosition()){
+                    case 0:
+                        appBarLayout.setExpanded(true, true);
+                        addButton.show();
+                        addButton.setOnClickListener(view -> click());
+//                        ((CustomAppBarLayoutBehaviour)layoutParams.getBehavior()).setScrollBehavior(true);
+
+                        break;
+                    case 1:
+                        appBarLayout.setExpanded(false, true);
+                        addButton.hide();
+                        addButton.setOnClickListener(null);
+//                        ((CustomAppBarLayoutBehaviour)layoutParams.getBehavior()).setScrollBehavior(true);
+
+                        break;
+                    case 2:
+                        appBarLayout.setExpanded(false, true);
+                        addButton.hide();
+                        addButton.setOnClickListener(null);
+//                        ((CustomAppBarLayoutBehaviour)layoutParams.getBehavior()).setScrollBehavior(false);
+                        break;
                 }
             }
 
@@ -129,13 +149,11 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
 
-
-
         if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
                 Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
             liveBadge.setVisibility(View.VISIBLE);
             liveDot.startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink));
-        } else{
+        } else {
             liveDot.clearAnimation();
             liveBadge.setVisibility(View.GONE);
         }
@@ -157,7 +175,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
                     isShow = true;
                 } else if (isShow) {
-                    //Careful there must a space between double quote otherwise it dose't work
+                    //Careful there must a space between double quote otherwise it doesn't work
                     collapsingToolbar.setTitle(" ");
                     set = false;
                     isShow = false;
@@ -169,8 +187,8 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
 
         changeImage.setOnClickListener(this);
-        addButton.setOnClickListener(this);
         mask.setOnClickListener(this);
+        addButton.setOnClickListener(view -> click());
 
         placeName.setText(trip.getDestination());
 
@@ -211,20 +229,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view == addButton) {
-            click();
-        } else if (view == mask) {
-            click();
-        }
-    }
-
     private void click() {
         setVisibility();
         setAnimation();
@@ -252,6 +256,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
     private void setVisibility() {
         if (!clicked) {
+            appBarLayout.setExpanded(true, true);
             notes.show();
             flights.show();
             hotels.show();
@@ -267,4 +272,13 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
         }
     }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if (id == R.id.editTrip_mask) {
+            click();
+        }
+    }
+
 }

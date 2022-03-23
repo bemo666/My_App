@@ -19,7 +19,7 @@ public class DateConverter {
     }
 
     @TypeConverter
-    public Date toIngredientList(String stringDate) {
+    public Date toDate(String stringDate) {
         if (stringDate == null) {
             return (null);
         }

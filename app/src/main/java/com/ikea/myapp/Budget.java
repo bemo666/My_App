@@ -48,6 +48,15 @@ public class Budget implements Serializable {
         expenses.add(expense);
         currentTally += expense.getPrice();
     }
+    public void editExpense(Expense expense, int position) {
+        currentTally -= expenses.get(position).getPrice();
+        currentTally += expense.getPrice();
+        expenses.set(position, expense);
+    }
+    public void deleteExpense(int position) {
+        currentTally -= expenses.get(position).getPrice();
+        expenses.remove(position);
+    }
 
     public Double getCurrentTally() {
         return currentTally;

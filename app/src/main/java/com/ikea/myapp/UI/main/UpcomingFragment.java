@@ -167,7 +167,7 @@ public class UpcomingFragment extends Fragment {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
                 Pair.create(imageView, ViewCompat.getTransitionName(imageView)),
                 Pair.create(textView, ViewCompat.getTransitionName(textView))
-//                ,Pair.create(cardView, ViewCompat.getTransitionName(cardView))
+                ,Pair.create(cardView, ViewCompat.getTransitionName(cardView))
         );
         this.startActivity(intent, options.toBundle());
 

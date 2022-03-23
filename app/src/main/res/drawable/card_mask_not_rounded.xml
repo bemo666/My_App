@@ -5,5 +5,4 @@
         android:centerColor="#00FFFFFF"
         android:startColor="#99000000"
         android:angle="90"/>
-    <corners android:radius="@dimen/card_radius_thin"/>
 </shape>

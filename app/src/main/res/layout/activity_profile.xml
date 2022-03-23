@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/profile_linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
@@ -42,27 +42,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutAccountCurrency"
-                style="@style/AccountTextBoxes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_side"
-                android:hint="@string/ui_currency"
-                app:boxStrokeColor="@color/green">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/accountCurrency"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutAccountEmail"
                 style="@style/AccountTextBoxes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_side"
-                android:hint="@string/ui_email"
                 android:enabled="false"
+                android:hint="@string/ui_email"
                 app:boxStrokeColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -94,8 +80,8 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/margin_side"
                 android:backgroundTint="@color/red"
-                android:paddingVertical="10dp"
                 android:paddingHorizontal="20dp"
+                android:paddingVertical="10dp"
                 android:text="@string/ui_sign_out"
                 android:textAllCaps="false"
                 android:textSize="16sp"
@@ -123,10 +109,20 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing">
 
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginVertical="@dimen/spacing"
+                android:scaleType="fitCenter"
+                android:src="@drawable/im_log_in"
+                android:contentDescription="@string/im_attr_log_in_image" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing"
+                android:gravity="center"
                 android:text="@string/profile_not_signed_in"
                 android:textColor="@color/darkGrey"
                 android:textSize="20sp" />

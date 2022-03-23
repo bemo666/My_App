@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/expense_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
     android:padding="5dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/expense_cardview"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/barelyGrey"
-        app:contentPadding="5dp"
         android:layout_centerVertical="true"
+        android:backgroundTint="@color/barelyGrey"
         app:cardCornerRadius="50dp"
-        app:cardElevation="0dp">
+        app:cardElevation="0dp"
+        app:contentPadding="5dp">
 
         <ImageView
             android:id="@+id/expense_icon"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            app:tint="@color/darkGrey"
             android:layout_margin="5dp"
-            android:src="@drawable/ic_airplane" />
+            android:src="@drawable/ic_airplane"
+            app:tint="@color/darkGrey" />
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -60,8 +59,4 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
-<com.google.android.material.divider.MaterialDivider
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"/>
 </RelativeLayout>

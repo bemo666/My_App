@@ -1,7 +1,6 @@
 package com.ikea.myapp.data;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +13,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ikea.myapp.CustomCurrency;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.TripList;
 import com.ikea.myapp.data.local.TripDao;
@@ -21,12 +21,8 @@ import com.ikea.myapp.data.local.TripDatabase;
 import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.utils.AppExecutors;
 
-import java.io.ByteArrayInputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Currency;
 import java.util.List;
-import java.util.Locale;
 
 public class TripRepo {
 
@@ -147,7 +143,7 @@ public class TripRepo {
     }
 
     public void updateLocalTrip(MyTrip trip) {
-        tripDao.updateTrip(trip);
+        appExecutors.diskIO().execute(() -> tripDao.updateTrip(trip));
     }
 
     public LiveData<String> getUsername() {
@@ -176,6 +172,7 @@ public class TripRepo {
     public void deleteTable() {
         appExecutors.diskIO().execute(tripDao::deleteTable);
     }
+
 
 //    public void setLocalImage(String id, byte[] image){
 //        appExecutors.diskIO().execute(new Runnable() {

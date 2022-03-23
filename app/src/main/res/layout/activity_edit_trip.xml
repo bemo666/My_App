@@ -11,7 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/editTripAppBar"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="@dimen/toolbar_expand_height"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -125,7 +125,7 @@
                 android:id="@+id/editTripBudgetTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:icon="@drawable/ic_money"
+                android:icon="@drawable/ic_dollar"
                 android:text="@string/edit_trip_budget" />
         </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -197,7 +197,6 @@
         app:backgroundTint="@color/orange"
         app:elevation="@dimen/elev"
         app:fabCustomSize="50dp"
-        android:enabled="false"
         app:maxImageSize="30dp"
         app:rippleColor="@color/lightGrey"
         app:tint="@color/white" />

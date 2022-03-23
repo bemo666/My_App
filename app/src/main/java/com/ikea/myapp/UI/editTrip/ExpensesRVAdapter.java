@@ -10,19 +10,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ikea.myapp.CustomCurrency;
 import com.ikea.myapp.Expense;
 import com.ikea.myapp.R;
 
+import java.util.Currency;
 import java.util.List;
 
-public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.ViewHolder> {
+public class ExpensesRVAdapter extends RecyclerView.Adapter<ExpensesRVAdapter.ViewHolder> {
 
     private Context context;
     private List<Expense> expenses;
+    private BudgetFragment fragment;
+    private CustomCurrency currency;
 
-    public ExpensesAdapter(Context context, List<Expense> expenses) {
-        this.context = context;
+    public ExpensesRVAdapter(BudgetFragment fragment, List<Expense> expenses, CustomCurrency currency) {
+        this.context = fragment.requireContext();
+        this.fragment = fragment;
         this.expenses = expenses;
+        this.currency = currency;
     }
 
     @NonNull
@@ -37,7 +43,8 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.ViewHo
         holder.icon.setImageResource(expense.getType().getImage());
         holder.title.setText(expense.getType().name());
         holder.description.setText(expense.getDescription());
-        holder.cost.setText(String.valueOf(expense.getPrice()));
+        holder.cost.setText(currency.getSymbol() + fragment.prettyPrint(expense.getPrice()));
+        holder.itemView.setOnClickListener(view -> fragment.editExpense(position));
     }
 
     @Override

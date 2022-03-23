@@ -6,7 +6,6 @@
     android:layout_width="200dp"
     android:layout_height="130dp"
     android:layout_marginHorizontal="5dp"
-    app:cardCornerRadius="@dimen/card_radius_thin"
     tools:ignore="HardcodedText">
 
     <RelativeLayout
@@ -18,11 +17,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:foreground="@drawable/card_mask_rounded_thin"
+            android:foreground="@drawable/card_mask_not_rounded"
             android:scaleType="centerCrop"
             android:src="@drawable/london1"
-            android:transitionName="edit_trip_transition"
-            app:riv_corner_radius="@dimen/card_radius_thin" />
+            android:transitionName="edit_trip_transition" />
 
         <TextView
             android:id="@+id/placeName"
@@ -31,7 +29,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="London"

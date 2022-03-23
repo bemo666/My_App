@@ -74,7 +74,12 @@
     <string name="budget_add_budget_text">Don\'t forget to enter a Budget!</string>
     <string name="budget_enter_expenses_details">Don\'t forget to enter a value and select the type of expense!</string>
     <string name="budget_value_negative">Oops, can\'t have a negative number!</string>
-
+    <string name="ui_add_expense">Add Expense</string>
+    <string name="ui_edit_expense">Edit Expense</string>
+    <string name="ui_delete">Delete</string>
+    <string name="currency_select_currency">Select Currency</string>
+    <string name="past_trip_frequency">Trip Frequency</string>
+    <string name="im_attr_log_in_image">Log in Image</string>
 
 
 </resources>

@@ -29,17 +29,17 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:indicatorColor="@color/white"
+            app:indicatorColor="@color/orange"
             app:indicatorDirectionLinear="startToEnd"
-            app:trackColor="@color/blue"
+            app:trackColor="@color/white"
             app:trackCornerRadius="5dp" />
 
         <LinearLayout
+            android:id="@+id/budget_linear_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            >
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/budget_total"
@@ -56,9 +56,9 @@
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
+                android:layout_gravity="center"
                 android:src="@drawable/ic_edit"
-                app:tint="@color/white"
-                android:layout_gravity="center"/>
+                app:tint="@color/white" />
         </LinearLayout>
     </LinearLayout>
 
@@ -68,7 +68,7 @@
         android:layout_marginTop="@dimen/spacing"
         app:cardCornerRadius="@dimen/card_radius">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -76,6 +76,7 @@
             android:paddingTop="@dimen/margin_side">
 
             <TextView
+                android:id="@+id/expenses_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ui_expenses"
@@ -87,26 +88,30 @@
                 android:id="@+id/budget_expenses_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp" />
+                android:layout_alignTop="@id/expenses_text"
+                android:layout_alignBottom="@id/add_expense_button"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="55dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/add_expense_button"
+                android:layout_width="180dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:text="@string/ui_add_expense"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                app:backgroundTint="@color/blue"
+                app:cornerRadius="@dimen/card_radius_thin"
+                app:icon="@android:drawable/ic_input_add"
+                app:iconTint="@color/white"
+                app:rippleColor="@color/lightGrey" />
+        </RelativeLayout>
 
 
-        </LinearLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_expense_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="30dp"
-            android:src="@android:drawable/ic_input_add"
-            android:stateListAnimator="@null"
-            app:backgroundTint="@color/blue"
-            app:elevation="@dimen/elev"
-            app:fabCustomSize="50dp"
-            app:maxImageSize="30dp"
-            app:rippleColor="@color/lightGrey"
-            app:tint="@color/white" />
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>

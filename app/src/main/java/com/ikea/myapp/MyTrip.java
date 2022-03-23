@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+import java.util.Currency;
 import java.util.Date;
 
 @Entity(tableName = "trips")
@@ -27,13 +28,14 @@ public class MyTrip implements Serializable {
     private Double destinationLat;
     private Double destinationLon;
     private Budget budget;
+    private CustomCurrency currency;
 
     public MyTrip() {
     }
 
     public MyTrip(String origin, String destination, LatLng originLatLng, LatLng destinationLatLng,
                   String startDate, String startStamp, String endDate, String endStamp, String placeId,
-                  String id) {
+                  String id, CustomCurrency currency) {
         this.origin = origin;
         this.destination = destination;
         this.originLat = originLatLng.latitude;
@@ -42,15 +44,16 @@ public class MyTrip implements Serializable {
         this.destinationLon = destinationLatLng.longitude;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.placeId = placeId;
         this.startStamp = startStamp;
         this.endStamp = endStamp;
+        this.placeId = placeId;
         this.id = id;
         this.budget = new Budget();
+        this.currency = currency;
     }
 
     public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
-                  String endStamp, String placeId, String id) {
+                  String endStamp, String placeId, String id, CustomCurrency currency) {
         this.destination = destination;
         this.destinationLat = destinationLatLng.latitude;
         this.destinationLon = destinationLatLng.longitude;
@@ -59,8 +62,9 @@ public class MyTrip implements Serializable {
         this.startStamp = startStamp;
         this.endStamp = endStamp;
         this.placeId = placeId;
-        this.budget = new Budget();
         this.id = id;
+        this.budget = new Budget();
+        this.currency = currency;
     }
 
 
@@ -163,4 +167,8 @@ public class MyTrip implements Serializable {
     public Budget getBudget() { return budget; }
 
     public void setBudget(Budget budget) { this.budget = budget; }
+
+    public CustomCurrency getCurrency() { return currency; }
+
+    public void setCurrency(CustomCurrency currency) { this.currency = currency; }
 }
