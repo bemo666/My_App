@@ -7,13 +7,14 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.ikea.myapp.CustomCurrency;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.TripList;
 import com.ikea.myapp.data.local.TripDao;
@@ -21,7 +22,6 @@ import com.ikea.myapp.data.local.TripDatabase;
 import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.utils.AppExecutors;
 
-import java.util.Currency;
 import java.util.List;
 
 public class TripRepo {
@@ -38,12 +38,55 @@ public class TripRepo {
         storage = FirebaseStorage.getInstance().getReference().child("pictures");
     }
 
-    public void insertTrip(MyTrip trip) {
+    public void insertLocalTrip(MyTrip trip) {
         appExecutors.diskIO().execute(() -> tripDao.insert(trip));
     }
 
     public LiveData<List<MyTrip>> getLocalTrips() {
         return tripDao.getTrips();
+    }
+
+    public void updateTrip(MyTrip trip) {
+        if (FirebaseManager.loggedIn()) {
+            firebaseManager.updateTrip(trip);
+        } else {
+            appExecutors.diskIO().execute(() -> tripDao.updateTrip(trip));
+        }
+    }
+
+
+    public LiveData<String> getUsername() {
+        MutableLiveData<String> name = new MutableLiveData<>();
+
+        firebaseManager.getNameRef().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                name.setValue(snapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        return name;
+    }
+
+    public String getEmail() {
+        return firebaseManager.getEmail();
+    }
+
+    public void deleteTrip(MyTrip trip) {
+        if (FirebaseManager.loggedIn()) {
+            firebaseManager.deleteTrip(trip);
+        } else {
+            appExecutors.diskIO().execute(() -> tripDao.deleteTrip(trip));
+        }
+    }
+
+    public void deleteTable() {
+        appExecutors.diskIO().execute(tripDao::deleteTable);
     }
 
     public MutableLiveData<TripList> getRemoteTrips() {
@@ -137,42 +180,6 @@ public class TripRepo {
 
         return trips;
     }
-
-    public void updateRemoteTrip(MyTrip trip) {
-        firebaseManager.updateTrip(trip);
-    }
-
-    public void updateLocalTrip(MyTrip trip) {
-        appExecutors.diskIO().execute(() -> tripDao.updateTrip(trip));
-    }
-
-    public LiveData<String> getUsername() {
-        MutableLiveData<String> name = new MutableLiveData<>();
-
-        firebaseManager.getNameRef().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                name.setValue(snapshot.getValue(String.class));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        return name;
-    }
-
-    public String getEmail() {
-        return firebaseManager.getEmail();
-    }
-
-
-    public void deleteTable() {
-        appExecutors.diskIO().execute(tripDao::deleteTable);
-    }
-
 
 //    public void setLocalImage(String id, byte[] image){
 //        appExecutors.diskIO().execute(new Runnable() {

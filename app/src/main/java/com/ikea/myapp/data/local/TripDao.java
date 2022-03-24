@@ -2,6 +2,7 @@ package com.ikea.myapp.data.local;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -25,6 +26,9 @@ public interface TripDao {
 
     @Query("DELETE from trips")
     void deleteTable();
+
+    @Delete
+    void deleteTrip(MyTrip trip);
 
 //    @Query("Update trips Set image = :image Where id = :id")
 //    void setImage(String id, byte[] image);

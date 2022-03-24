@@ -30,7 +30,7 @@
     <string name="ui_origin">Origin</string>
     <string name="ui_comma">,</string>
     <string name="ui_account">Account</string>
-    <string name="ui_create_new_trip">Create New Trip</string>
+    <string name="ui_create_new_trip">Create Trip</string>
     <string name="ui_plan">Itinerary</string>
     <string name="ui_no_internet">No internet connection</string>
     <string name="ui_save">Save</string>
@@ -80,6 +80,10 @@
     <string name="currency_select_currency">Select Currency</string>
     <string name="past_trip_frequency">Trip Frequency</string>
     <string name="im_attr_log_in_image">Log in Image</string>
+    <string name="ui_delete_trip">Delete Trip</string>
+    <string name="ui_change_cover_image">Change cover image</string>
+    <string name="edit_trip_map">Map</string>
+    <string name="ui_add_a_note">Add a Note</string>
 
 
 </resources>

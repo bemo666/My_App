@@ -58,7 +58,7 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/london2" />
+            android:src="@drawable/im_london2" />
         <View
             android:layout_width="160dp"
             android:layout_height="90dp"

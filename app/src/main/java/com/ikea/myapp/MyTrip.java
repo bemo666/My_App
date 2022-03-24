@@ -10,8 +10,10 @@ import androidx.room.PrimaryKey;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
+import java.util.List;
 
 @Entity(tableName = "trips")
 public class MyTrip implements Serializable {
@@ -29,6 +31,7 @@ public class MyTrip implements Serializable {
     private Double destinationLon;
     private Budget budget;
     private CustomCurrency currency;
+    private List<PlanHeader> planHeaders;
 
     public MyTrip() {
     }
@@ -50,6 +53,7 @@ public class MyTrip implements Serializable {
         this.id = id;
         this.budget = new Budget();
         this.currency = currency;
+        this.planHeaders = new ArrayList<>();
     }
 
     public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
@@ -65,6 +69,7 @@ public class MyTrip implements Serializable {
         this.id = id;
         this.budget = new Budget();
         this.currency = currency;
+        this.planHeaders = new ArrayList<>();
     }
 
 
@@ -171,4 +176,17 @@ public class MyTrip implements Serializable {
     public CustomCurrency getCurrency() { return currency; }
 
     public void setCurrency(CustomCurrency currency) { this.currency = currency; }
+
+    public List<PlanHeader> getPlanHeaders() { return planHeaders; }
+
+    public void setPlanHeaders(List<PlanHeader> planHeaders) { this.planHeaders = planHeaders; }
+
+    public boolean hasPlanHeaders(){ return this.planHeaders.size() != 0;}
+
+    public void addPlanHeader(PlanHeader h){
+        if (this.planHeaders == null)
+            this.planHeaders = new ArrayList<PlanHeader>();
+        this.planHeaders.add(h);
+    }
+
 }

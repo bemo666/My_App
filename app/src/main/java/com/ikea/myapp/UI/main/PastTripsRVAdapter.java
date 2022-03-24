@@ -1,9 +1,5 @@
 package com.ikea.myapp.UI.main;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +61,7 @@ public class PastTripsRVAdapter extends RecyclerView.Adapter<PastTripsRVAdapter.
         }
 
         void setCardView(MyTrip trip) {
-            imageView.setImageResource(R.drawable.london2);
+            imageView.setImageResource(R.drawable.im_london2);
             placeName.setText(trip.getDestination());
             getCorrectDate date = new getCorrectDate(trip);
             dates.setText(date.getDatesPastFormat());

@@ -1,38 +1,52 @@
 package com.ikea.myapp.data.remote;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.ikea.myapp.MyTrip;
 
-import java.util.Currency;
 import java.util.Objects;
 
 public class FirebaseManager {
 
     private static final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private final DatabaseReference userdata;
+    private static boolean loggedIn = firebaseAuth.getCurrentUser() != null;
+    private final DatabaseReference userdata, tripsRef;
 
     public FirebaseManager() {
-        if (loggedIn())
+        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                loggedIn = firebaseAuth.getCurrentUser() != null;
+            }
+        });
+        if (loggedIn) {
             userdata = FirebaseDatabase.getInstance().getReference("UserData").child(Objects.requireNonNull(firebaseAuth.getUid()));
-        else userdata = null;
+            tripsRef = userdata.child("Trips");
+        } else {
+            userdata = null;
+            tripsRef = null;
+        }
+    }
+    public static boolean loggedIn(){ return loggedIn;}
+
+
+    public static Long getCreationStamp() {
+        FirebaseUserMetadata metadata = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getMetadata();
+        return Objects.requireNonNull(metadata).getCreationTimestamp();
     }
 
-    public static boolean loggedIn() {
-        return firebaseAuth.getCurrentUser() != null;
-    }
-
-    public static Long getCreationStamp(){
-        FirebaseUserMetadata metadata = firebaseAuth.getCurrentUser().getMetadata();
-        return metadata.getCreationTimestamp();
-    }
     public String getEmail() {
         return Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail();
     }
@@ -69,11 +83,12 @@ public class FirebaseManager {
     }
 
     public Query getTripsRef() {
-        return userdata.child("Trips").orderByChild("startStamp");
+        return tripsRef.orderByChild("startStamp");
     }
 
+
     public void updateTrip(MyTrip trip) {
-        userdata.child("Trips").child(trip.getId()).setValue(trip);
+        tripsRef.child(trip.getId()).setValue(trip);
     }
 
     public DatabaseReference getNameRef() {
@@ -84,4 +99,8 @@ public class FirebaseManager {
         return userdata.child("currency/displayName");
     }
 
+
+    public void deleteTrip(MyTrip trip) {
+        tripsRef.child(trip.getId()).removeValue();
+    }
 }

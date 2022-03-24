@@ -4,24 +4,16 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.TripList;
 import com.ikea.myapp.data.TripRepo;
-import com.ikea.myapp.data.local.TripDao;
 import com.ikea.myapp.data.remote.FirebaseManager;
-import com.ikea.myapp.utils.AppExecutors;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TripsViewModel extends AndroidViewModel {
@@ -36,19 +28,19 @@ public class TripsViewModel extends AndroidViewModel {
         tripRepo = new TripRepo(application);
         if (FirebaseManager.loggedIn()) {
             firebaseManager = new FirebaseManager();
-            fetchTrips();
+            fetchRemoteTrips();
         } else
             fetchLocalTrips();
     }
 
     private void fetchLocalTrips() {
         LiveData<List<MyTrip>> list = tripRepo.getLocalTrips();
-
         trips = Transformations.map(list, input -> new TripList(input));
     }
 
 
-    private void fetchTrips() {
+    private void fetchRemoteTrips() {
+        Log.d("tag", "attempting to fetch remote trips");
         trips = tripRepo.getRemoteTrips();
     }
 

@@ -7,22 +7,18 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
 import com.ikea.myapp.CustomCurrency;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.TripList;
 import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.data.remote.FirebaseManager;
 
-import java.util.Currency;
 import java.util.List;
-import java.util.Locale;
 
 public class EditTripViewModel extends AndroidViewModel {
 
     FirebaseManager firebaseManager;
-    private TripRepo tripRepo;
+    private final TripRepo tripRepo;
     LiveData<TripList> trips;
     LiveData<CustomCurrency> currency;
 
@@ -37,6 +33,7 @@ public class EditTripViewModel extends AndroidViewModel {
         } else
             fetchLocalTrips();
     }
+
     private void fetchLocalTrips() {
         LiveData<List<MyTrip>> list = tripRepo.getLocalTrips();
         trips = Transformations.map(list, input -> new TripList(input));
@@ -52,10 +49,12 @@ public class EditTripViewModel extends AndroidViewModel {
         return trips;
     }
 
-    public void updateTrip(MyTrip trip){
-        if(firebaseManager.loggedIn())
-            tripRepo.updateRemoteTrip(trip);
-        else
-            tripRepo.updateLocalTrip(trip);
+    public void updateTrip(MyTrip trip) {
+        tripRepo.updateTrip(trip);
+    }
+
+    public void deleteTrip(MyTrip trip) {
+        tripRepo.deleteTrip(trip);
+
     }
 }

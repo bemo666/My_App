@@ -40,7 +40,6 @@ public class UpcomingFragment extends Fragment {
     private RelativeLayout planBar;
     private MaterialButton createTrip;
     private ViewPager2 tripSlider;
-    private ShimmerFrameLayout trip_shimmer, details_shimmer;
     private TripsViewModel viewmodel;
     private UpcomingTripsRVAdapter adapter;
     private String receivedId = null;
@@ -60,8 +59,6 @@ public class UpcomingFragment extends Fragment {
         planBar = view.findViewById(R.id.planBar);
         rv_details = view.findViewById(R.id.rvTripDetails);
         extraIcon = view.findViewById(R.id.edit_cardview);
-        trip_shimmer = view.findViewById(R.id.shimmer_view_container_trip);
-        details_shimmer = view.findViewById(R.id.shimmer_view_container_trip_details);
         createTrip = view.findViewById(R.id.create_trip);
         welcomeCard = view.findViewById(R.id.welcomeCard);
         viewmodel = new ViewModelProvider(requireActivity()).get(TripsViewModel.class);
@@ -100,7 +97,6 @@ public class UpcomingFragment extends Fragment {
 
         viewmodel.getTrips().observe(getViewLifecycleOwner(), myTrips -> {
             if (myTrips != null) {
-                trip_shimmer.setVisibility(View.GONE);
                 if (myTrips.getErrorMessage() != null) {
                     Toast.makeText(requireContext(), myTrips.getErrorMessage(), Toast.LENGTH_SHORT).show();
                     myTrips.setErrorMessage(null);
@@ -123,23 +119,11 @@ public class UpcomingFragment extends Fragment {
             page.setScaleY(0.85f + r * 0.15f);
         });
         tripSlider.setPageTransformer(compositePageTransformer);
-//        trips.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-//            @Override
-//            public void onPageSelected(int position) {
-//                details_shimmer.setVisibility(View.VISIBLE);
-//                rv_details.setVisibility(View.GONE);
-//                handler.postDelayed(() -> {
-//                    details_shimmer.setVisibility(View.GONE);
-//                    rv_details.setVisibility(View.VISIBLE);
-//                }, 100);
-//            }
-//        });
 
     }
 
     private void showWelcomeCard() {
         tripSlider.setVisibility(View.GONE);
-        trip_shimmer.setVisibility(View.GONE);
         welcomeCard.setVisibility(View.VISIBLE);
         planBar.setVisibility(View.GONE);
         rv_details.setVisibility(View.GONE);
@@ -172,25 +156,4 @@ public class UpcomingFragment extends Fragment {
         this.startActivity(intent, options.toBundle());
 
     }
-
-
-    //    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 200 && resultCode == RESULT_OK)
-//            receivedId = data.getStringExtra("id");
-//        Log.d("tag", "onActivityResult");
-//        if (receivedId != null) {
-//            int i;
-//            Log.d("tag", "childrencount: " + tripSlider.getChildCount());
-//            Log.d("tag", "childid: " + tripSlider.getChildAt(0).getId());
-//            for (i = 0; i < tripSlider.getChildCount(); i++) {
-////                if(tripSlider.getChildAt(i)  == receivedId)
-////                    break;
-//            }
-//            //tripSlider.setCurrentItem(i);
-//            receivedId = null;
-//
-//        }
-//    }
 }

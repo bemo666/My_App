@@ -9,9 +9,11 @@ import androidx.room.TypeConverters;
 
 import com.ikea.myapp.CustomCurrency;
 import com.ikea.myapp.MyTrip;
+import com.ikea.myapp.PlanHeader;
 
-@Database(entities =  {MyTrip.class}, version = 5, exportSchema = false)
-@TypeConverters({DateConverter.class, ByteConverter.class, BudgetConverter.class, CustomCurrencyConverter.class})
+@Database(entities =  {MyTrip.class}, version = 6, exportSchema = false)
+@TypeConverters({DateConverter.class, ByteConverter.class, PlanHeaderConverter.class, BudgetConverter.class,
+        CustomCurrencyConverter.class})
 public abstract class TripDatabase extends RoomDatabase {
 
     public abstract TripDao tripDao();

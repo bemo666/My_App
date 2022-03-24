@@ -14,40 +14,42 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
 
-    private boolean recentlyDisplayed = false;
-
+    private static boolean recentlyDisplayed = false;
+    private static ConnectivityManager connMgr;
+    private static android.net.NetworkInfo wifi, mobile;
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
-        final ConnectivityManager connMgr = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        hasConnection(null);
+    }
 
-        final android.net.NetworkInfo wifi = connMgr
-                .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        final android.net.NetworkInfo mobile = connMgr
-                .getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-//        View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
-
+    public static boolean hasConnection(String str) {
         if (wifi.isConnected() || mobile.isConnected()) {
             Log.d("tag", "Network Connected");
             if (recentlyDisplayed) {
                 recentlyDisplayed = false;
-//                Snackbar.make(rootView, "Internet connection has been restored, Enjoy!", Snackbar.LENGTH_LONG);
-
+                NetworkChangeReceiver.snack("Internet connection has been restored, Enjoy!");
             }
-
+            return true;
         } else {
             Log.d("tag", "Network Disconnected");
-//            Snackbar.make(rootView, "Internet is unavailable, some functions may not work", Snackbar.LENGTH_LONG);
+            if (str != null) {
+                NetworkChangeReceiver.snack(str);
+            } else {
+                NetworkChangeReceiver.snack("Internet is unavailable, some functions may not work");
+            }
             recentlyDisplayed = true;
-
+            return false;
         }
     }
 
-    boolean checkInternet(Context context) {
-        ServiceManager serviceManager = new ServiceManager(context);
-        return serviceManager.isNetworkAvailable();
+    public static void snack(String message) {
+        if (MyApp.appactivity != null) {
+            Snackbar.make(MyApp.appactivity.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
+        }
     }
+
 }

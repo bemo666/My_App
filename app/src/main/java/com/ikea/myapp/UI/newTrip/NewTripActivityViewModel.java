@@ -6,8 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.ikea.myapp.MyTrip;
 import com.ikea.myapp.data.TripRepo;
@@ -46,9 +48,10 @@ public class NewTripActivityViewModel extends AndroidViewModel {
         });
     }
 
-    public void insertTrip(MyTrip trip){
-        tripRepo.insertTrip(trip);
+    public void insertLocalTrip(MyTrip trip){
+        tripRepo.insertLocalTrip(trip);
     }
+
 
     public MutableLiveData<String> getName() {
         return name;

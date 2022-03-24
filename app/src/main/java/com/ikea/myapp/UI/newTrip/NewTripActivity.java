@@ -328,7 +328,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                 else if (tripType.equals("orig"))
                     data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
 
-                viewmodel.insertTrip(data);
+                viewmodel.insertLocalTrip(data);
 
 //                viewmodel.setLocalImage(data.getId(), image);
 

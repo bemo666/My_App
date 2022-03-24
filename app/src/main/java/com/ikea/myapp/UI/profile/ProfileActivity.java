@@ -96,7 +96,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-        if (firebaseManager.loggedIn()) {
+        if (FirebaseManager.loggedIn()) {
             accountInfoLayout.setVisibility(View.VISIBLE);
             signInLayout.setVisibility(View.GONE);
             updateData();
@@ -113,14 +113,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (id == R.id.firebase_button) {
             startActivity(new Intent(this, LoginActivity.class));
         } else if (id == R.id.sign_out_button) {
-            if (firebaseManager.loggedIn()) {
+            if (FirebaseManager.loggedIn()) {
                 firebaseManager.SignOut();
                 Toast.makeText(ProfileActivity.this, getString(R.string.login_logout_successful), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, MainActivity.class));
             }
         } else if (id == R.id.delete_account_button) {
-            if (firebaseManager.loggedIn()) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            if (FirebaseManager.loggedIn()) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.AlertDialogTheme_Delete);
                 alertDialog.setTitle(R.string.profile_delete_account);
                 alertDialog.setMessage(R.string.profile_delete_account_dialog_text);
 

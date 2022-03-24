@@ -19,7 +19,7 @@
             android:adjustViewBounds="true"
             android:foreground="@drawable/card_mask_not_rounded"
             android:scaleType="centerCrop"
-            android:src="@drawable/london1"
+            android:src="@drawable/im_london1"
             android:transitionName="edit_trip_transition" />
 
         <TextView

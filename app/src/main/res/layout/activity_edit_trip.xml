@@ -2,11 +2,11 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppBottomSheetDialogTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UI.editTrip.EditTripActivity"
-    tools:ignore="ContentDescription"
-    style="@style/AppBottomSheetDialogTheme">
+    tools:ignore="ContentDescription">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/editTripAppBar"
@@ -23,7 +23,7 @@
             app:collapsedTitleTextColor="@color/white"
             app:contentScrim="@color/transparent"
             app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.Title"
-            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleCollapseMode="fade">
 
             <ImageView
@@ -34,7 +34,7 @@
                 android:background="@drawable/edittrip_layout_bg"
                 android:foreground="@drawable/card_mask"
                 android:scaleType="centerCrop"
-                android:src="@drawable/london2"
+                android:src="@drawable/im_london2"
                 android:transitionName="edit_trip_transition"
                 app:layout_collapseMode="none" />
 
@@ -69,24 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/EditTripTheme"
-                app:layout_collapseMode="pin">
-
-                <ImageView
-                    android:id="@+id/editTrip_changeImage"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="7dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="5dp"
-                    android:src="@drawable/ic_image_search"
-                    app:tint="@color/white" />
-
-
-            </androidx.appcompat.widget.Toolbar>
+                app:layout_collapseMode="pin" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -100,26 +83,26 @@
             app:tabIconTint="@color/edittrip_tab_icon_selector"
             app:tabIndicatorColor="@color/orange"
             app:tabIndicatorFullWidth="true"
+            app:tabIndicatorHeight="3dp"
             app:tabInlineLabel="true"
             app:tabRippleColor="#00000000"
-            app:tabIndicatorHeight="3dp"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabTextColor="@color/edittrip_tab_icon_selector">
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/editTripOverviewTab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:icon="@drawable/ic_info"
-                android:text="@string/edit_trip_overview" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/editTripItineraryTab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
                 android:icon="@drawable/ic_calendar"
                 android:text="@string/edit_trip_itinerary" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/editTripMapTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_map"
+                android:text="@string/edit_trip_map" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/editTripBudgetTab"
@@ -138,7 +121,7 @@
         app:layout_anchor="@id/editTripAppBar"
         app:layout_anchorGravity="start|bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_scrollFlags="scroll"/>
+        app:layout_scrollFlags="scroll" />
 
 
     <View

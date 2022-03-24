@@ -1,12 +1,14 @@
 package com.ikea.myapp.UI.editTrip;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.transition.Fade;
-import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -16,10 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
@@ -31,8 +36,8 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.ikea.myapp.Adapters.FragmentAdapter;
-import com.ikea.myapp.CustomAppBarLayoutBehaviour;
 import com.ikea.myapp.MyTrip;
+import com.ikea.myapp.PlanHeader;
 import com.ikea.myapp.R;
 
 import java.util.ArrayList;
@@ -42,7 +47,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
     private Toolbar toolbar;
     private ViewPager2 fragments;
-    private ImageView changeImage, mainImage;
+    private ImageView mainImage;
     private TextView placeName;
     private CollapsingToolbarLayout collapsingToolbar;
     private MyTrip trip;
@@ -56,6 +61,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     private CardView liveBadge, liveDot;
     private EditTripViewModel viewModel;
     private CoordinatorLayout.LayoutParams layoutParams;
+    private ItineraryFragment itineraryFragment;
 
 
     @Override
@@ -73,7 +79,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_trip);
 
-        changeImage = findViewById(R.id.editTrip_changeImage);
         fragments = findViewById(R.id.editTrip_viewpager);
         toolbar = findViewById(R.id.editTripToolbar);
         collapsingToolbar = findViewById(R.id.editTripCollapsingToolbar);
@@ -93,8 +98,9 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         //Fragments setup
         FragmentManager fm = getSupportFragmentManager();
         ArrayList<Fragment> list = new ArrayList<>();
-        list.add(new OverviewFragment(trip));
-        list.add(new OverviewFragment(trip));
+        itineraryFragment = new ItineraryFragment(trip);
+        list.add(itineraryFragment);
+        list.add(new ItineraryFragment(trip));
         list.add(new BudgetFragment(trip));
         FragmentAdapter fragmentAdapter = new FragmentAdapter(fm, getLifecycle(), list);
         fragments.setAdapter(fragmentAdapter);
@@ -106,8 +112,10 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             public void onTabSelected(TabLayout.Tab tab) {
 
                 fragments.setCurrentItem(tab.getPosition());
-                if(clicked){ click(); }
-                switch (tab.getPosition()){
+                if (clicked) {
+                    click();
+                }
+                switch (tab.getPosition()) {
                     case 0:
                         appBarLayout.setExpanded(true, true);
                         addButton.show();
@@ -184,9 +192,9 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         });
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        setSupportActionBar(toolbar);
+        setTitle(" ");
 
-
-        changeImage.setOnClickListener(this);
         mask.setOnClickListener(this);
         addButton.setOnClickListener(view -> click());
 
@@ -219,14 +227,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         data.putExtra("id", trip.getId());
         setResult(Activity.RESULT_OK, data);
         finishAfterTransition();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void click() {
@@ -278,7 +278,68 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         int id = view.getId();
         if (id == R.id.editTrip_mask) {
             click();
+        } else if(id == R.id.add_notes){
+            itineraryFragment.checkHeader(PlanHeader.NOTE);
         }
     }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_trip_menu, menu);
+        Drawable deleteTripIcon = menu.findItem(R.id.delete_trip).getIcon(),
+                changeImageIcon = menu.findItem(R.id.change_image).getIcon();
+        deleteTripIcon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.red), PorterDuff.Mode.SRC_IN);
+        changeImageIcon.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.black), PorterDuff.Mode.SRC_IN);
+        if (menu instanceof MenuBuilder) {
+
+            MenuBuilder menuBuilder = (MenuBuilder) menu;
+            menuBuilder.setOptionalIconsVisible(true);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.delete_trip:
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.AlertDialogTheme_Delete)
+                .setTitle(R.string.ui_delete_trip)
+                .setMessage("Are you sure you want to delete your trip to " + trip.getDestination() + "?")
+                .setPositiveButton("DELETE", (dialog, which) -> {
+                    viewModel.deleteTrip(trip);
+                    finish();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                AlertDialog dialog = alertDialog.create();
+//                dialog.getButton(0).setTextColor(ContextCompat.getColor(this, R.color.red));
+//                dialog.getButton(1).setTextColor(ContextCompat.getColor(this, R.color.black));
+                dialog.show();
+                return true;
+
+            case R.id.change_image:
+                Toast.makeText(getApplicationContext(), "Call Back Clicked", Toast.LENGTH_LONG).show();
+                return true;
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+
+                super.onOptionsItemSelected(item);
+
+        }
+        return true;
+
+    }
+
+    public void setTabPosition(int pos) {
+        tabLayout.selectTab(tabLayout.getTabAt(pos));
+    }
+
 
 }
