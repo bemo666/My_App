@@ -1,6 +1,7 @@
 package com.ikea.myapp.UI.editTrip;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,24 +16,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.ikea.myapp.PlanHeader;
-import com.ikea.myapp.PlanNote;
+import com.ikea.myapp.models.MyTrip;
+import com.ikea.myapp.models.PlanHeader;
 import com.ikea.myapp.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.SliderViewHolder> {
 
-    private List<PlanHeader> planHeaders;
-    private Context context;
+    private final Context context;
     private final ItineraryFragment fragment;
     private boolean hasItems = false;
+    private MyTrip trip;
+    private final InputMethodManager imm;
 
 
     public ItineraryRVAdapter(ItineraryFragment fragment) {
         this.fragment = fragment;
         this.context = fragment.getContext();
+        this.imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @NonNull
@@ -45,11 +45,11 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-        holder.setDetails(planHeaders.get(position), position);
+        holder.setDetails(trip.getPlanHeaders().get(position), position);
         holder.arrow.setOnClickListener(view -> expand(holder));
         holder.itemView.setOnClickListener(view -> expand(holder));
         holder.title.setOnFocusChangeListener((view, b) -> {
-            if(b){
+            if (b) {
                 holder.titleLayout.setBoxBackgroundColorResource(R.color.lightGrey);
                 expand(holder);
             } else {
@@ -60,17 +60,16 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
     }
 
     private void expand(SliderViewHolder holder) {
-        if (!holder.expanded){
+        if (!holder.expanded) {
             holder.arrow.setRotation(0);
             holder.hiddenLayout.setVisibility(View.VISIBLE);
         } else {
             holder.arrow.setRotation(-90);
             holder.hiddenLayout.setVisibility(View.GONE);
-            if (holder.title.hasFocus()){
+            imm.hideSoftInputFromWindow(fragment.getView().getWindowToken(), 0);
+            if (holder.title.hasFocus()) {
                 holder.title.clearFocus();
                 holder.titleLayout.clearFocus();
-                InputMethodManager imm =  (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(fragment.getView().getWindowToken(), 0);
             }
         }
         holder.expanded = !holder.expanded;
@@ -79,21 +78,23 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
     @Override
     public int getItemCount() {
-        if (planHeaders != null)
-            return planHeaders.size();
+        if (trip != null && trip.getPlanHeaders() != null)
+            return trip.getPlanHeaders().size();
         else
             return 0;
     }
 
+
     class SliderViewHolder extends RecyclerView.ViewHolder {
         private boolean expanded = false;
-        private ImageView arrow;
-        private TextInputEditText title;
-        private TextInputLayout titleLayout;
-        private LinearLayout hiddenLayout;
-        private RecyclerView internalRV;
+        private final ImageView arrow;
+        private final TextInputEditText title;
+        private final TextInputLayout titleLayout;
+        private final LinearLayout hiddenLayout;
+        private final RecyclerView internalRV;
         private ItineraryInternalRVAdapter internalRVAdapter;
-        private Button addButton;
+        private final Button addButton;
+
         SliderViewHolder(@NonNull View itemView) {
             super(itemView);
             arrow = itemView.findViewById(R.id.itinerary_selected_ic);
@@ -104,42 +105,55 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
             addButton = itemView.findViewById(R.id.add_a_note_button);
         }
 
-        void setDetails(PlanHeader item, int position) {
+        void setDetails(PlanHeader header, int position) {
             arrow.setRotation(-90);
-            title.setText(item.getTitle());
+            title.setText(header.getMyTitle());
             addButton.setOnClickListener(view -> {
-                planHeaders.get(position).addNotes(new PlanNote(5));
+                fragment.checkForAddHeader(header.getObjectType());
                 notifyItemChanged(position);
             });
-            internalRVAdapter = new ItineraryInternalRVAdapter(fragment, item.getPlanType());
-            internalRVAdapter.setList();
+            internalRVAdapter = new ItineraryInternalRVAdapter(this, header.getObjectType());
+            for (Object o : header.getObjects())
+                Log.d("tag", o.toString());
+            Log.d("tag", header.getObjects().getClass().toString());
+            internalRVAdapter.setList(header.getObjects());
             LinearLayoutManager layoutManager2 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             internalRV.setAdapter(internalRVAdapter);
+            internalRV.setNestedScrollingEnabled(false);
             internalRV.setLayoutManager(layoutManager2);
+        }
+
+        public void editObject(Object object, int adapterPosition) {
+            trip.getPlanHeaders().get(getAdapterPosition()).editObject(object, adapterPosition);
+            fragment.updateTrip(trip);
         }
     }
 
-    public void setList(List<PlanHeader> items) {
-        this.planHeaders = items;
+    public void setList(MyTrip trip) {
+        this.trip = trip;
         hasItems = true;
         notifyDataSetChanged();
 
     }
 
-    public void setList() {
-        List<PlanHeader> lst = new ArrayList<>();
-        lst.add(new PlanHeader());
-        lst.add(new PlanHeader());
-        lst.add(new PlanHeader());
-        lst.add(new PlanHeader());
-        this.planHeaders = lst;
-        hasItems = true;
-        notifyDataSetChanged();
-
-    }
+//    public void setList() {
+//        List<PlanHeader> lst = new ArrayList<>();
+//        lst.add(new PlanHeader());
+//        lst.add(new PlanHeader());
+//        lst.add(new PlanHeader());
+//        lst.add(new PlanHeader());
+//        this.planHeaders = lst;
+//        hasItems = true;
+//        notifyDataSetChanged();
+//
+//    }
 
     public boolean hasItems() {
         return hasItems;
+    }
+
+    public ItineraryFragment getFragment() {
+        return fragment;
     }
 
 }

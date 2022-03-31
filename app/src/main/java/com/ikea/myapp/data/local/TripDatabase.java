@@ -7,9 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.ikea.myapp.CustomCurrency;
-import com.ikea.myapp.MyTrip;
-import com.ikea.myapp.PlanHeader;
+import com.ikea.myapp.models.MyTrip;
 
 @Database(entities =  {MyTrip.class}, version = 6, exportSchema = false)
 @TypeConverters({DateConverter.class, ByteConverter.class, PlanHeaderConverter.class, BudgetConverter.class,

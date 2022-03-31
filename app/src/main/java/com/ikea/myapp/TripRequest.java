@@ -2,31 +2,33 @@ package com.ikea.myapp;
 
 import androidx.lifecycle.LiveData;
 
+import com.ikea.myapp.models.MyTrip;
+
 import java.util.List;
 
 public class TripRequest {
 
-    private LiveData<TripList> upcoming;
-    private LiveData<TripList> past;
+    private LiveData<List<MyTrip>> upcoming;
+    private LiveData<List<MyTrip>> past;
 
-    public TripRequest(LiveData<TripList> upcoming, LiveData<TripList> past) {
+    public TripRequest(LiveData<List<MyTrip>> upcoming, LiveData<List<MyTrip>> past) {
         this.upcoming = upcoming;
         this.past = past;
     }
 
-    public LiveData<TripList> getUpcoming() {
+    public LiveData<List<MyTrip>> getUpcoming() {
         return upcoming;
     }
 
-    public void setUpcoming(LiveData<TripList> upcoming) {
+    public void setUpcoming(LiveData<List<MyTrip>> upcoming) {
         this.upcoming = upcoming;
     }
 
-    public LiveData<TripList> getPast() {
+    public LiveData<List<MyTrip>> getPast() {
         return past;
     }
 
-    public void setPast(LiveData<TripList> past) {
+    public void setPast(LiveData<List<MyTrip>> past) {
         this.past = past;
     }
 }

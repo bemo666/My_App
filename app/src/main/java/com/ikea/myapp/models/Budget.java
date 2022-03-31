@@ -1,8 +1,4 @@
-package com.ikea.myapp;
-
-import android.util.Log;
-
-import com.ikea.myapp.ViewModels.ExpenseTypes;
+package com.ikea.myapp.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;

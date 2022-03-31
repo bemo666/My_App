@@ -1,18 +1,14 @@
-package com.ikea.myapp;
-
-import android.graphics.Bitmap;
+package com.ikea.myapp.models;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.ikea.myapp.CustomCurrency;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Currency;
-import java.util.Date;
 import java.util.List;
 
 @Entity(tableName = "trips")
@@ -53,7 +49,7 @@ public class MyTrip implements Serializable {
         this.id = id;
         this.budget = new Budget();
         this.currency = currency;
-        this.planHeaders = new ArrayList<>();
+        this.planHeaders = new ArrayList<PlanHeader>();
     }
 
     public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
@@ -69,7 +65,7 @@ public class MyTrip implements Serializable {
         this.id = id;
         this.budget = new Budget();
         this.currency = currency;
-        this.planHeaders = new ArrayList<>();
+        this.planHeaders = new ArrayList<PlanHeader>();
     }
 
 
@@ -169,21 +165,37 @@ public class MyTrip implements Serializable {
         this.destinationLon = destinationLon;
     }
 
-    public Budget getBudget() { return budget; }
+    public Budget getBudget() {
+        return budget;
+    }
 
-    public void setBudget(Budget budget) { this.budget = budget; }
+    public void setBudget(Budget budget) {
+        this.budget = budget;
+    }
 
-    public CustomCurrency getCurrency() { return currency; }
+    public CustomCurrency getCurrency() {
+        return currency;
+    }
 
-    public void setCurrency(CustomCurrency currency) { this.currency = currency; }
+    public void setCurrency(CustomCurrency currency) {
+        this.currency = currency;
+    }
 
-    public List<PlanHeader> getPlanHeaders() { return planHeaders; }
+    public List<PlanHeader> getPlanHeaders() {
+        return planHeaders;
+    }
 
-    public void setPlanHeaders(List<PlanHeader> planHeaders) { this.planHeaders = planHeaders; }
+    public void setPlanHeaders(List<PlanHeader> planHeaders) {
+        this.planHeaders = planHeaders;
+    }
 
-    public boolean hasPlanHeaders(){ return this.planHeaders.size() != 0;}
+    public boolean hasPlanHeaders() {
+        if (this.getPlanHeaders() != null)
+            return (this.planHeaders.size() != 0);
+        return false;
+    }
 
-    public void addPlanHeader(PlanHeader h){
+    public void addPlanHeader(PlanHeader h) {
         if (this.planHeaders == null)
             this.planHeaders = new ArrayList<PlanHeader>();
         this.planHeaders.add(h);

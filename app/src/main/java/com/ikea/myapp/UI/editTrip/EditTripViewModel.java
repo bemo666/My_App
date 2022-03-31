@@ -5,48 +5,29 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
 
-import com.ikea.myapp.CustomCurrency;
-import com.ikea.myapp.MyTrip;
-import com.ikea.myapp.TripList;
-import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.data.remote.FirebaseManager;
-
-import java.util.List;
+import com.ikea.myapp.models.MyTrip;
+import com.ikea.myapp.data.TripRepo;
 
 public class EditTripViewModel extends AndroidViewModel {
 
-    FirebaseManager firebaseManager;
     private final TripRepo tripRepo;
-    LiveData<TripList> trips;
-    LiveData<CustomCurrency> currency;
+    private final LiveData<MyTrip> trip;
 
-
-    public EditTripViewModel(@NonNull Application application) {
+    public EditTripViewModel(@NonNull Application application, String id) {
         super(application);
-
         tripRepo = new TripRepo(application);
-        if (FirebaseManager.loggedIn()) {
-            firebaseManager = new FirebaseManager();
-            fetchTrips();
-        } else
-            fetchLocalTrips();
-    }
-
-    private void fetchLocalTrips() {
-        LiveData<List<MyTrip>> list = tripRepo.getLocalTrips();
-        trips = Transformations.map(list, input -> new TripList(input));
-        currency = null;
+        if (FirebaseManager.loggedIn()){
+            trip = tripRepo.getRemoteTrip(id);
+        } else{
+            trip =  tripRepo.getLocalTrip(id);
+        }
     }
 
 
-    private void fetchTrips() {
-        trips = tripRepo.getRemoteTrips();
-    }
-
-    public LiveData<TripList> getTrips() {
-        return trips;
+    public LiveData<MyTrip> getTrip(String id) {
+        return trip;
     }
 
     public void updateTrip(MyTrip trip) {

@@ -9,22 +9,22 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.ikea.myapp.MyTrip;
-import com.ikea.myapp.TripList;
+import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.data.remote.FirebaseManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TripsViewModel extends AndroidViewModel {
 
     FirebaseManager firebaseManager;
     TripRepo tripRepo;
-    LiveData<TripList> trips;
+    LiveData<List<MyTrip>> trips;
 
     public TripsViewModel(@NonNull Application application) {
         super(application);
-        trips = new MutableLiveData<TripList>();
+        trips = new MutableLiveData<>();
         tripRepo = new TripRepo(application);
         if (FirebaseManager.loggedIn()) {
             firebaseManager = new FirebaseManager();
@@ -35,23 +35,22 @@ public class TripsViewModel extends AndroidViewModel {
 
     private void fetchLocalTrips() {
         LiveData<List<MyTrip>> list = tripRepo.getLocalTrips();
-        trips = Transformations.map(list, input -> new TripList(input));
+        trips = Transformations.map(list, ArrayList::new);
     }
 
 
     private void fetchRemoteTrips() {
-        Log.d("tag", "attempting to fetch remote trips");
         trips = tripRepo.getRemoteTrips();
     }
 
-    public LiveData<TripList> getTrips() {
+    public LiveData<List<MyTrip>> getTrips() {
         return trips;
     }
 
 
-    public MyTrip getTripAt(int i) {
+    public String getTripIdAt(int i) {
         if (trips.getValue() != null) {
-            return trips.getValue().getTrips().get(i);
+            return trips.getValue().get(i).getId();
         } else return null;
     }
 }

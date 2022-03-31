@@ -1,10 +1,6 @@
 package com.ikea.myapp.data.remote;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -14,7 +10,7 @@ import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.ikea.myapp.MyTrip;
+import com.ikea.myapp.models.MyTrip;
 
 import java.util.Objects;
 
@@ -84,6 +80,10 @@ public class FirebaseManager {
 
     public Query getTripsRef() {
         return tripsRef.orderByChild("startStamp");
+    }
+
+    public DatabaseReference getTripRef(String id){
+        return tripsRef.child(id);
     }
 
 

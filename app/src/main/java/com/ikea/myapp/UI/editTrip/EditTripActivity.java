@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
@@ -27,6 +29,9 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -36,8 +41,8 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.ikea.myapp.Adapters.FragmentAdapter;
-import com.ikea.myapp.MyTrip;
-import com.ikea.myapp.PlanHeader;
+import com.ikea.myapp.models.MyTrip;
+import com.ikea.myapp.models.PlanHeader;
 import com.ikea.myapp.R;
 
 import java.util.ArrayList;
@@ -50,6 +55,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     private ImageView mainImage;
     private TextView placeName;
     private CollapsingToolbarLayout collapsingToolbar;
+    private String id;
     private MyTrip trip;
     private AppBarLayout appBarLayout;
     private TabLayout tabLayout;
@@ -74,7 +80,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
         getWindow().setEnterTransition(fade);
         getWindow().setExitTransition(fade);
-        trip = (MyTrip) getIntent().getSerializableExtra("trip");
+        id = (String) getIntent().getSerializableExtra("id");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_trip);
@@ -94,19 +100,28 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         liveDot = findViewById(R.id.live_dot);
         mainImage = findViewById(R.id.editTrip_mainImage);
         tabLayout = findViewById(R.id.editTripTabLayout);
-        viewModel = ViewModelProviders.of(this).get(EditTripViewModel.class);
+        ViewModelProvider.Factory factory = new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new EditTripViewModel(getApplication(), id);
+            }
+        };
+        viewModel = ViewModelProviders.of(this, factory).get(EditTripViewModel.class);
+        trip = viewModel.getTrip(id).getValue();
+//        Log.d("tag", "trip: "+ (trip == null));
+//        Log.d("tag", "trip: "+ (trip.getId()));
+        viewModel.getTrip(id).observe(this, myTrip -> trip = myTrip);
+
         //Fragments setup
-        FragmentManager fm = getSupportFragmentManager();
         ArrayList<Fragment> list = new ArrayList<>();
-        itineraryFragment = new ItineraryFragment(trip);
-        list.add(itineraryFragment);
-        list.add(new ItineraryFragment(trip));
-        list.add(new BudgetFragment(trip));
-        FragmentAdapter fragmentAdapter = new FragmentAdapter(fm, getLifecycle(), list);
+        list.add(new ItineraryFragment(id));
+        list.add(new MapFragment(id));
+        list.add(new BudgetFragment(id));
+        FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), list);
         fragments.setAdapter(fragmentAdapter);
 
-//        layoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-//        ((CustomAppBarLayoutBehaviour)layoutParams.getBehavior()).setScrollBehavior(true);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -120,21 +135,13 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
                         appBarLayout.setExpanded(true, true);
                         addButton.show();
                         addButton.setOnClickListener(view -> click());
-//                        ((CustomAppBarLayoutBehaviour)layoutParams.getBehavior()).setScrollBehavior(true);
 
                         break;
                     case 1:
-                        appBarLayout.setExpanded(false, true);
-                        addButton.hide();
-                        addButton.setOnClickListener(null);
-//                        ((CustomAppBarLayoutBehaviour)layoutParams.getBehavior()).setScrollBehavior(true);
-
-                        break;
                     case 2:
                         appBarLayout.setExpanded(false, true);
                         addButton.hide();
                         addButton.setOnClickListener(null);
-//                        ((CustomAppBarLayoutBehaviour)layoutParams.getBehavior()).setScrollBehavior(false);
                         break;
                 }
             }
@@ -147,6 +154,8 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+
         fragments.setUserInputEnabled(false);
 
         rotateOpen = AnimationUtils.loadAnimation(this, R.anim.rotate_open);
@@ -157,14 +166,14 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
 
-        if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
-                Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
-            liveBadge.setVisibility(View.VISIBLE);
-            liveDot.startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink));
-        } else {
-            liveDot.clearAnimation();
-            liveBadge.setVisibility(View.GONE);
-        }
+//        if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
+//                Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
+//            liveBadge.setVisibility(View.VISIBLE);
+//            liveDot.startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink));
+//        } else {
+//            liveDot.clearAnimation();
+//            liveBadge.setVisibility(View.GONE);
+//        }
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false, set = false;
             int scrollRange = -1;
@@ -195,10 +204,14 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         setSupportActionBar(toolbar);
         setTitle(" ");
 
-        mask.setOnClickListener(this);
+        mask.setOnClickListener(view -> click());
         addButton.setOnClickListener(view -> click());
+        notes.setOnClickListener(this);
+        hotels.setOnClickListener(this);
+        rentals.setOnClickListener(this);
+        flights.setOnClickListener(this);
 
-        placeName.setText(trip.getDestination());
+//        placeName.setText(trip.getDestination());
 
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MM dd", Locale.UK);
 //        Date startDate = null;
@@ -223,9 +236,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent data = new Intent();
-        data.putExtra("id", trip.getId());
-        setResult(Activity.RESULT_OK, data);
         finishAfterTransition();
     }
 
@@ -276,11 +286,11 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.editTrip_mask) {
-            click();
-        } else if(id == R.id.add_notes){
-            itineraryFragment.checkHeader(PlanHeader.NOTE);
+        if (id == notes.getId()) {
+            itineraryFragment.checkForAddHeader(PlanHeader.NOTE);
         }
+
+        click();
     }
 
     @SuppressLint("RestrictedApi")
@@ -303,17 +313,16 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.delete_trip:
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.AlertDialogTheme_Delete)
-                .setTitle(R.string.ui_delete_trip)
-                .setMessage("Are you sure you want to delete your trip to " + trip.getDestination() + "?")
-                .setPositiveButton("DELETE", (dialog, which) -> {
-                    viewModel.deleteTrip(trip);
-                    finish();
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+                        .setTitle(R.string.ui_delete_trip)
+                        .setMessage("Are you sure you want to delete your trip to " + trip.getDestination() + "?")
+                        .setPositiveButton("DELETE", (dialog, which) -> {
+                            viewModel.deleteTrip(trip);
+                            finish();
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
                 AlertDialog dialog = alertDialog.create();
 //                dialog.getButton(0).setTextColor(ContextCompat.getColor(this, R.color.red));
 //                dialog.getButton(1).setTextColor(ContextCompat.getColor(this, R.color.black));

@@ -7,21 +7,19 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.ikea.myapp.MyTrip;
-import com.ikea.myapp.TripList;
 import com.ikea.myapp.data.local.TripDao;
 import com.ikea.myapp.data.local.TripDatabase;
 import com.ikea.myapp.data.remote.FirebaseManager;
+import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.utils.AppExecutors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TripRepo {
@@ -44,6 +42,10 @@ public class TripRepo {
 
     public LiveData<List<MyTrip>> getLocalTrips() {
         return tripDao.getTrips();
+    }
+
+    public LiveData<MyTrip> getLocalTrip(String id) {
+        return tripDao.getTrip(id);
     }
 
     public void updateTrip(MyTrip trip) {
@@ -89,57 +91,56 @@ public class TripRepo {
         appExecutors.diskIO().execute(tripDao::deleteTable);
     }
 
-    public MutableLiveData<TripList> getRemoteTrips() {
-
-        MutableLiveData<TripList> trips = new MutableLiveData<>();
+    public MutableLiveData<List<MyTrip>> getRemoteTrips() {
+        MutableLiveData<List<MyTrip>> trips = new MutableLiveData<>();
         trips.setValue(null);
         firebaseManager.getTripsRef().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                TripList list = trips.getValue();
-                if (list == null) list = new TripList();
+                List<MyTrip> list = trips.getValue();
+                if (list == null) list = new ArrayList<MyTrip>();
                 int i;
                 if (previousChildName == null) {
                     i = 0;
                 } else {
-                    for (i = 0; i < list.getTrips().size(); i++) {
-                        if (list.getTrips().get(i).getId().equals(previousChildName)) {
+                    for (i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(previousChildName)) {
                             i++;
                             break;
                         }
                     }
                 }
 
-                list.getTrips().add(i, snapshot.getValue(MyTrip.class));
+                list.add(i, snapshot.getValue(MyTrip.class));
                 trips.setValue(list);
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                TripList list = trips.getValue();
-                if (list == null) list = new TripList();
+                List<MyTrip> list = trips.getValue();
+                if (list == null) list = new ArrayList<MyTrip>();
                 int i;
                 if (previousChildName == null) {
                     i = 0;
                 } else {
-                    for (i = 0; i < list.getTrips().size(); i++) {
-                        if (list.getTrips().get(i).getId().equals(previousChildName)) {
+                    for (i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(previousChildName)) {
                             i++;
                             break;
                         }
                     }
                 }
 
-                list.getTrips().set(i, snapshot.getValue(MyTrip.class));
+                list.set(i, snapshot.getValue(MyTrip.class));
                 trips.setValue(list);
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                TripList list = trips.getValue();
-                for (MyTrip t : trips.getValue().getTrips()) {
+                List<MyTrip> list = trips.getValue();
+                for (MyTrip t : trips.getValue()) {
                     if (t.getId().equals((snapshot.getValue(MyTrip.class).getId()))) {
-                        list.getTrips().remove(t);
+                        list.remove(t);
                         break;
                     }
                 }
@@ -149,36 +150,52 @@ public class TripRepo {
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                TripList list = trips.getValue();
-                if (list == null) list = new TripList();
+                List<MyTrip> list = trips.getValue();
+                if (list == null) list = new ArrayList<MyTrip>();
                 int i;
                 if (previousChildName == null) {
                     i = 0;
                 } else {
-                    for (i = 0; i < list.getTrips().size(); i++) {
-                        if (list.getTrips().get(i).getId().equals(previousChildName)) {
+                    for (i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(previousChildName)) {
                             i++;
                             break;
                         }
                     }
                 }
 
-                list.getTrips().set(i, snapshot.getValue(MyTrip.class));
+                list.set(i, snapshot.getValue(MyTrip.class));
                 trips.setValue(list);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                TripList list = trips.getValue();
+                List<MyTrip> list = trips.getValue();
                 if (list != null) {
-                    list.setErrorMessage(error.getMessage());
                     trips.setValue(list);
                 }
             }
         });
 
-
         return trips;
+    }
+
+    public LiveData<MyTrip> getRemoteTrip(String id) {
+        MutableLiveData<MyTrip> trip = new MutableLiveData<>();
+        trip.setValue(null);
+        firebaseManager.getTripRef(id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                trip.setValue(snapshot.getValue(MyTrip.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        return trip;
     }
 
 //    public void setLocalImage(String id, byte[] image){

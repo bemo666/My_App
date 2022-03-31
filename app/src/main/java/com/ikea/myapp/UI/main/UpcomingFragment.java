@@ -42,12 +42,10 @@ public class UpcomingFragment extends Fragment {
     private ViewPager2 tripSlider;
     private TripsViewModel viewmodel;
     private UpcomingTripsRVAdapter adapter;
-    private String receivedId = null;
 
     public UpcomingFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,13 +95,9 @@ public class UpcomingFragment extends Fragment {
 
         viewmodel.getTrips().observe(getViewLifecycleOwner(), myTrips -> {
             if (myTrips != null) {
-                if (myTrips.getErrorMessage() != null) {
-                    Toast.makeText(requireContext(), myTrips.getErrorMessage(), Toast.LENGTH_SHORT).show();
-                    myTrips.setErrorMessage(null);
-                }
-                if (!myTrips.getTrips().isEmpty()) {
+                if (!myTrips.isEmpty()) {
                     hideWelcomeCard();
-                    adapter.setTrips(myTrips.getTrips());
+                    adapter.setTrips(myTrips);
                 } else {
                     showWelcomeCard();
                 }
@@ -147,7 +141,7 @@ public class UpcomingFragment extends Fragment {
 
     public void goToEditTripActivity(ImageView imageView, TextView textView, CardView cardView, int position) {
         Intent intent = new Intent(getContext(), EditTripActivity.class);
-        intent.putExtra("trip", viewmodel.getTripAt(position));
+        intent.putExtra("id", viewmodel.getTripIdAt(position));
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
                 Pair.create(imageView, ViewCompat.getTransitionName(imageView)),
                 Pair.create(textView, ViewCompat.getTransitionName(textView))

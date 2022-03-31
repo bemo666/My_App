@@ -1,4 +1,4 @@
-package com.ikea.myapp;
+package com.ikea.myapp.models;
 
 import com.ikea.myapp.ViewModels.ExpenseTypes;
 

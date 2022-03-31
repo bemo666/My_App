@@ -1,5 +1,7 @@
 package com.ikea.myapp;
 
+import com.ikea.myapp.models.MyTrip;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

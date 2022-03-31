@@ -4,7 +4,7 @@ import androidx.room.TypeConverter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.ikea.myapp.Budget;
+import com.ikea.myapp.models.Budget;
 
 import java.lang.reflect.Type;
 

@@ -11,10 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikea.myapp.CustomCurrency;
-import com.ikea.myapp.Expense;
+import com.ikea.myapp.models.Expense;
 import com.ikea.myapp.R;
 
-import java.util.Currency;
 import java.util.List;
 
 public class ExpensesRVAdapter extends RecyclerView.Adapter<ExpensesRVAdapter.ViewHolder> {

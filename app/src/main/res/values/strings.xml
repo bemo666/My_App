@@ -36,6 +36,7 @@
     <string name="ui_save">Save</string>
     <string name="ui_sign_out">Sign out</string>
     <string name="ui_dash">\u0020-\u0020</string>
+    <string name="ui_cancel">cancel</string>
 
     <string name="newtrip_actionbar_name">Plan a new Trip</string>
     <string name="newtrip_destination"><b>Where to?</b>\u0020 e.g. Paris, New York, Japan</string>
@@ -84,6 +85,9 @@
     <string name="ui_change_cover_image">Change cover image</string>
     <string name="edit_trip_map">Map</string>
     <string name="ui_add_a_note">Add a Note</string>
-
+    <string name="ui_add_note">Add note</string>
+    <string name="ui_tbd">TBD</string>
+    <string name="open_location_settings">Open settings</string>
+    <string name="gps_network_not_enabled">Gps network not enabled</string>
 
 </resources>

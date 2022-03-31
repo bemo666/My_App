@@ -1,11 +1,20 @@
 package com.ikea.myapp.UI.newTrip;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,12 +25,16 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -41,7 +54,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ikea.myapp.CustomCurrency;
 import com.ikea.myapp.CustomProgressDialog;
-import com.ikea.myapp.MyTrip;
+import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.ikea.myapp.data.remote.FirebaseManager;
@@ -80,10 +93,11 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private List<Place.Field> fieldList;
     private byte[] image;
     private CustomCurrency c;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
 
     //Location Permission
-    private final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private final int PERMISSIONS_FINE_LOCATION = 99;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -107,6 +121,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         inputDates = findViewById(R.id.inputDates);
         createButton = findViewById(R.id.create_trip);
         toolbar = findViewById(R.id.newTripToolbar);
+        getLocation = findViewById(R.id.getLocation);
         c = new CustomCurrency(Currency.getInstance(Locale.US));
 
         //Set welcome text
@@ -194,9 +209,64 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                     , fieldList).build(NewTripActivity.this);
             isDestination = false;
             startActivityForResult(intent, 100);
-
+        });
+        getLocation.setOnClickListener(view -> {
+            updateGPS();
         });
 
+    }
+
+    private void updateLocationVar(Location location) {
+        if(location!=null) {
+            originLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            Toast.makeText(this, originLatLng.toString(), Toast.LENGTH_SHORT).show();
+        } else {
+//            fusedLocationProviderClient.
+            Toast.makeText(this, "Can't find your current location", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateGPS(){
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if(locationEnabled()){
+//                fusedLocationProviderClient.getCurrentLocation();
+                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, this::updateLocationVar);
+//                fusedLocationProviderClient.flushLocations();
+            }
+        }
+        else{
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
+        }
+    }
+
+    private boolean locationEnabled() {
+        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled && !network_enabled) {
+            // notify user
+            androidx.appcompat.app.AlertDialog.Builder alertDialog = new androidx.appcompat.app.AlertDialog.Builder(this, R.style.AlertDialogTheme_LocationOff);
+            alertDialog.setTitle(R.string.gps_network_not_enabled);
+            alertDialog.setPositiveButton(R.string.open_location_settings, (dialog, which) -> {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            });
+            alertDialog.setNegativeButton(R.string.ui_cancel, (dialog, which) -> dialog.cancel());
+            androidx.appcompat.app.AlertDialog dialog = alertDialog.create();
+            dialog.show();
+            return false;
+        } else
+            return true;
     }
 
 
@@ -307,13 +377,12 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                 else if (tripType.equals("orig"))
                     data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, startStamp, placeId, pushedTrip.getKey(), c);
 
-                MyTrip finalData = data;
                 pushedTrip.setValue(data).addOnCompleteListener(task -> {
                     progressDialog.hide();
                     if (task.isSuccessful()) {
                         Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
-                        intent.putExtra("trip", finalData);
-                        startActivityForResult(intent, 200, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+                        intent.putExtra("id", pushedTrip.getKey());
+                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
                         handler.postDelayed(this::finish, 900);
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
@@ -333,8 +402,8 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 //                viewmodel.setLocalImage(data.getId(), image);
 
                 Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
-                intent.putExtra("trip", data);
-                startActivityForResult(intent, 200, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+                intent.putExtra("id", pushedTrip.getKey());
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
                 handler.postDelayed(this::finish, 900);
 
             }

@@ -244,6 +244,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         progressDialog.show();
                         firebaseManager.SignIn(email, password).addOnCompleteListener(task -> {
                             new TripRepo(getApplication()).deleteTable();
+                            progressDialog.hide();
 
                             if (task.isSuccessful()) {
                                 Toast.makeText(LoginActivity.this, R.string.login_signed_in, Toast.LENGTH_SHORT).show();
@@ -286,7 +287,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         if (!Utils.isNetworkConnected(this)) {
                                             Toast.makeText(this, R.string.ui_no_internet, Toast.LENGTH_SHORT).show();
                                         } else if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.AlertDialogTheme_login);
                                             alertDialog.setTitle(R.string.login_encountered_problem);
                                             alertDialog.setMessage(R.string.login_email_in_use);
 

@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -29,10 +31,10 @@ import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.ikea.myapp.Budget;
+import com.ikea.myapp.models.Budget;
 import com.ikea.myapp.CustomCurrency;
-import com.ikea.myapp.Expense;
-import com.ikea.myapp.MyTrip;
+import com.ikea.myapp.models.Expense;
+import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.profile.CurrenciesRVAdapter;
 import com.ikea.myapp.ViewModels.ExpenseTypes;
@@ -43,6 +45,7 @@ import java.util.Currency;
 
 public class BudgetFragment extends Fragment implements View.OnClickListener {
     private MyTrip trip;
+    private String id;
     private TextView currentTotal, budget, expenseTypeSelector, cancelButton, cancelButton2, saveButton, saveButton2, expenseCurrencySymbol, budgetCurrencySymbol, addExpenseTitle;
     private ImageView expenseTypeIcon, budgetCurrencySelector, expenseCurrencySelector;
     private LinearLayout setBudgetLinearLayout, addExpenseLinearLayout, setBudgetCostLayout, expenseDescriptionLayout, budgetLinearLayout;
@@ -63,8 +66,8 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
     private EditText currencySearchBar;
 
 
-    public BudgetFragment(MyTrip trip) {
-        this.trip = trip;
+    public BudgetFragment(String id) {
+        this.id = id;
     }
 
     @Override
@@ -113,8 +116,17 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         currencyRV =                currencySheet.findViewById(R.id.currency_recycler_view);
         currencySearchBar =         currencySheet.findViewById(R.id.search_edit_text);
         expenseTypesAdapter =       new ExpenseTypesAdapter(this);
-        viewModel.getTrips().observe(getViewLifecycleOwner(), tripList -> {
-            trip = tripList.getTripWithId(trip.getId());
+        ViewModelProvider.Factory factory = new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new EditTripViewModel(getActivity().getApplication(), id);
+            }
+        };
+        viewModel = ViewModelProviders.of(this, factory).get(EditTripViewModel.class);
+        trip = viewModel.getTrip(id).getValue();
+        viewModel.getTrip(id).observe(getViewLifecycleOwner(), myTrip -> {
+            trip = myTrip;
             updateData();
         });
 

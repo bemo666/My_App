@@ -120,7 +120,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         } else if (id == R.id.delete_account_button) {
             if (FirebaseManager.loggedIn()) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.AlertDialogTheme_Delete);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this, R.style.AlertDialogTheme_login);
                 alertDialog.setTitle(R.string.profile_delete_account);
                 alertDialog.setMessage(R.string.profile_delete_account_dialog_text);
 

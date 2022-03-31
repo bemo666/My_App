@@ -125,18 +125,38 @@
             android:textSize="20sp" />
 
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutInputOrigin"
-            style="@style/BlueTextBoxes"
-            android:hint="@string/newtrip_origin"
-            app:startIconDrawable="@drawable/ic_edit_location">
+        <RelativeLayout
+            android:id="@+id/origin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputOrigin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutInputOrigin"
+                style="@style/BlueTextBoxes"
+                android:layout_toLeftOf="@id/getLocation"
+                android:hint="@string/newtrip_origin"
+                app:startIconDrawable="@drawable/ic_edit_location">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputOrigin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/getLocation"
+                android:layout_width="55dp"
+                android:layout_height="60dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/green"
+                app:cornerRadius="@dimen/card_radius_thin"
+                app:elevation="@dimen/button_elevation"
+                app:icon="@drawable/ic_location"
+                app:iconPadding="20dp"
+                app:iconSize="25dp" />
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/placesRecyclerView"

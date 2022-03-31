@@ -56,6 +56,7 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/edittext_blue_border.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_budget.xml" value="0.3256113256113256" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_itinerary.xml" value="0.2234375" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_map.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_overview.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_past.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_upcoming.xml" value="0.4446397188049209" />
@@ -64,11 +65,15 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_expense.xml" value="0.4" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_expense_type.xml" value="0.4" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_expense_types_dialog.xml" value="0.2234375" />
-        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_itinerary_recyclerview_item.xml" value="0.4856046065259117" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_itinerary_recyclerview_item.xml" value="0.39659367396593675" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_line_short_center.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_live_dot.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_past_trips.xml" value="0.536" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_activity.xml" value="0.532258064516129" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_flight.xml" value="0.2234375" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_hotel.xml" value="0.45750452079566006" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_note.xml" value="0.2234375" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_rental.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_suggested_destinations.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_trip_details.xml" value="0.6" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_trips.xml" value="0.2952158693115519" />

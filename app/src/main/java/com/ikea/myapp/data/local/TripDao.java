@@ -8,7 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.ikea.myapp.MyTrip;
+import com.ikea.myapp.models.MyTrip;
 
 import java.util.List;
 
@@ -20,6 +20,9 @@ public interface TripDao {
 
     @Query("SELECT * from trips ORDER BY startStamp ASC")
     LiveData<List<MyTrip>> getTrips();
+
+    @Query("SELECT * from trips WHERE id LIKE :newId")
+    LiveData<MyTrip> getTrip(String newId);
 
     @Update
     void updateTrip(MyTrip trip);

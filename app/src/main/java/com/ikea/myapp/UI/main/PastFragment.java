@@ -1,14 +1,9 @@
 package com.ikea.myapp.UI.main;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
@@ -23,19 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ikea.myapp.MyTrip;
+import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
-import com.ikea.myapp.data.remote.FirebaseManager;
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.ValueDependentColor;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
-import com.jjoe64.graphview.helper.GraphViewXML;
-import com.jjoe64.graphview.series.BarGraphSeries;
-import com.jjoe64.graphview.series.DataPoint;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 
@@ -70,12 +57,8 @@ public class PastFragment extends Fragment {
         tripSlider.setLayoutManager(layoutManager2);
         viewmodel.getTrips().observe(getViewLifecycleOwner(), myTrips -> {
             if (myTrips != null) {
-                if (myTrips.getErrorMessage() != null) {
-                    Toast.makeText(requireContext(), myTrips.getErrorMessage(), Toast.LENGTH_SHORT).show();
-                    myTrips.setErrorMessage(null);
-                }
-                if (!myTrips.getTrips().isEmpty()) {
-                    trips = myTrips.getTrips();
+                if (!myTrips.isEmpty()) {
+                    trips = myTrips;
                     adapter.setTrips(trips);
                 }
             }
@@ -122,7 +105,7 @@ public class PastFragment extends Fragment {
 
     public void goToEditTripActivity(ImageView imageView, TextView textView, int position) {
         Intent intent = new Intent(getContext(), EditTripActivity.class);
-        intent.putExtra("trip", viewmodel.getTripAt(position));
+        intent.putExtra("id", viewmodel.getTripIdAt(position));
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
                 Pair.create(imageView, ViewCompat.getTransitionName(imageView)),
                 Pair.create(textView, ViewCompat.getTransitionName(textView)));
