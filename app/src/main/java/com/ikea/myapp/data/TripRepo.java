@@ -19,6 +19,7 @@ import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.utils.AppExecutors;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +29,10 @@ public class TripRepo {
     private final FirebaseManager firebaseManager;
     private final StorageReference storage;
     private final AppExecutors appExecutors;
+    private Application application;
 
     public TripRepo(Application application) {
+        this.application = application;
         firebaseManager = new FirebaseManager();
         tripDao = TripDatabase.getDatabase(application).tripDao();
         appExecutors = AppExecutors.getInstance();
@@ -84,6 +87,8 @@ public class TripRepo {
             firebaseManager.deleteTrip(trip);
         } else {
             appExecutors.diskIO().execute(() -> tripDao.deleteTrip(trip));
+            //todo - delete photo
+            new File(application.getApplicationContext().getFilesDir(), trip.getId() + ".jpg").delete();
         }
     }
 
@@ -195,6 +200,10 @@ public class TripRepo {
         });
 
         return trip;
+    }
+
+    public void setLocalImage(String id, String image){
+        appExecutors.diskIO().execute( () -> tripDao.setTripImage(id, image));
     }
 
 //    public void setLocalImage(String id, byte[] image){

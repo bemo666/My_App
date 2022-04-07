@@ -30,6 +30,9 @@ public interface TripDao {
     @Query("DELETE from trips")
     void deleteTable();
 
+    @Query("UPDATE trips SET image = :image WHERE id = :id")
+    void setTripImage(String id, String image);
+
     @Delete
     void deleteTrip(MyTrip trip);
 

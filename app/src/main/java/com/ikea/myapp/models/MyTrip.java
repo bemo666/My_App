@@ -2,6 +2,7 @@ package com.ikea.myapp.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -24,6 +25,7 @@ public class MyTrip implements Serializable {
     private Budget budget;
     private CustomCurrency currency;
     private List<PlanHeader> planHeaders;
+    private String image;
 
     public MyTrip() {
     }
@@ -139,6 +141,14 @@ public class MyTrip implements Serializable {
 
     public void setPlanHeaders(List<PlanHeader> planHeaders) {
         this.planHeaders = planHeaders;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public boolean hasPlanHeaders() {

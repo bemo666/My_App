@@ -82,7 +82,13 @@ dependencies {
     //Graph
     implementation 'com.jjoe64:graphview:4.2.2'
 //    debugImplementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    //Hashmap to POJO conversion
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.13.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
 }
 

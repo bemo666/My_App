@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.utils.getCorrectDate;
@@ -71,7 +72,10 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
         }
 
         void setCardView(MyTrip trip) {
-            imageView.setImageResource(R.drawable.im_london2);
+            if (trip.getImage() == null)
+                imageView.setImageResource(R.drawable.im_london2);
+            else
+                Glide.with(context).load(trip.getImage()).fitCenter().into(imageView);
             placeName.setText(trip.getDestination());
             getCorrectDate date = new getCorrectDate(trip);
             dates.setText(date.getStartDateUpcomingFormat() + context.getResources().getString(R.string.ui_dash) + date.getEndDateUpcomingFormat());
@@ -84,14 +88,7 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
                 liveBadge.setVisibility(View.GONE);
             }
 
-//            try {
-//                byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
-//                Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-//                imageView.setImageBitmap(bitmap);
-//            } catch (Exception e) {
-//            }
         }
-
 
     }
 

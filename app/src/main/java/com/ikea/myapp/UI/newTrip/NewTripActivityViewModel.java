@@ -50,6 +50,10 @@ public class NewTripActivityViewModel extends AndroidViewModel {
         tripRepo.insertLocalTrip(trip);
     }
 
+    public void setLocalImage(String id, String image){
+        tripRepo.setLocalImage(id, image);
+    }
+
 
     public MutableLiveData<String> getName() {
         return name;

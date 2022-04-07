@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -38,6 +39,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -55,6 +58,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.UploadTask;
 import com.ikea.myapp.data.remote.AmadeusApi;
 import com.ikea.myapp.models.CustomCurrency;
 import com.ikea.myapp.models.CustomProgressDialog;
@@ -64,6 +68,9 @@ import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.ikea.myapp.data.remote.FirebaseManager;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Currency;
@@ -80,6 +87,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private Toolbar toolbar;
     private TextView welcomeText;
     private FirebaseDatabase firebaseDatabase;
+    private FirebaseManager firebaseManager;
     private FirebaseUser firebaseUser;
     private DatabaseReference userRef;
     private String placeId = "", destination = "";
@@ -121,22 +129,16 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         toolbar = findViewById(R.id.newTripToolbar);
         mSpinner = findViewById(R.id.mytimezonespinner);
         c = new CustomCurrency(Currency.getInstance(Locale.US));
+        firebaseManager = new FirebaseManager();
         progressDialog = new CustomProgressDialog(this, "Creating Trip");
 
 
-        //Set welcome text
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        if (FirebaseManager.loggedIn()) {
-            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            userRef = firebaseDatabase.getReference("UserData/" + firebaseUser.getUid());
-        }
         viewmodel = new ViewModelProvider(this).get(NewTripActivityViewModel.class);
 
         populateAndUpdateTimeZone();
         viewmodel.getName().observe(this, name -> {
             if (name != null) {
-                welcomeText.setText(getString(R.string.newtrip_hey) + name +
-                        getString(R.string.ui_comma));
+                welcomeText.setText(getString(R.string.newtrip_hey) + name + getString(R.string.ui_comma));
             }
         });
 
@@ -292,17 +294,19 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         return super.onOptionsItemSelected(item);
     }
 
-    private Boolean verifyInput() { return startDate!= null && destinationLatLng != null; }
+    private Boolean verifyInput() {
+        return startDate != null && destinationLatLng != null;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK) {
-                dest = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
-                destination = dest.getName();
-                inputDestination.setText(dest.getName());
-                destinationLatLng = dest.getLatLng();
-                placeId = dest.getId();
+            dest = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+            destination = dest.getName();
+            inputDestination.setText(dest.getName());
+            destinationLatLng = dest.getLatLng();
+            placeId = dest.getId();
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
             Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
@@ -317,42 +321,6 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                 if (verifyInput()) {
                     progressDialog.show();
                     createTrip();
-//                    final FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeId, fieldList);
-//                    PlacesClient placesClient = Places.createClient(this);
-//                    placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
-//                        final Place place = response.getPlace();
-//                        // Get the photo metadata.
-//                        final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
-//                        if (metadata == null || metadata.isEmpty()) {
-//                            Log.d("tag", "No photo metadata.");
-//                            createTrip();
-//                        } else {
-//                            final PhotoMetadata photoMetadata = metadata.get(0);
-//                            // Get the attribution text.
-//                            final String attributions = photoMetadata.getAttributions();
-//                            // Create a FetchPhotoRequest.
-//                            final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-//                                    .setMaxWidth(500) // Optional.
-//                                    .setMaxHeight(300) // Optional.
-//                                    .build();
-//                            placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
-//                                Bitmap bitmap = fetchPhotoResponse.getBitmap();
-//                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-//                                Log.d("tag", "worked");
-//                                image = baos.toByteArray();
-//
-//                                createTrip();
-//
-//                            }).addOnFailureListener((exception) -> {
-//                                if (exception instanceof ApiException) {
-//                                    Log.e("tag", "Place not found: " + exception.getMessage());
-//                                }
-//                            });
-//                        }
-
-
-//                    });
                 } else
                     Toast.makeText(getApplicationContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();
 
@@ -362,9 +330,10 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
     private void createTrip() {
         MyTrip data = null;
+        DatabaseReference pushedTrip = firebaseManager.newTrip();
+        data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
+        fetchImage(pushedTrip.getKey());
         if (FirebaseManager.loggedIn()) {
-            DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData/" + firebaseUser.getUid()).child("Trips").push();
-            data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
             pushedTrip.setValue(data).addOnCompleteListener(task -> {
                 progressDialog.hide();
                 if (task.isSuccessful()) {
@@ -376,10 +345,8 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                     Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
                 }
             });
-        } else {
 
-            DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData").push();
-            data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
+        } else {
             viewmodel.insertLocalTrip(data);
 
 //                viewmodel.setLocalImage(data.getId(), image);
@@ -390,6 +357,51 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             handler.postDelayed(this::finish, 900);
 
         }
+    }
+
+    private void fetchImage(String key) {
+        final FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(placeId, fieldList);
+        PlacesClient placesClient = Places.createClient(this);
+        placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
+            final Place place = response.getPlace();
+            // Get the photo metadata.
+            final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
+            if (metadata == null || metadata.isEmpty()) {
+                Log.d("tag", "No photo metadata.");
+            } else {
+                final PhotoMetadata photoMetadata = metadata.get(0);
+                // Create a FetchPhotoRequest.
+                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                        .setMaxWidth(500) // Optional.
+                        .setMaxHeight(300) // Optional.
+                        .build();
+                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                    Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+
+                    if(FirebaseManager.loggedIn()){
+                        firebaseManager.addTripImage(key, baos.toByteArray());
+                    }
+                    else{
+                        File file = new File(getFilesDir(), key + ".jpg");
+
+                        try (FileOutputStream fos = openFileOutput(file.getName(), Context.MODE_PRIVATE)) {
+                            fos.write(baos.toByteArray());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        viewmodel.setLocalImage(key, file.getAbsolutePath());
+                    }
+
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        Log.e("tag", "Place not found: " + exception.getMessage());
+                    }
+                });
+            }
+
+        });
     }
 }
 

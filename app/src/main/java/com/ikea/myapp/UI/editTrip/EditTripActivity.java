@@ -35,6 +35,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -107,7 +108,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
         viewModel.getTrip(id).observe(this, myTrip -> {
             trip = myTrip;
-            if(trip!=null) {
+            if (trip != null) {
                 if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
                         Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
                     liveBadge.setVisibility(View.VISIBLE);
@@ -117,6 +118,10 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
                     liveBadge.setVisibility(View.GONE);
                 }
                 placeName.setText(trip.getDestination());
+                if (trip.getImage() == null)
+                    mainImage.setImageResource(R.drawable.im_london2);
+                else
+                    Glide.with(this).load(trip.getImage()).fitCenter().into(mainImage);
             }
         });
 
