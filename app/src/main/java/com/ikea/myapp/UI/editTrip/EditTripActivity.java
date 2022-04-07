@@ -44,6 +44,7 @@ import com.ikea.myapp.Adapters.FragmentAdapter;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.models.PlanHeader;
 import com.ikea.myapp.R;
+import com.ikea.myapp.utils.MyViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -100,18 +101,21 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         liveDot = findViewById(R.id.live_dot);
         mainImage = findViewById(R.id.editTrip_mainImage);
         tabLayout = findViewById(R.id.editTripTabLayout);
-        ViewModelProvider.Factory factory = new ViewModelProvider.Factory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new EditTripViewModel(getApplication(), id);
+
+        viewModel = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), id)).get(EditTripViewModel.class);
+
+        viewModel.getTrip(id).observe(this, myTrip -> {
+            trip = myTrip;
+            if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
+                    Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
+                liveBadge.setVisibility(View.VISIBLE);
+                liveDot.startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink));
+            } else {
+                liveDot.clearAnimation();
+                liveBadge.setVisibility(View.GONE);
             }
-        };
-        viewModel = ViewModelProviders.of(this, factory).get(EditTripViewModel.class);
-        trip = viewModel.getTrip(id).getValue();
-//        Log.d("tag", "trip: "+ (trip == null));
-//        Log.d("tag", "trip: "+ (trip.getId()));
-        viewModel.getTrip(id).observe(this, myTrip -> trip = myTrip);
+            placeName.setText(trip.getDestination());
+        });
 
         //Fragments setup
         ArrayList<Fragment> list = new ArrayList<>();
@@ -120,6 +124,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         list.add(new BudgetFragment(id));
         FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), list);
         fragments.setAdapter(fragmentAdapter);
+        fragments.setUserInputEnabled(false);
 
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -156,8 +161,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         });
 
 
-        fragments.setUserInputEnabled(false);
-
         rotateOpen = AnimationUtils.loadAnimation(this, R.anim.rotate_open);
         rotateClose = AnimationUtils.loadAnimation(this, R.anim.rotate_close);
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
@@ -166,14 +169,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
 
 
-//        if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
-//                Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
-//            liveBadge.setVisibility(View.VISIBLE);
-//            liveDot.startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink));
-//        } else {
-//            liveDot.clearAnimation();
-//            liveBadge.setVisibility(View.GONE);
-//        }
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false, set = false;
             int scrollRange = -1;
@@ -186,7 +181,8 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
                 if (scrollRange + verticalOffset <= 85) {
                     if (!set) {
-                        collapsingToolbar.setTitle(trip.getDestination());
+                        if (trip != null)
+                            collapsingToolbar.setTitle(trip.getDestination());
                         set = true;
                     }
 
@@ -211,7 +207,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         rentals.setOnClickListener(this);
         flights.setOnClickListener(this);
 
-//        placeName.setText(trip.getDestination());
 
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MM dd", Locale.UK);
 //        Date startDate = null;
@@ -219,14 +214,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 //            startDate = dateFormat.parse(trip.getStartStamp());
 //        } catch (ParseException e) {
 //            e.printStackTrace();
-//        }
-
-//        try{
-//            byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-//            mainImage.setImageBitmap(bitmap);
-//        }catch (Exception e){
-//            Toast.makeText(getApplicationContext(), "No image", Toast.LENGTH_SHORT).show();
 //        }
 
 
@@ -319,7 +306,8 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
                         .setTitle(R.string.ui_delete_trip)
                         .setMessage("Are you sure you want to delete your trip to " + trip.getDestination() + "?")
                         .setPositiveButton("DELETE", (dialog, which) -> {
-                            viewModel.deleteTrip(trip);
+                            if (trip != null)
+                                viewModel.deleteTrip(trip);
                             finish();
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());

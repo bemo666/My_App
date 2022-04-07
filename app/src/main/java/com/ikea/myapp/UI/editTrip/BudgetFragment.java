@@ -32,18 +32,20 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.ikea.myapp.models.Budget;
-import com.ikea.myapp.CustomCurrency;
+import com.ikea.myapp.models.CustomCurrency;
 import com.ikea.myapp.models.Expense;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.profile.CurrenciesRVAdapter;
-import com.ikea.myapp.ViewModels.ExpenseTypes;
+import com.ikea.myapp.models.ExpenseTypes;
+import com.ikea.myapp.utils.MyViewModelFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
 
 public class BudgetFragment extends Fragment implements View.OnClickListener {
+
     private MyTrip trip;
     private String id;
     private TextView currentTotal, budget, expenseTypeSelector, cancelButton, cancelButton2, saveButton, saveButton2, expenseCurrencySymbol, budgetCurrencySymbol, addExpenseTitle;
@@ -73,6 +75,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_budget, container, false);
         setBudgetSheet = new BottomSheetDialog(requireContext());
         setBudgetSheet.setContentView(R.layout.dialog_set_budget);
@@ -86,44 +89,38 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         currencySheet = new BottomSheetDialog(getContext());
         currencySheet.setContentView(R.layout.dialog_currency_list);
 
-        currentTotal =              view.findViewById(R.id.budget_current_total);
-        budget =                    view.findViewById(R.id.budget_total);
-        progressIndicator =         view.findViewById(R.id.budget_progressbar);
-        addExpenseButton =          view.findViewById(R.id.add_expense_button);
-        expensessRV =               view.findViewById(R.id.budget_expenses_rv);
-        budgetLinearLayout =        view.findViewById(R.id.budget_linear_layout);
-        viewModel =                 ViewModelProviders.of(requireActivity()).get(EditTripViewModel.class);
-        cancelButton2 =             setBudgetSheet.findViewById(R.id.set_budget_cancel_button);
-        saveButton2 =               setBudgetSheet.findViewById(R.id.set_budget_save_button);
-        budgetET =                  setBudgetSheet.findViewById(R.id.set_budget_edit_text);
-        setBudgetLinearLayout =     setBudgetSheet.findViewById(R.id.set_budget_layout);
-        setBudgetCostLayout =       setBudgetSheet.findViewById(R.id.set_budget_cost_layout);
-        budgetCurrencySymbol =      setBudgetSheet.findViewById(R.id.budget_money_symbol);
-        budgetCurrencySelector =       setBudgetSheet.findViewById(R.id.budget_money_symbol_arrow);
-        expenseCostLayout =         addExpenseSheet.findViewById(R.id.expense_cost_layout);
-        expenseDescriptionLayout =  addExpenseSheet.findViewById(R.id.expense_description_layout);
-        expenseTypeIcon =           addExpenseSheet.findViewById(R.id.expense_type_icon);
-        expenseTypeSelector =       addExpenseSheet.findViewById(R.id.expense_type_selector);
-        cancelButton =              addExpenseSheet.findViewById(R.id.expense_cancel);
-        saveButton =                addExpenseSheet.findViewById(R.id.expense_save);
-        amount =                    addExpenseSheet.findViewById(R.id.expense_cost_edit_text);
-        description =               addExpenseSheet.findViewById(R.id.expense_description_edit_text);
-        addExpenseLinearLayout =    addExpenseSheet.findViewById(R.id.add_expense_layout);
-        addExpenseTitle =           addExpenseSheet.findViewById(R.id.expense_title);
-        expenseCurrencySymbol =     addExpenseSheet.findViewById(R.id.expense_money_symbol);
-        expenseCurrencySelector =      addExpenseSheet.findViewById(R.id.expense_money_symbol_arrow);
-        rv =                        typesSheet.findViewById(R.id.recycler_view);
-        currencyRV =                currencySheet.findViewById(R.id.currency_recycler_view);
-        currencySearchBar =         currencySheet.findViewById(R.id.search_edit_text);
-        expenseTypesAdapter =       new ExpenseTypesAdapter(this);
-        ViewModelProvider.Factory factory = new ViewModelProvider.Factory() {
-            @NonNull
-            @Override
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new EditTripViewModel(getActivity().getApplication(), id);
-            }
-        };
-        viewModel = ViewModelProviders.of(this, factory).get(EditTripViewModel.class);
+        currentTotal = view.findViewById(R.id.budget_current_total);
+        budget = view.findViewById(R.id.budget_total);
+        progressIndicator = view.findViewById(R.id.budget_progressbar);
+        addExpenseButton = view.findViewById(R.id.add_expense_button);
+        expensessRV = view.findViewById(R.id.budget_expenses_rv);
+        budgetLinearLayout = view.findViewById(R.id.budget_linear_layout);
+        viewModel = ViewModelProviders.of(requireActivity()).get(EditTripViewModel.class);
+        cancelButton2 = setBudgetSheet.findViewById(R.id.set_budget_cancel_button);
+        saveButton2 = setBudgetSheet.findViewById(R.id.set_budget_save_button);
+        budgetET = setBudgetSheet.findViewById(R.id.set_budget_edit_text);
+        setBudgetLinearLayout = setBudgetSheet.findViewById(R.id.set_budget_layout);
+        setBudgetCostLayout = setBudgetSheet.findViewById(R.id.set_budget_cost_layout);
+        budgetCurrencySymbol = setBudgetSheet.findViewById(R.id.budget_money_symbol);
+        budgetCurrencySelector = setBudgetSheet.findViewById(R.id.budget_money_symbol_arrow);
+        expenseCostLayout = addExpenseSheet.findViewById(R.id.expense_cost_layout);
+        expenseDescriptionLayout = addExpenseSheet.findViewById(R.id.expense_description_layout);
+        expenseTypeIcon = addExpenseSheet.findViewById(R.id.expense_type_icon);
+        expenseTypeSelector = addExpenseSheet.findViewById(R.id.expense_type_selector);
+        cancelButton = addExpenseSheet.findViewById(R.id.expense_cancel);
+        saveButton = addExpenseSheet.findViewById(R.id.expense_save);
+        amount = addExpenseSheet.findViewById(R.id.expense_cost_edit_text);
+        description = addExpenseSheet.findViewById(R.id.expense_description_edit_text);
+        addExpenseLinearLayout = addExpenseSheet.findViewById(R.id.add_expense_layout);
+        addExpenseTitle = addExpenseSheet.findViewById(R.id.expense_title);
+        expenseCurrencySymbol = addExpenseSheet.findViewById(R.id.expense_money_symbol);
+        expenseCurrencySelector = addExpenseSheet.findViewById(R.id.expense_money_symbol_arrow);
+        rv = typesSheet.findViewById(R.id.recycler_view);
+        currencyRV = currencySheet.findViewById(R.id.currency_recycler_view);
+        currencySearchBar = currencySheet.findViewById(R.id.search_edit_text);
+        expenseTypesAdapter = new ExpenseTypesAdapter(this);
+
+        viewModel = ViewModelProviders.of(requireActivity(), new MyViewModelFactory(requireActivity().getApplication(), id)).get(EditTripViewModel.class);
         trip = viewModel.getTrip(id).getValue();
         viewModel.getTrip(id).observe(getViewLifecycleOwner(), myTrip -> {
             trip = myTrip;
@@ -169,7 +166,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         expensessRV.setNestedScrollingEnabled(false);
     }
 
-    public void editExpense(int position){
+    public void editExpense(int position) {
         Expense ex = trip.getBudget().getExpenses().get(position);
         amount.setText(String.valueOf(ex.getPrice()));
         currentPos = position;
@@ -188,8 +185,8 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         expenseTypeSelector.setText(ex.getType().name());
         expenseTypeIcon.setImageResource(ex.getType().getImage());
         expenseCurrencySymbol.setText(trip.getCurrency().getSymbol());
-        expenseCurrencySymbol.setOnClickListener(view ->currencySheet.show());
-        expenseCurrencySelector.setOnClickListener(view ->currencySheet.show());
+        expenseCurrencySymbol.setOnClickListener(view -> currencySheet.show());
+        expenseCurrencySelector.setOnClickListener(view -> currencySheet.show());
         type = ex.getType();
         addExpenseSheet.show();
 
@@ -209,7 +206,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
     private void budgetSheet() {
         budgetCurrencySymbol.setText(trip.getCurrency().getSymbol());
         budgetCurrencySymbol.setOnClickListener(view -> currencySheet.show());
-        budgetCurrencySelector.setOnClickListener(view ->currencySheet.show());
+        budgetCurrencySelector.setOnClickListener(view -> currencySheet.show());
         setBudgetLinearLayout.setOnClickListener(view -> {
             view.clearFocus();
             InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -221,7 +218,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         saveButton2.setOnClickListener(view -> {
             if (!budgetET.getText().toString().isEmpty()) {
                 double num = Double.parseDouble(budgetET.getText().toString());
-                if(num>=0) {
+                if (num >= 0) {
                     if (trip.getBudget() == null) {
                         Budget budget1 = new Budget(Double.parseDouble(budgetET.getText().toString()));
                         trip.setBudget(budget1);
@@ -257,7 +254,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         });
         cancelButton.setOnClickListener(view -> addExpenseSheet.dismiss());
         addExpenseSheet.setOnDismissListener(dialogInterface -> {
-            if(currentPos != -1){
+            if (currentPos != -1) {
                 amount.setText(null);
                 description.setText(null);
                 expenseTypeSelector.setText(getString(R.string.edittext_select_item_type));
@@ -277,10 +274,10 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
                     Budget budget1 = new Budget();
                     budget1.addExpense(expense);
                     trip.setBudget(budget1);
-                } else if(currentPos != -1) {
+                } else if (currentPos != -1) {
                     trip.getBudget().editExpense(expense, currentPos);
                     currentPos = -1;
-                } else{
+                } else {
                     trip.getBudget().addExpense(expense);
                 }
 
@@ -299,7 +296,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    public void selectExpenseType(ExpenseTypes type){
+    public void selectExpenseType(ExpenseTypes type) {
         expenseTypeSelector.setText(type.name());
         expenseTypeIcon.setImageResource(type.getImage());
         this.type = type;
@@ -318,7 +315,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         budget.setText(finalBudget);
         String finalCurrent = trip.getCurrency().getSymbol();
 //                trip.getCurrency().getSymbol()
-                ;
+        ;
         if (trip.getBudget() == null || trip.getBudget().getBudget() == null)
             finalCurrent += "0.00";
         else {
@@ -326,12 +323,14 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
             finalCurrent += prettyPrint(bd.doubleValue());
         }
         currentTotal.setText(finalCurrent);
-        if(trip.getBudget() != null){
-            if(trip.getBudget().getBudget() != null && trip.getBudget().getBudget() != 0){
+        if (trip.getBudget() != null) {
+            if (trip.getBudget().getBudget() != null && trip.getBudget().getBudget() != 0) {
                 progressIndicator.setVisibility(View.VISIBLE);
                 progressIndicator.setMax(100);
-                int progress = (int)((trip.getBudget().getCurrentTally()/trip.getBudget().getBudget())*100);
-                if(progress > 100) { progress = 100; }
+                int progress = (int) ((trip.getBudget().getCurrentTally() / trip.getBudget().getBudget()) * 100);
+                if (progress > 100) {
+                    progress = 100;
+                }
                 progressIndicator.setProgress(progress);
 
             } else {
@@ -346,7 +345,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
     }
 
-    public void setCurrency(Currency c){
+    public void setCurrency(Currency c) {
         trip.setCurrency(new CustomCurrency(c));
         viewModel.updateTrip(trip);
         updateData();

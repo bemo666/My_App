@@ -1,14 +1,10 @@
-package com.ikea.myapp;
+package com.ikea.myapp.utils;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 

@@ -26,7 +26,7 @@ import com.ikea.myapp.models.PlanHotel;
 import com.ikea.myapp.models.PlanNote;
 import com.ikea.myapp.models.PlanRental;
 import com.ikea.myapp.R;
-import com.ikea.myapp.getCorrectDate;
+import com.ikea.myapp.utils.getCorrectDate;
 
 public class ItineraryFragment extends Fragment {
     private TextView dates;
@@ -48,26 +48,25 @@ public class ItineraryFragment extends Fragment {
         dates = view.findViewById(R.id.editTrip_dates);
         itineraryRV = view.findViewById(R.id.itinerary_recycler_view);
 
-        viewModel = ViewModelProviders.of(this).get(EditTripViewModel.class);
+        rvAdapter = new ItineraryRVAdapter(this);
+        itineraryRV.setAdapter(rvAdapter);
+        itineraryRV.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        viewModel = ViewModelProviders.of(requireActivity()).get(EditTripViewModel.class);
         viewModel.getTrip(id).observe(getViewLifecycleOwner(), myTrip -> {
-            if (myTrip != null) {
+            if (myTrip != null) { // if null trip deleted todo - handle it
                 trip = myTrip;
                 updateData();
             }
         });
-        rvAdapter = new ItineraryRVAdapter(this);
-        rvAdapter.setList(trip);
-        LinearLayoutManager layoutManager2 = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
-        itineraryRV.setAdapter(rvAdapter);
-        itineraryRV.setLayoutManager(layoutManager2);
 
-        getCorrectDate date = new getCorrectDate(trip);
-        dates.setText(date.getStartDateUpcomingFormat() + getResources().getString(R.string.ui_dash) + date.getEndDateUpcomingFormat());
         return view;
     }
 
     private void updateData() {
         rvAdapter.setList(trip);
+        getCorrectDate date = new getCorrectDate(trip);
+        dates.setText(date.getStartDateUpcomingFormat() + getResources().getString(R.string.ui_dash) + date.getEndDateUpcomingFormat());
     }
 
     public void checkForAddHeader(int type) {

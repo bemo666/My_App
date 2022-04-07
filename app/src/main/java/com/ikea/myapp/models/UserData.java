@@ -1,4 +1,4 @@
-package com.ikea.myapp;
+package com.ikea.myapp.models;
 
 public class UserData {
     private String firstName, email;

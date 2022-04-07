@@ -1,4 +1,4 @@
-package com.ikea.myapp;
+package com.ikea.myapp.models;
 
 import java.io.Serializable;
 import java.util.Currency;

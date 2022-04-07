@@ -9,6 +9,7 @@ import com.amadeus.Amadeus;
 import com.amadeus.Params;
 import com.amadeus.exceptions.ResponseException;
 import com.amadeus.resources.Location;
+import com.google.android.gms.maps.model.LatLng;
 import com.ikea.myapp.R;
 import com.ikea.myapp.utils.AppExecutors;
 
@@ -24,7 +25,7 @@ public class AmadeusApi {
         }
     }
 
-    public MutableLiveData<Location[]> getLocations(String code) {
+    public MutableLiveData<Location[]> getInspirationLocations(String code) {
 
         MutableLiveData<Location[]> locations = new MutableLiveData<>();
         AppExecutors.getInstance().networkIO().execute(new Runnable() {
@@ -36,6 +37,24 @@ public class AmadeusApi {
                 } catch (ResponseException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+        return locations;
+    }
+    public MutableLiveData<Location[]> getNearestAirport(LatLng location) {
+
+        MutableLiveData<Location[]> locations = new MutableLiveData<>();
+        AppExecutors.getInstance().networkIO().execute(() -> {
+            try {
+                locations.postValue(amadeus.referenceData.locations.airports.get(
+                        Params.with("latitude", location.latitude).and("longitude", location.longitude)
+                ));
+                Log.d("tag", "getNearestAirport: success");
+
+            } catch (ResponseException e) {
+                e.printStackTrace();
+                Log.d("tag", "getNearestAirport: fail");
+
             }
         });
         return locations;

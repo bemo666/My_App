@@ -3,22 +3,23 @@ package com.ikea.myapp.UI.newTrip;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +33,11 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -52,8 +55,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.ikea.myapp.CustomCurrency;
-import com.ikea.myapp.CustomProgressDialog;
+import com.ikea.myapp.data.remote.AmadeusApi;
+import com.ikea.myapp.models.CustomCurrency;
+import com.ikea.myapp.models.CustomProgressDialog;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
@@ -67,6 +71,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.TimeZone;
 
 public class NewTripActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -94,6 +99,9 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private byte[] image;
     private CustomCurrency c;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    AmadeusApi amadeusRequests;
 
 
     //Location Permission
@@ -124,6 +132,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         getLocation = findViewById(R.id.getLocation);
         c = new CustomCurrency(Currency.getInstance(Locale.US));
 
+
         //Set welcome text
         firebaseDatabase = FirebaseDatabase.getInstance();
         if (FirebaseManager.loggedIn()) {
@@ -133,7 +142,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         viewmodel = new ViewModelProvider(this).get(NewTripActivityViewModel.class);
         first = true;
 
-
+        populateAndUpdateTimeZone();
         viewmodel.getName().observe(this, name -> {
             if (name != null) {
                 welcomeText.setText(getString(R.string.newtrip_hey) + name +
@@ -163,31 +172,51 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         initializeLocationStuff();
-
     }
 
+    private void populateAndUpdateTimeZone() {
+        AutoCompleteTextView editTextFilledExposedDropdown =  findViewById(R.id.filled_exposed_dropdown);
+        String[] idArray = TimeZone.getAvailableIDs();
+        Log.d("tag", idArray.length+ "");
+        ArrayAdapter<String> idAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, idArray);
+        Log.d("tag", idAdapter.getCount() + "");
+        idAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        editTextFilledExposedDropdown.setAdapter(idAdapter);
+
+        // now set the spinner to default timezone from the time zone settings
+//        for (int i = 0; i < idAdapter.getCount(); i++) {
+//            if (idAdapter.getItem(i).equals(TimeZone.getDefault().getID())) {
+//                editTextFilledExposedDropdown.setSelection(i);
+//            }
+//        }
+    }
+
+//    private void populateAndUpdateTimeZone() {
+//
+//        //populate spinner with all timezones
+//        Spinner mSpinner = (Spinner) findViewById(R.id.mytimezonespinner);
+//        String[] idArray = TimeZone.getAvailableIDs();
+//        ArrayAdapter<String> idAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,
+//                idArray);
+//        idAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        mSpinner.setAdapter(idAdapter);
+//
+//        // now set the spinner to default timezone from the time zone settings
+//        for (int i = 0; i < idAdapter.getCount(); i++) {
+//            if (idAdapter.getItem(i).equals(TimeZone.getDefault().getID())) {
+//                mSpinner.setSelection(i);
+//            }
+//        }
+//    }
+
+
     private void initializeAPIs() {
+        amadeusRequests = new AmadeusApi(this);
         //Initialize the places api
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.g_apiKey));
         }
-//            AmadeusRequests tripRepo = new AmadeusRequests();
-//            tripRepo.getLocations().observe(NewTripActivity.this, locations -> {
-//                if (locations != null) {
-//                    for (Location l : locations) {
-//                        Log.d("tag", "name: " + l.getName());
-//                        Log.d("tag", "Analytics: " + l.getAnalytics());
-//                        Log.d("tag", "DetailedName: " + l.getDetailedName());
-//                        Log.d("tag", "IataCode: " + l.getIataCode());
-//                        Log.d("tag", "SubType: " + l.getSubType());
-//                        Log.d("tag", "TimezoneOffset: " + l.getTimeZoneOffset());
-//                        Log.d("tag", "Type: " + l.getType());
-//                        Log.d("tag", "Distance: " + l.getDistance());
-//                        Log.d("tag", "Relevance: " + l.getRelevance());
-//                        Log.d("tag", "GeoCode: " + l.getGeoCode());
-//                    }
-//                }
-//            });
+
     }
 
     private void initializeLocationStuff() {
@@ -210,54 +239,100 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             isDestination = false;
             startActivityForResult(intent, 100);
         });
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    if (location != null) {
+                        updateLocationVar(location);
+                    }
+                }
+                fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+            }
+        };
         getLocation.setOnClickListener(view -> {
             updateGPS();
         });
-
     }
 
     private void updateLocationVar(Location location) {
-        if(location!=null) {
+        if (location != null) {
             originLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             Toast.makeText(this, originLatLng.toString(), Toast.LENGTH_SHORT).show();
+//            amadeusRequests.getNearestAirport(originLatLng).observe(NewTripActivity.this, locations -> {
+//                if (locations != null) {
+//                    Log.d("tag", "length: " + locations.length);
+//                    for (com.amadeus.resources.Location l : locations) {
+//
+//                        Log.d("tag", "name: " + l.getName());
+////                        Log.d("tag", "Analytics: " + l.getAnalytics());
+//                        Log.d("tag", "DetailedName: " + l.getDetailedName());
+//                        Log.d("tag", "IataCode: " + l.getIataCode());
+//                        Log.d("tag", "SubType: " + l.getSubType());
+////                        Log.d("tag", "TimezoneOffset: " + l.getTimeZoneOffset());
+////                        Log.d("tag", "Type: " + l.getType());
+////                        Log.d("tag", "Distance: " + l.getDistance());
+////                        Log.d("tag", "Relevance: " + l.getRelevance());
+////                        Log.d("tag", "GeoCode: " + l.getGeoCode());
+//                    }
+//                }
+//            });
         } else {
-//            fusedLocationProviderClient.
             Toast.makeText(this, "Can't find your current location", Toast.LENGTH_SHORT).show();
+            getLiveLocation();
         }
     }
 
-    private void updateGPS(){
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(locationEnabled()){
-//                fusedLocationProviderClient.getCurrentLocation();
-                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, this::updateLocationVar);
-//                fusedLocationProviderClient.flushLocations();
+
+    @SuppressLint("MissingPermission")
+    private void getLiveLocation() {
+        Log.d("tag", "getting live location");
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    private void updateGPS() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (locationEnabled()) {
+                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        updateLocationVar(location);
+                    } else {
+                        getLiveLocation();
+                    }
+                });
             }
-        }
-        else{
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
+        } else {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
         }
     }
 
     private boolean locationEnabled() {
-        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         boolean gps_enabled = false;
         boolean network_enabled = false;
 
         try {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch(Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         try {
             network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch(Exception ex) {}
+        } catch (Exception ex) {
+        }
 
-        if(!gps_enabled && !network_enabled) {
-            // notify user
+        if (!gps_enabled && !network_enabled) {
             androidx.appcompat.app.AlertDialog.Builder alertDialog = new androidx.appcompat.app.AlertDialog.Builder(this, R.style.AlertDialogTheme_LocationOff);
             alertDialog.setTitle(R.string.gps_network_not_enabled);
+            alertDialog.setMessage(R.string.gps_network_not_enabled_message);
             alertDialog.setPositiveButton(R.string.open_location_settings, (dialog, which) -> {
                 startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
             });
@@ -294,7 +369,6 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK) {
-            //When successful, initialize place
             if (isDestination) {
                 dest = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
                 destination = dest.getName();
@@ -305,10 +379,13 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                 orig = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
                 origin = orig.getName();
                 inputOrigin.setText(orig.getName());
+                Location l = new Location("y");
+                l.setLatitude(Objects.requireNonNull(orig.getLatLng()).latitude);
+                l.setLongitude(Objects.requireNonNull(orig.getLatLng()).longitude);
+                updateLocationVar(l);
                 originLatLng = orig.getLatLng();
             }
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-            //When Error, initiate status
             Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
             Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
         }
@@ -368,45 +445,45 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-        private void createTrip(){
-            MyTrip data = null;
-            if (FirebaseManager.loggedIn()) {
-                DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData/" + firebaseUser.getUid()).child("Trips").push();
-                if (tripType.equals("dest"))
-                    data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
-                else if (tripType.equals("orig"))
-                    data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, startStamp, placeId, pushedTrip.getKey(), c);
+    private void createTrip() {
+        MyTrip data = null;
+        if (FirebaseManager.loggedIn()) {
+            DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData/" + firebaseUser.getUid()).child("Trips").push();
+            if (tripType.equals("dest"))
+                data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
+            else if (tripType.equals("orig"))
+                data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, startStamp, placeId, pushedTrip.getKey(), c);
 
-                pushedTrip.setValue(data).addOnCompleteListener(task -> {
-                    progressDialog.hide();
-                    if (task.isSuccessful()) {
-                        Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
-                        intent.putExtra("id", pushedTrip.getKey());
-                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
-                        handler.postDelayed(this::finish, 900);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
+            pushedTrip.setValue(data).addOnCompleteListener(task -> {
+                progressDialog.hide();
+                if (task.isSuccessful()) {
+                    Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
+                    intent.putExtra("id", pushedTrip.getKey());
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+                    handler.postDelayed(this::finish, 900);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
 
-                DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData").push();
+            DatabaseReference pushedTrip = firebaseDatabase.getReference("UserData").push();
 
-                if (tripType.equals("dest"))
-                    data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
-                else if (tripType.equals("orig"))
-                    data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
+            if (tripType.equals("dest"))
+                data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
+            else if (tripType.equals("orig"))
+                data = new MyTrip(origin, destination, originLatLng, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
 
-                viewmodel.insertLocalTrip(data);
+            viewmodel.insertLocalTrip(data);
 
 //                viewmodel.setLocalImage(data.getId(), image);
 
-                Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
-                intent.putExtra("id", pushedTrip.getKey());
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
-                handler.postDelayed(this::finish, 900);
+            Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
+            intent.putExtra("id", pushedTrip.getKey());
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+            handler.postDelayed(this::finish, 900);
 
-            }
         }
+    }
 }
 

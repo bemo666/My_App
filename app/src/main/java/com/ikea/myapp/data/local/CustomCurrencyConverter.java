@@ -2,12 +2,7 @@ package com.ikea.myapp.data.local;
 
 import androidx.room.TypeConverter;
 
-import com.ikea.myapp.CustomCurrency;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.ikea.myapp.models.CustomCurrency;
 
 public class CustomCurrencyConverter {
 

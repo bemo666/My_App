@@ -47,6 +47,7 @@
     <string name="newtrip_origin"><b>Origin</b></string>
     <string name="newtrip_create_new_trip"><b>Start planning</b></string>
     <string name="newtrip_inspiration_text"><b>Need some flight inspiration?</b>\nFill in your city of origin to find a destination that suits you!</string>
+    <string name="newtrip_timezone"><b>Timezone</b></string>
 
     <string name="edit_trip_hotels">Hotels</string>
     <string name="edit_trip_flights">Flights</string>
@@ -89,5 +90,6 @@
     <string name="ui_tbd">TBD</string>
     <string name="open_location_settings">Open settings</string>
     <string name="gps_network_not_enabled">Gps network not enabled</string>
+    <string name="gps_network_not_enabled_message">In order to find your location your location services have to be enabled</string>
 
 </resources>

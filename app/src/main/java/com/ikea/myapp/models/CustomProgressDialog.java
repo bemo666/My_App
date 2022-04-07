@@ -1,4 +1,4 @@
-package com.ikea.myapp;
+package com.ikea.myapp.models;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
+import com.ikea.myapp.R;
 
 
 public class CustomProgressDialog extends Dialog {

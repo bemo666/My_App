@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikea.myapp.R;
-import com.ikea.myapp.ViewModels.ExpenseTypes;
+import com.ikea.myapp.models.ExpenseTypes;
 
 public class ExpenseTypesAdapter extends RecyclerView.Adapter<ExpenseTypesAdapter.ViewHolder> {
 

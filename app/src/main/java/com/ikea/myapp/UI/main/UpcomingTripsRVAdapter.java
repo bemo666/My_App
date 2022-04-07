@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
-import com.ikea.myapp.getCorrectDate;
+import com.ikea.myapp.utils.getCorrectDate;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.Calendar;

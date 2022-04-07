@@ -1,4 +1,4 @@
-package com.ikea.myapp;
+package com.ikea.myapp.utils;
 
 import com.ikea.myapp.models.MyTrip;
 

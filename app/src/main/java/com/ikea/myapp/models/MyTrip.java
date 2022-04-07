@@ -5,7 +5,6 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.ikea.myapp.CustomCurrency;
 
 import java.io.Serializable;
 import java.util.ArrayList;

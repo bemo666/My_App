@@ -1,13 +1,11 @@
-package com.ikea.myapp;
+package com.ikea.myapp.utils;
 
 import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ikea.myapp.data.remote.FirebaseManager;
+import com.ikea.myapp.utils.NetworkChangeReceiver;
 
 public class MyApp extends Application implements Application.ActivityLifecycleCallbacks {
     public static Activity appactivity;

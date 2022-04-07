@@ -1,7 +1,5 @@
 package com.ikea.myapp.models;
 
-import com.ikea.myapp.ViewModels.ExpenseTypes;
-
 import java.io.Serializable;
 
 public class Expense implements Serializable {

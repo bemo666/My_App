@@ -1,4 +1,4 @@
-package com.ikea.myapp.ViewModels;
+package com.ikea.myapp.models;
 
 import com.ikea.myapp.R;
 

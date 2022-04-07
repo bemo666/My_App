@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ikea.myapp.CustomCurrency;
+import com.ikea.myapp.models.CustomCurrency;
 import com.ikea.myapp.models.Expense;
 import com.ikea.myapp.R;
 
