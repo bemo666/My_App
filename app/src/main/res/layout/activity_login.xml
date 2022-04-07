@@ -5,6 +5,7 @@
     android:id="@+id/signInRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/barelyGrey"
     android:orientation="vertical"
     tools:context=".UI.LoginActivity">
@@ -29,6 +30,7 @@
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/login_switcher"
+                style="@style/LoginTablayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/orange"
@@ -37,7 +39,6 @@
                 app:tabIndicatorGravity="stretch"
                 app:tabRippleColor="@color/white"
                 app:tabSelectedTextColor="@color/white"
-                style="@style/LoginTablayout"
                 app:tabTextColor="@color/darkGrey" />
 
             <ImageView

@@ -18,9 +18,6 @@ public class MyTrip implements Serializable {
     private String id;
     private String placeId;
     private String startDate, endDate, startStamp, endStamp;
-    private String origin;
-    private Double originLat = null;
-    private Double originLon = null;
     private String destination;
     private Double destinationLat;
     private Double destinationLon;
@@ -29,26 +26,6 @@ public class MyTrip implements Serializable {
     private List<PlanHeader> planHeaders;
 
     public MyTrip() {
-    }
-
-    public MyTrip(String origin, String destination, LatLng originLatLng, LatLng destinationLatLng,
-                  String startDate, String startStamp, String endDate, String endStamp, String placeId,
-                  String id, CustomCurrency currency) {
-        this.origin = origin;
-        this.destination = destination;
-        this.originLat = originLatLng.latitude;
-        this.originLon = originLatLng.longitude;
-        this.destinationLat = destinationLatLng.latitude;
-        this.destinationLon = destinationLatLng.longitude;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startStamp = startStamp;
-        this.endStamp = endStamp;
-        this.placeId = placeId;
-        this.id = id;
-        this.budget = new Budget();
-        this.currency = currency;
-        this.planHeaders = new ArrayList<PlanHeader>();
     }
 
     public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
@@ -64,7 +41,7 @@ public class MyTrip implements Serializable {
         this.id = id;
         this.budget = new Budget();
         this.currency = currency;
-        this.planHeaders = new ArrayList<PlanHeader>();
+        this.planHeaders = new ArrayList<>();
     }
 
 
@@ -114,30 +91,6 @@ public class MyTrip implements Serializable {
 
     public void setEndStamp(String endStamp) {
         this.endStamp = endStamp;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
-    public Double getOriginLat() {
-        return originLat;
-    }
-
-    public void setOriginLat(Double originLat) {
-        this.originLat = originLat;
-    }
-
-    public Double getOriginLon() {
-        return originLon;
-    }
-
-    public void setOriginLon(Double originLon) {
-        this.originLon = originLon;
     }
 
     public String getDestination() {
@@ -196,7 +149,7 @@ public class MyTrip implements Serializable {
 
     public void addPlanHeader(PlanHeader h) {
         if (this.planHeaders == null)
-            this.planHeaders = new ArrayList<PlanHeader>();
+            this.planHeaders = new ArrayList<>();
         this.planHeaders.add(h);
     }
 

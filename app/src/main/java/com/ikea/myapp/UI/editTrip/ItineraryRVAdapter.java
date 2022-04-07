@@ -45,7 +45,9 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-        holder.setDetails(trip.getPlanHeaders().get(position), position);
+        if (trip != null) {
+            holder.setDetails(trip.getPlanHeaders().get(position), position);
+        }
         holder.arrow.setOnClickListener(view -> expand(holder));
         holder.itemView.setOnClickListener(view -> expand(holder));
         holder.title.setOnFocusChangeListener((view, b) -> {
@@ -112,15 +114,17 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 fragment.checkForAddHeader(header.getObjectType());
                 notifyItemChanged(position);
             });
-            internalRVAdapter = new ItineraryInternalRVAdapter(this, header.getObjectType());
-            for (Object o : header.getObjects())
-                Log.d("tag", o.toString());
-            Log.d("tag", header.getObjects().getClass().toString());
-            internalRVAdapter.setList(header.getObjects());
-            LinearLayoutManager layoutManager2 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-            internalRV.setAdapter(internalRVAdapter);
-            internalRV.setNestedScrollingEnabled(false);
-            internalRV.setLayoutManager(layoutManager2);
+            if(trip != null && header.getObjects() != null) {
+                internalRVAdapter = new ItineraryInternalRVAdapter(this, header.getObjectType());
+                for (Object o : header.getObjects())
+                    Log.d("tag", o.toString());
+                Log.d("tag", header.getObjects().getClass().toString());
+                internalRVAdapter.setList(header.getObjects());
+                LinearLayoutManager layoutManager2 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                internalRV.setAdapter(internalRVAdapter);
+                internalRV.setNestedScrollingEnabled(false);
+                internalRV.setLayoutManager(layoutManager2);
+            }
         }
 
         public void editObject(Object object, int adapterPosition) {

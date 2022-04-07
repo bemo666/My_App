@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".UI.profile.ProfileActivity">
 
     <LinearLayout
@@ -114,9 +115,9 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_marginVertical="@dimen/spacing"
+                android:contentDescription="@string/im_attr_log_in_image"
                 android:scaleType="fitCenter"
-                android:src="@drawable/im_log_in"
-                android:contentDescription="@string/im_attr_log_in_image" />
+                android:src="@drawable/im_log_in" />
 
             <TextView
                 android:layout_width="wrap_content"
