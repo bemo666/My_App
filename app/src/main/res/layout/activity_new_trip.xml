@@ -5,6 +5,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:clickable="true"
     android:orientation="vertical"
     tools:context=".UI.newTrip.NewTripActivity">
@@ -87,21 +88,34 @@
             android:focusableInTouchMode="false" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layoutInputTimezone"
-        style="@style/BlueTextBoxes"
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_side"
         android:layout_marginTop="10dp"
-        android:hint="@string/newtrip_timezone"
-        app:startIconDrawable="@drawable/ic_time">
-        <AutoCompleteTextView
-            android:id="@+id/filled_exposed_dropdown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/blue"
-            android:inputType="none"/>
-    </com.google.android.material.textfield.TextInputLayout>
+        app:cardCornerRadius="@dimen/card_radius_thin"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/blue"
+        app:strokeWidth="2dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="12dp"
+                android:src="@drawable/ic_time" />
+
+            <Spinner
+                android:id="@+id/mytimezonespinner"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/create_trip"
@@ -117,71 +131,71 @@
         android:textSize="18sp"
         app:cornerRadius="@dimen/card_radius_thin" />
 
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginHorizontal="@dimen/margin_side"
-        android:layout_marginTop="30dp" />
+    <!--    <com.google.android.material.divider.MaterialDivider-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="2dp"-->
+    <!--        android:layout_marginHorizontal="@dimen/margin_side"-->
+    <!--        android:layout_marginTop="30dp" />-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/margin_side"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical">
-
-
-        <TextView
-            android:id="@+id/inspirationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/newtrip_inspiration_text"
-            android:textColor="@color/darkGrey"
-            android:textSize="20sp" />
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginHorizontal="@dimen/margin_side"-->
+    <!--        android:layout_marginTop="50dp"-->
+    <!--        android:orientation="vertical">-->
 
 
-        <RelativeLayout
-            android:id="@+id/origin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <!--        <TextView-->
+    <!--            android:id="@+id/inspirationText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="@string/newtrip_inspiration_text"-->
+    <!--            android:textColor="@color/darkGrey"-->
+    <!--            android:textSize="20sp" />-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutInputOrigin"
-                style="@style/BlueTextBoxes"
-                android:layout_toLeftOf="@id/getLocation"
-                android:hint="@string/newtrip_origin"
-                app:startIconDrawable="@drawable/ic_edit_location">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputOrigin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
+    <!--        <RelativeLayout-->
+    <!--            android:id="@+id/origin"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content">-->
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/getLocation"
-                android:layout_width="55dp"
-                android:layout_height="60dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:backgroundTint="@color/green"
-                app:cornerRadius="@dimen/card_radius_thin"
-                app:elevation="@dimen/button_elevation"
-                app:icon="@drawable/ic_location"
-                app:iconPadding="20dp"
-                app:iconSize="25dp" />
-        </RelativeLayout>
+    <!--            <com.google.android.material.textfield.TextInputLayout-->
+    <!--                android:id="@+id/layoutInputOrigin"-->
+    <!--                style="@style/BlueTextBoxes"-->
+    <!--                android:layout_toLeftOf="@id/getLocation"-->
+    <!--                android:hint="@string/newtrip_origin"-->
+    <!--                app:startIconDrawable="@drawable/ic_edit_location">-->
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/placesRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_side"
-            android:background="#FFF"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-    </LinearLayout>
+    <!--                <com.google.android.material.textfield.TextInputEditText-->
+    <!--                    android:id="@+id/inputOrigin"-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content" />-->
+    <!--            </com.google.android.material.textfield.TextInputLayout>-->
+
+    <!--            <com.google.android.material.button.MaterialButton-->
+    <!--                android:id="@+id/getLocation"-->
+    <!--                android:layout_width="55dp"-->
+    <!--                android:layout_height="60dp"-->
+    <!--                android:layout_alignParentEnd="true"-->
+    <!--                android:layout_marginStart="5dp"-->
+    <!--                android:layout_marginEnd="5dp"-->
+    <!--                android:backgroundTint="@color/green"-->
+    <!--                app:cornerRadius="@dimen/card_radius_thin"-->
+    <!--                app:elevation="@dimen/button_elevation"-->
+    <!--                app:icon="@drawable/ic_location"-->
+    <!--                app:iconPadding="20dp"-->
+    <!--                app:iconSize="25dp" />-->
+    <!--        </RelativeLayout>-->
+
+    <!--        <androidx.recyclerview.widget.RecyclerView-->
+    <!--            android:id="@+id/placesRecyclerView"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="@dimen/margin_side"-->
+    <!--            android:background="#FFF"-->
+    <!--            android:orientation="vertical"-->
+    <!--            android:visibility="gone"-->
+    <!--            app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
+    <!--    </LinearLayout>-->
 
 </LinearLayout>

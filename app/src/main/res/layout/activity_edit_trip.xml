@@ -5,6 +5,7 @@
     style="@style/AppBottomSheetDialogTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".UI.editTrip.EditTripActivity"
     tools:ignore="ContentDescription">
 

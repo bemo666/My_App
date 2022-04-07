@@ -53,11 +53,7 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 holder.titleLayout.setBoxBackgroundColorResource(R.color.lightGrey);
                 expand(holder);
             } else {
-                Log.d("tag", "focus off");
                 holder.titleLayout.setBoxBackgroundColorResource(R.color.white);
-                if(!holder.title.getText().toString().equals(holder.titleString)){
-                    updateTitle(holder.title.getText().toString(), position);
-                }
             }
 
         });
@@ -91,7 +87,6 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
     class SliderViewHolder extends RecyclerView.ViewHolder {
         private boolean expanded = false;
-        private String titleString;
         private final ImageView arrow;
         private final TextInputEditText title;
         private final TextInputLayout titleLayout;
@@ -112,7 +107,6 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
         void setDetails(PlanHeader header, int position) {
             arrow.setRotation(-90);
-            titleString = header.getMyTitle();
             title.setText(header.getMyTitle());
             addButton.setOnClickListener(view -> {
                 fragment.checkForAddHeader(header.getObjectType());

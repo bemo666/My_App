@@ -5,10 +5,18 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,8 +46,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentAdapter fragmentAdapter;
     private ImageView backdrop;
     private AppBarLayout appBarLayout;
+    private Animation animTop, animBottom;
+    private ImageView logo;
+    private TextView appName;
+    private LinearLayout SplashMask;
+
 
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 
         //Initializing the activity
         super.onCreate(savedInstanceState);
@@ -52,6 +66,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         backdrop = findViewById(R.id.backdrop);
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.app_bar);
+        logo = findViewById(R.id.logo);
+        appName =findViewById(R.id.app_name);
+        SplashMask = findViewById(R.id.splash_mask);
+
+        animTop = AnimationUtils.loadAnimation(this, R.anim.slide_from_top);
+        animBottom = AnimationUtils.loadAnimation(this, R.anim.slide_from_bottom);
+
+        logo.startAnimation(animTop);
+        appName.startAnimation(animBottom);
 
         //Setting the Actionbar attributes
         setSupportActionBar(toolbar);
@@ -86,6 +109,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         fragments.setUserInputEnabled(false);
+
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> {
+            SplashMask.setVisibility(View.GONE);
+        }, 2250);
     }
 
     @Override

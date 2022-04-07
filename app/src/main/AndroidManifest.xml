@@ -16,13 +16,6 @@
         android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp">
-
-        <activity
-            android:name=".UI.main.MainActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/MainTheme"
-            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".UI.editTrip.EditTripActivity"
             android:exported="false"
@@ -45,10 +38,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/NewTripTheme" />
         <activity
-            android:name=".UI.SplashScreen"
+            android:name=".UI.main.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/MainTheme"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

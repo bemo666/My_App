@@ -107,15 +107,17 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
         viewModel.getTrip(id).observe(this, myTrip -> {
             trip = myTrip;
-            if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
-                    Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
-                liveBadge.setVisibility(View.VISIBLE);
-                liveDot.startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink));
-            } else {
-                liveDot.clearAnimation();
-                liveBadge.setVisibility(View.GONE);
+            if(trip!=null) {
+                if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
+                        Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
+                    liveBadge.setVisibility(View.VISIBLE);
+                    liveDot.startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink));
+                } else {
+                    liveDot.clearAnimation();
+                    liveBadge.setVisibility(View.GONE);
+                }
+                placeName.setText(trip.getDestination());
             }
-            placeName.setText(trip.getDestination());
         });
 
         //Fragments setup
