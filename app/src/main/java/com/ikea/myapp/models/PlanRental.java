@@ -2,7 +2,7 @@ package com.ikea.myapp.models;
 
 import java.io.Serializable;
 
-public class PlanRental extends Plan implements Serializable {
+public class PlanRental implements Serializable {
     private String pickUpPlace, pickUpDate, note, dropOffPlace, dropOffDate, confirmationNumber;
     private Expense cost;
 

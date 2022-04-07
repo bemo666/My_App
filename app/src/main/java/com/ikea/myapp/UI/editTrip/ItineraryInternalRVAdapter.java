@@ -9,6 +9,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ikea.myapp.models.PlanActivity;
 import com.ikea.myapp.models.PlanFlight;
 import com.ikea.myapp.models.PlanHeader;
@@ -26,6 +27,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<ItineraryIn
     private List<Object> objects;
     private final ItineraryRVAdapter.SliderViewHolder parentAdapter;
     private final int type;
+    final static ObjectMapper mapper = new ObjectMapper();
 
     public ItineraryInternalRVAdapter(ItineraryRVAdapter.SliderViewHolder parentAdapter, int type) {
         this.type = type;
@@ -61,29 +63,27 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<ItineraryIn
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-//        switch (type) {
-//            case PlanHeader.NOTE:
-//                holder.setDetails(new ArrayList<>(((HashMap) notes.get(position)).values()).get(0));
-//                break;
-//            case PlanHeader.HOTEL:
-//                holder.setDetails(new ArrayList<>(((HashMap) hotels.get(position)).values()).get(0));
-//                break;
-//            case PlanHeader.RENTAL:
-//                holder.setDetails(new ArrayList<>(((HashMap) rentals.get(position)).values()).get(0));
-//                break;
-//            case PlanHeader.FLIGHT:
-//                holder.setDetails(new ArrayList<>(((HashMap) flights.get(position)).values()).get(0));
-//                break;
-//            case PlanHeader.ACTIVITY:
-//                holder.setDetails(new ArrayList<>(((HashMap) activities.get(position)).values()).get(0));
-//                break;
-//        }
+        switch (type) {
+            case PlanHeader.NOTE:
+                holder.setDetails(mapper.convertValue(objects.get(position), PlanNote.class));
+                break;
+            case PlanHeader.HOTEL:
+                break;
+            case PlanHeader.RENTAL:
+                break;
+            case PlanHeader.FLIGHT:
+                break;
+            case PlanHeader.ACTIVITY:
+                break;
+        }
     }
 
 
     @Override
     public int getItemCount() {
-        return objects.size();
+        if(objects != null)
+            return objects.size();
+        return 0;
     }
 
     class SliderViewHolder extends RecyclerView.ViewHolder {
@@ -120,11 +120,10 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<ItineraryIn
         }
 
         void setDetails(Object object) {
-            Class<?> aClass = object.getClass();
-            if (PlanNote.class.equals(aClass)) {
+            if (object instanceof PlanNote) {
                 this.myNote = (PlanNote) object;
                 text.setText(myNote.getNote());
-            } else if (PlanHotel.class.equals(aClass)) {
+            } else if (object instanceof PlanHotel) {
 
             }
         }

@@ -53,7 +53,11 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 holder.titleLayout.setBoxBackgroundColorResource(R.color.lightGrey);
                 expand(holder);
             } else {
+                Log.d("tag", "focus off");
                 holder.titleLayout.setBoxBackgroundColorResource(R.color.white);
+                if(!holder.title.getText().toString().equals(holder.titleString)){
+                    updateTitle(holder.title.getText().toString(), position);
+                }
             }
 
         });
@@ -87,6 +91,7 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
     class SliderViewHolder extends RecyclerView.ViewHolder {
         private boolean expanded = false;
+        private String titleString;
         private final ImageView arrow;
         private final TextInputEditText title;
         private final TextInputLayout titleLayout;
@@ -107,20 +112,18 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
         void setDetails(PlanHeader header, int position) {
             arrow.setRotation(-90);
+            titleString = header.getMyTitle();
             title.setText(header.getMyTitle());
             addButton.setOnClickListener(view -> {
                 fragment.checkForAddHeader(header.getObjectType());
                 notifyItemChanged(position);
             });
             internalRVAdapter = new ItineraryInternalRVAdapter(this, header.getObjectType());
-            for (Object o : header.getObjects())
-                Log.d("tag", o.toString());
-            Log.d("tag", header.getObjects().getClass().toString());
+
             internalRVAdapter.setList(header.getObjects());
-            LinearLayoutManager layoutManager2 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             internalRV.setAdapter(internalRVAdapter);
             internalRV.setNestedScrollingEnabled(false);
-            internalRV.setLayoutManager(layoutManager2);
+            internalRV.setLayoutManager(new LinearLayoutManager(context));
         }
 
         public void editObject(Object object, int adapterPosition) {
@@ -134,6 +137,11 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
         hasItems = true;
         notifyDataSetChanged();
 
+    }
+
+    public void updateTitle(String title, int position){
+        trip.getPlanHeaders().get(position).setMyTitle(title);
+        fragment.updateTrip(trip);
     }
 
 //    public void setList() {

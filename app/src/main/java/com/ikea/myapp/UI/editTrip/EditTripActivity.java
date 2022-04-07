@@ -101,6 +101,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         liveDot = findViewById(R.id.live_dot);
         mainImage = findViewById(R.id.editTrip_mainImage);
         tabLayout = findViewById(R.id.editTripTabLayout);
+        itineraryFragment = new ItineraryFragment(id);
 
         viewModel = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), id)).get(EditTripViewModel.class);
 
@@ -119,7 +120,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
         //Fragments setup
         ArrayList<Fragment> list = new ArrayList<>();
-        list.add(new ItineraryFragment(id));
+        list.add(itineraryFragment);
         list.add(new MapFragment(id));
         list.add(new BudgetFragment(id));
         FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), list);

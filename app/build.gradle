@@ -71,6 +71,7 @@ dependencies {
     //Lifecycle Components
     def version= '1.1.1'
     implementation "android.arch.lifecycle:extensions:$version"
+    implementation "android.arch.lifecycle:viewmodel:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:$version"
 
     //Room Components
@@ -81,10 +82,7 @@ dependencies {
     //Graph
     implementation 'com.jjoe64:graphview:4.2.2'
 //    debugImplementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
-
-
-
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 
 }
 

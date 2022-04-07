@@ -2,7 +2,7 @@ package com.ikea.myapp.models;
 
 import java.io.Serializable;
 
-public class PlanNote extends Plan implements Serializable {
+public class PlanNote implements Serializable {
     private String note;
 
     public PlanNote() {

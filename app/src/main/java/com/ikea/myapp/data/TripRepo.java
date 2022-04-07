@@ -182,7 +182,6 @@ public class TripRepo {
 
     public LiveData<MyTrip> getRemoteTrip(String id) {
         MutableLiveData<MyTrip> trip = new MutableLiveData<>();
-        trip.setValue(null);
         firebaseManager.getTripRef(id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

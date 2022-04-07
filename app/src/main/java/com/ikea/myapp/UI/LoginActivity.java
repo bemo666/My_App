@@ -274,6 +274,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         firebaseManager.SignUp(email, password).addOnCompleteListener
                                 (task -> {
                                     if (task.isSuccessful()) {
+                                        firebaseManager = new FirebaseManager();
                                         firebaseManager.setFirstName(name).
                                                 addOnCompleteListener(task1 -> {
                                                     progressDialog.hide();

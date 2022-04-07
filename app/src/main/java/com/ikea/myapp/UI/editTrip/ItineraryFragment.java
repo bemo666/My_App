@@ -97,13 +97,17 @@ public class ItineraryFragment extends Fragment {
     private void addType(PlanHeader header, int type) {
         switch (type) {
             case NOTE:
-                trip.getPlanHeaders().get(trip.getPlanHeaders().indexOf(header)).addObject((Object)new PlanNote());
+                trip.getPlanHeaders().get(trip.getPlanHeaders().indexOf(header)).addObject(new PlanNote());
+                break;
             case HOTEL:
                 trip.getPlanHeaders().get(trip.getPlanHeaders().indexOf(header)).addObject(new PlanHotel());
+                break;
             case PlanHeader.RENTAL:
                 trip.getPlanHeaders().get(trip.getPlanHeaders().indexOf(header)).addObject(new PlanRental());
+                break;
             case FLIGHT:
                 trip.getPlanHeaders().get(trip.getPlanHeaders().indexOf(header) ).addObject(new PlanFlight());
+                break;
             case ACTIVITY:
                 trip.getPlanHeaders().get(trip.getPlanHeaders().indexOf(header)).addObject(new PlanActivity());
                 break;

@@ -60,7 +60,11 @@ public class PlanHeader implements Serializable {
         this.plans.set(pos, plan);
     }
 
-    public void addObject(Object object) { this.plans.add(object);}
+    public void addObject(Object object) {
+        if(this.plans == null)
+            plans = new ArrayList<>();
+        this.plans.add(object);
+    }
 
     public int getObjectType() { return planType; }
 
