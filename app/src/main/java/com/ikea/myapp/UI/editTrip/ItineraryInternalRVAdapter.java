@@ -1,9 +1,11 @@
 package com.ikea.myapp.UI.editTrip;
 
+import android.content.Context;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -28,10 +30,14 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<ItineraryIn
     private final ItineraryRVAdapter.SliderViewHolder parentAdapter;
     private final int type;
     final static ObjectMapper mapper = new ObjectMapper();
+    private final InputMethodManager imm;
+    private ItineraryFragment fragment;
 
-    public ItineraryInternalRVAdapter(ItineraryRVAdapter.SliderViewHolder parentAdapter, int type) {
+    public ItineraryInternalRVAdapter(ItineraryRVAdapter.SliderViewHolder parentAdapter, int type, ItineraryFragment fragment) {
         this.type = type;
         this.parentAdapter = parentAdapter;
+        this.fragment = fragment;
+        this.imm = (InputMethodManager) fragment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @NonNull
@@ -103,6 +109,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<ItineraryIn
                     text.setOnKeyListener((view, i, keyEvent) -> {
                         if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                             if (i == KeyEvent.KEYCODE_ENTER) {
+                                imm.hideSoftInputFromWindow(fragment.getView().getWindowToken(), 0);
                                 updateNote();
                             }
                         }

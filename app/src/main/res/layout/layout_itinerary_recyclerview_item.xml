@@ -47,6 +47,7 @@
                 android:paddingVertical="7dp"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:inputType="text|textLongMessage|textCapSentences"
                 app:expandedHintEnabled="false"
                 app:hintAnimationEnabled="false" />
         </com.google.android.material.textfield.TextInputLayout>

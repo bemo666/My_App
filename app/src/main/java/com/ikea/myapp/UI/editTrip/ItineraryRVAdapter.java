@@ -2,6 +2,7 @@ package com.ikea.myapp.UI.editTrip;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,15 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 holder.titleLayout.setBoxBackgroundColorResource(R.color.white);
             }
 
+        });
+        holder.title.setOnKeyListener((view, i, keyEvent) -> {
+            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                if (i == KeyEvent.KEYCODE_ENTER){
+                    updateTitle(holder.title.getText().toString(), position);
+                    imm.hideSoftInputFromWindow(fragment.getView().getWindowToken(), 0);
+                }
+            }
+            return false;
         });
     }
 
@@ -112,8 +122,7 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 fragment.checkForAddHeader(header.getObjectType());
                 notifyItemChanged(position);
             });
-            internalRVAdapter = new ItineraryInternalRVAdapter(this, header.getObjectType());
-
+            internalRVAdapter = new ItineraryInternalRVAdapter(this, header.getObjectType(), fragment);
             internalRVAdapter.setList(header.getObjects());
             internalRV.setAdapter(internalRVAdapter);
             internalRV.setNestedScrollingEnabled(false);
