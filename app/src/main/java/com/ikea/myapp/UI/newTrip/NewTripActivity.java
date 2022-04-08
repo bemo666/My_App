@@ -176,6 +176,9 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         for (int i = 0; i < idAdapter.getCount(); i++) {
             if (idAdapter.getItem(i).equals(TimeZone.getDefault().getID())) {
                 mSpinner.setSelection(i);
+                Log.d("tag", "Spinner: "+mSpinner.getSelectedItem().toString());
+                Log.d("tag", "class: "+mSpinner.getSelectedItem().getClass());
+
             }
         }
     }
@@ -329,9 +332,8 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void createTrip() {
-        MyTrip data = null;
         DatabaseReference pushedTrip = firebaseManager.newTrip();
-        data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c);
+        MyTrip data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c, mSpinner.getSelectedItem().toString());
         fetchImage(pushedTrip.getKey());
         if (FirebaseManager.loggedIn()) {
             pushedTrip.setValue(data).addOnCompleteListener(task -> {
@@ -348,8 +350,6 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
         } else {
             viewmodel.insertLocalTrip(data);
-
-//                viewmodel.setLocalImage(data.getId(), image);
 
             Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
             intent.putExtra("id", pushedTrip.getKey());
@@ -372,8 +372,8 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                 final PhotoMetadata photoMetadata = metadata.get(0);
                 // Create a FetchPhotoRequest.
                 final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                        .setMaxWidth(500) // Optional.
-                        .setMaxHeight(300) // Optional.
+//                        .setMaxWidth(500) // Optional.
+//                        .setMaxHeight(300) // Optional.
                         .build();
                 placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                     Bitmap bitmap = fetchPhotoResponse.getBitmap();

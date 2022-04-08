@@ -26,12 +26,13 @@ public class MyTrip implements Serializable {
     private CustomCurrency currency;
     private List<PlanHeader> planHeaders;
     private String image;
+    private String timeZone;
 
     public MyTrip() {
     }
 
     public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
-                  String endStamp, String placeId, String id, CustomCurrency currency) {
+                  String endStamp, String placeId, String id, CustomCurrency currency, String timeZone) {
         this.destination = destination;
         this.destinationLat = destinationLatLng.latitude;
         this.destinationLon = destinationLatLng.longitude;
@@ -44,6 +45,7 @@ public class MyTrip implements Serializable {
         this.budget = new Budget();
         this.currency = currency;
         this.planHeaders = new ArrayList<>();
+        this.timeZone = timeZone;
     }
 
 
@@ -150,6 +152,10 @@ public class MyTrip implements Serializable {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public String getTimeZone() { return timeZone; }
+
+    public void setTimeZone(String timeZone) { this.timeZone = timeZone; }
 
     public boolean hasPlanHeaders() {
         if (this.getPlanHeaders() != null)

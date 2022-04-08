@@ -72,15 +72,13 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
         }
 
         void setCardView(MyTrip trip) {
-            if (trip.getImage() == null)
-                imageView.setImageResource(R.drawable.im_london2);
-            else
+            if (trip.getImage() != null)
                 Glide.with(context).load(trip.getImage()).fitCenter().into(imageView);
             placeName.setText(trip.getDestination());
             getCorrectDate date = new getCorrectDate(trip);
-            dates.setText(date.getStartDateUpcomingFormat() + context.getResources().getString(R.string.ui_dash) + date.getEndDateUpcomingFormat());
-            if ((Long.valueOf(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
-                    Long.valueOf(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis())) {
+            dates.setText(date.getDatesPastFormat());
+            if ((Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
+                    Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis())) {
                 liveBadge.setVisibility(View.VISIBLE);
                 liveDot.startAnimation(AnimationUtils.loadAnimation(context, R.anim.blink));
             } else {

@@ -49,6 +49,7 @@ import com.ikea.myapp.utils.MyViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public class EditTripActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -118,9 +119,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
                     liveBadge.setVisibility(View.GONE);
                 }
                 placeName.setText(trip.getDestination());
-                if (trip.getImage() == null)
-                    mainImage.setImageResource(R.drawable.im_london2);
-                else
+                if (trip.getImage() != null)
                     Glide.with(this).load(trip.getImage()).fitCenter().into(mainImage);
             }
         });
@@ -133,7 +132,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), list);
         fragments.setAdapter(fragmentAdapter);
         fragments.setUserInputEnabled(false);
-
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -151,6 +149,10 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
                         break;
                     case 1:
+                        appBarLayout.setExpanded(false, true);
+                        addButton.hide();
+                        addButton.setOnClickListener(null);
+                        break;
                     case 2:
                         appBarLayout.setExpanded(false, true);
                         addButton.hide();

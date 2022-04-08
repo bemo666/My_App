@@ -50,7 +50,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
     private String id;
     private TextView currentTotal, budget, expenseTypeSelector, cancelButton, cancelButton2, saveButton, saveButton2, expenseCurrencySymbol, budgetCurrencySymbol, addExpenseTitle;
     private ImageView expenseTypeIcon, budgetCurrencySelector, expenseCurrencySelector;
-    private LinearLayout setBudgetLinearLayout, addExpenseLinearLayout, setBudgetCostLayout, expenseDescriptionLayout, budgetLinearLayout;
+    private LinearLayout budgetFramentLayout, setBudgetLinearLayout, addExpenseLinearLayout, setBudgetCostLayout, expenseDescriptionLayout, budgetLinearLayout;
     private RelativeLayout expenseCostLayout;
     private LinearProgressIndicator progressIndicator;
     private EditTripViewModel viewModel;
@@ -89,6 +89,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         currencySheet = new BottomSheetDialog(getContext());
         currencySheet.setContentView(R.layout.dialog_currency_list);
 
+        budgetFramentLayout = view.findViewById(R.id.budgetFragmentLayout);
         currentTotal = view.findViewById(R.id.budget_current_total);
         budget = view.findViewById(R.id.budget_total);
         progressIndicator = view.findViewById(R.id.budget_progressbar);
@@ -330,6 +331,13 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
                 int progress = (int) ((trip.getBudget().getCurrentTally() / trip.getBudget().getBudget()) * 100);
                 if (progress > 100) {
                     progress = 100;
+                }
+                if (progress < 75){
+                    budgetFramentLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green));
+                } else if (progress == 100){
+                    budgetFramentLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.red));
+                } else {
+                    budgetFramentLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));
                 }
                 progressIndicator.setProgress(progress);
 

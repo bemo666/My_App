@@ -6,20 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true"
     tools:context=".UI.editTrip.EditTripActivity"
     tools:ignore="ContentDescription">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/editTripAppBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_expand_height"
-        android:fitsSystemWindows="true">
+        android:layout_height="@dimen/toolbar_expand_height">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/editTripCollapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:fitsSystemWindows="true"
             app:collapsedTitleTextAppearance="@style/TextAppearance.MyApp.Title"
             app:collapsedTitleTextColor="@color/white"
             app:contentScrim="@color/transparent"
@@ -35,7 +34,7 @@
                 android:background="@drawable/edittrip_layout_bg"
                 android:foreground="@drawable/card_mask"
                 android:scaleType="centerCrop"
-                android:src="@drawable/im_london2"
+                android:src="@drawable/im_no_image"
                 android:transitionName="edit_trip_transition"
                 app:layout_collapseMode="none" />
 
