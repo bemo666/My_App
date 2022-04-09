@@ -53,7 +53,7 @@ public class ItineraryFragment extends Fragment {
         itineraryRV.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         viewModel = ViewModelProviders.of(requireActivity()).get(EditTripViewModel.class);
-        viewModel.getTrip(id).observe(getViewLifecycleOwner(), myTrip -> {
+        viewModel.getTrip().observe(getViewLifecycleOwner(), myTrip -> {
             if (myTrip != null) { // if null trip deleted todo - handle it
                 trip = myTrip;
                 updateData();

@@ -122,16 +122,18 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         expenseTypesAdapter = new ExpenseTypesAdapter(this);
 
         viewModel = ViewModelProviders.of(requireActivity(), new MyViewModelFactory(requireActivity().getApplication(), id)).get(EditTripViewModel.class);
-        trip = viewModel.getTrip(id).getValue();
-        viewModel.getTrip(id).observe(getViewLifecycleOwner(), myTrip -> {
-            trip = myTrip;
-            updateData();
+
+        viewModel.getTrip().observe(getViewLifecycleOwner(), myTrip -> {
+            if (myTrip != null) {
+                trip = myTrip;
+                updateData();
+                expenseSheet();
+                budgetSheet();
+                setCurrencySheet();
+            }
         });
 
-        updateData();
-        expenseSheet();
-        budgetSheet();
-        setCurrencySheet();
+
         return view;
     }
 
@@ -332,9 +334,9 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
                 if (progress > 100) {
                     progress = 100;
                 }
-                if (progress < 75){
+                if (progress < 75) {
                     budgetFramentLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.green));
-                } else if (progress == 100){
+                } else if (progress == 100) {
                     budgetFramentLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.red));
                 } else {
                     budgetFramentLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.orange));

@@ -107,7 +107,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
         viewModel = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), id)).get(EditTripViewModel.class);
 
-        viewModel.getTrip(id).observe(this, myTrip -> {
+        viewModel.getTrip().observe(this, myTrip -> {
             trip = myTrip;
             if (trip != null) {
                 if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&

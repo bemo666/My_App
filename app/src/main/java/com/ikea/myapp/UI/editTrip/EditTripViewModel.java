@@ -26,7 +26,7 @@ public class EditTripViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<MyTrip> getTrip(String id) {
+    public LiveData<MyTrip> getTrip() {
         return trip;
     }
 
