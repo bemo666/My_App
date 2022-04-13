@@ -128,7 +128,7 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
             internalRV.setLayoutManager(new LinearLayoutManager(context));
         }
 
-        private void expand() {
+        void expand() {
             if (!expanded) {
                 arrow.setRotation(0);
                 hiddenLayout.setVisibility(View.VISIBLE);
@@ -138,6 +138,12 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 imm.hideSoftInputFromWindow(fragment.requireView().getWindowToken(), 0);
             }
             expanded = !this.expanded;
+        }
+
+        void forceExpand() {
+            arrow.setRotation(0);
+            hiddenLayout.setVisibility(View.VISIBLE);
+            expanded = true;
         }
 
     }
@@ -150,6 +156,7 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 break;
             }
         }
+
         Plan p = new Plan(type.getType());
         trip.addPlan(p);
 
@@ -161,10 +168,14 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
         }
 
         header.addPlan(p);
+
         if (adapters[headers.indexOf(header)] != null)
             adapters[headers.indexOf(header)].notifyItemInserted(header.getPlans().size() - 1);
         fragment.showNewCard();
         fragment.updateTrip(trip);
+
+
+        fragment.expandHeader(headers.indexOf(header));
 
     }
 

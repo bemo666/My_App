@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -165,11 +167,6 @@ public class ItineraryFragment extends Fragment {
         updateTrip(trip);
     }
 
-    public void deletePlan(int pos){
-        trip.getPlans().remove(pos);
-        updateTrip(trip);
-    }
-
     public void updateTrip(MyTrip trip) {
         this.trip = trip;
         showNewCard();
@@ -180,4 +177,7 @@ public class ItineraryFragment extends Fragment {
         rvAdapter.checkForAddHeader(type);
     }
 
+    public void expandHeader(int index) {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> ((ItineraryRVAdapter.HeaderViewHolder) itineraryRV.findViewHolderForAdapterPosition(index)).forceExpand(), 200);
+    }
 }

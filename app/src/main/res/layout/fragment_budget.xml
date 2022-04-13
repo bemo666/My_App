@@ -94,22 +94,23 @@
                     android:id="@+id/budget_expenses_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="vertical"
-                    android:scrollbarThumbVertical="@color/grey"
                     android:layout_below="@id/expenses_text"
                     android:layout_marginBottom="5dp"
                     android:background="@color/dividerLightGrey"
-                    android:scrollbarAlwaysDrawVerticalTrack="true" />
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:scrollbarThumbVertical="@color/grey"
+                    android:scrollbars="vertical" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/budget_expenses_card"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_alignParentBottom="true"
                     android:layout_below="@id/expenses_text"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="55dp"
-                    android:backgroundTint="@color/barelyGrey"
+                    android:layout_marginBottom="20dp"
                     android:visibility="gone"
+                    android:backgroundTint="@color/barelyGrey"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="0dp">
 
@@ -161,6 +162,8 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="15sp"
+                app:autoSizeTextType="uniform"
+                android:lines="1"
                 app:backgroundTint="@color/blue"
                 app:cornerRadius="@dimen/card_radius_thin"
                 app:icon="@android:drawable/ic_input_add"

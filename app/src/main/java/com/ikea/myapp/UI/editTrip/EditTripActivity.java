@@ -385,10 +385,8 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
                     trip.setImageVersion(0);
                 final PhotoMetadata photoMetadata = metadata.get(trip.getImageVersion());
                 // Create a FetchPhotoRequest.
-                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-//                        .setMaxWidth(500) // Optional.
-//                        .setMaxHeight(300) // Optional.
-                        .build();
+                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata).build();
+
                 placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                     Bitmap bitmap = fetchPhotoResponse.getBitmap();
                     Glide.with(this).load(bitmap).fitCenter().into(mainImage);

@@ -96,6 +96,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                 if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                     if (i == KeyEvent.KEYCODE_ENTER) {
                         imm.hideSoftInputFromWindow(fragment.getView().getWindowToken(), 0);
+                        plan.setNote(text.getText().toString());
                         parentAdapter.editPlan(plan, plans.indexOf(plan));
                     }
                 }
