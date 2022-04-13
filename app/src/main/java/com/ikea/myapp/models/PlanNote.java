@@ -6,6 +6,7 @@ public class PlanNote implements Serializable {
     private String note;
 
     public PlanNote() {
+        note = "";
     }
 
     public PlanNote(String note) {

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class getCorrectDate {
     private final SimpleDateFormat simpleFormatMonth = new SimpleDateFormat("EEE MMM dd", Locale.ENGLISH);
@@ -21,17 +22,15 @@ public class getCorrectDate {
 
     public getCorrectDate(MyTrip trip) {
         this.trip = trip;
-        try {
-            tripStart = dateFormat.parse(trip.getStartDate());
-            tripEnd = dateFormat.parse(trip.getEndDate());
-        } catch (
-                ParseException e) {
-            tripEnd = null;
-            tripStart = null;
-        }
+        tripStart = new Date(Long.parseLong(trip.getStartStamp()));
+        tripEnd = new Date(Long.parseLong(trip.getEndStamp()));
+        simpleFormatMonth.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
+        simpleFormatYear.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
+        simpleFormatMonthAndYear.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
+        simpleFormatJustMonth.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
     }
 
-    public String getStartDateUpcomingFormat() {
+    public String getStartDatelongFormat() {
         if (tripStart.getYear() == Calendar.getInstance().get(Calendar.YEAR) - 1900) {
             startDate = simpleFormatMonth.format(tripStart);
             if (tripEnd.getYear() > tripStart.getYear()) {
@@ -47,7 +46,7 @@ public class getCorrectDate {
     }
 
 
-    public String getEndDateUpcomingFormat() {
+    public String getEndDateLongFormat() {
         if (tripStart.getYear() == Calendar.getInstance().get(Calendar.YEAR) - 1900) {
             endDate = simpleFormatMonth.format(tripEnd);
             if (tripEnd.getYear() > tripStart.getYear()) {
@@ -60,7 +59,7 @@ public class getCorrectDate {
     }
 
 
-    public String getDatesPastFormat() {
+    public String getDatesOnlyMonthAndYearFormat() {
         endDate = simpleFormatMonthAndYear.format(tripEnd);
         if (tripStart.getYear() == tripEnd.getYear()) {
             if (tripStart.getMonth() == tripEnd.getMonth()) {
@@ -72,5 +71,14 @@ public class getCorrectDate {
             startDate = simpleFormatMonthAndYear.format(tripStart);
         }
         return (startDate + " - " + endDate);
+    }
+
+    public String getStartTime(){
+        dateFormat.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
+        return dateFormat.format(tripStart);
+    }
+    public String getEndTime(){
+        dateFormat.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
+        return dateFormat.format(tripEnd);
     }
 }

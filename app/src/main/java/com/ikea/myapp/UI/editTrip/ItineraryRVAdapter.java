@@ -1,8 +1,9 @@
 package com.ikea.myapp.UI.editTrip;
 
 import android.content.Context;
+import android.icu.text.MessagePattern;
+import android.os.Handler;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,156 +16,178 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.ikea.myapp.models.MyTrip;
-import com.ikea.myapp.models.PlanHeader;
+import com.google.android.material.textview.MaterialTextView;
 import com.ikea.myapp.R;
+import com.ikea.myapp.models.MyTrip;
+import com.ikea.myapp.models.Plan;
+import com.ikea.myapp.models.PlanHeader;
+import com.ikea.myapp.models.PlanType;
 
-public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.SliderViewHolder> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.HeaderViewHolder> {
 
     private final Context context;
     private final ItineraryFragment fragment;
-    private boolean hasItems = false;
     private MyTrip trip;
+    private List<PlanHeader> headers;
     private final InputMethodManager imm;
+    private ItineraryInternalRVAdapter[] adapters;
 
 
     public ItineraryRVAdapter(ItineraryFragment fragment) {
         this.fragment = fragment;
         this.context = fragment.getContext();
+        assert context != null;
+        headers = new ArrayList<>();
         this.imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @NonNull
     @Override
-    public SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new SliderViewHolder(LayoutInflater.from(parent.getContext()).inflate(
+    public HeaderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.layout_itinerary_recyclerview_item, parent, false)
         );
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-        holder.setDetails(trip.getPlanHeaders().get(position), position);
-        holder.arrow.setOnClickListener(view -> expand(holder));
-        holder.itemView.setOnClickListener(view -> expand(holder));
-        holder.title.setOnFocusChangeListener((view, b) -> {
-            if (b) {
-                holder.titleLayout.setBoxBackgroundColorResource(R.color.lightGrey);
-                expand(holder);
-            } else {
-                holder.titleLayout.setBoxBackgroundColorResource(R.color.white);
-            }
-
-        });
-        holder.title.setOnKeyListener((view, i, keyEvent) -> {
-            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                if (i == KeyEvent.KEYCODE_ENTER){
-                    updateTitle(holder.title.getText().toString(), position);
-                    imm.hideSoftInputFromWindow(fragment.getView().getWindowToken(), 0);
-                }
-            }
-            return false;
-        });
+    public void onBindViewHolder(@NonNull HeaderViewHolder holder, int position) {
+        holder.setDetails(position);
     }
-
-    private void expand(SliderViewHolder holder) {
-        if (!holder.expanded) {
-            holder.arrow.setRotation(0);
-            holder.hiddenLayout.setVisibility(View.VISIBLE);
-        } else {
-            holder.arrow.setRotation(-90);
-            holder.hiddenLayout.setVisibility(View.GONE);
-            imm.hideSoftInputFromWindow(fragment.getView().getWindowToken(), 0);
-            if (holder.title.hasFocus()) {
-                holder.title.clearFocus();
-                holder.titleLayout.clearFocus();
-            }
-        }
-        holder.expanded = !holder.expanded;
-    }
-
 
     @Override
     public int getItemCount() {
-        if (trip != null && trip.getPlanHeaders() != null)
-            return trip.getPlanHeaders().size();
-        else
-            return 0;
+        return headers.size();
     }
 
+    public void setList(MyTrip trip) {
+        this.trip = trip;
+        headers = trip.sortList();
+        adapters = new ItineraryInternalRVAdapter[headers.size()];
+        notifyDataSetChanged();
+    }
 
-    class SliderViewHolder extends RecyclerView.ViewHolder {
-        private boolean expanded = false;
+    public void notifyOuterChange(PlanHeader h) {
+        notifyItemChanged(trip.getPlans().indexOf(h));
+    }
+
+    public void notifyOuterAdded(int i) {
+        notifyItemInserted(i);
+    }
+
+    public void notifyOuterDelete(PlanHeader h) {
+        notifyItemRemoved(trip.getPlans().indexOf(h));
+    }
+
+//    public void updateTitle(String title, int position){
+//        trip.getPlanHeaders().get(position).setMyTitle(title);
+//        fragment.updateTrip(trip);
+//    }
+
+    public ItineraryFragment getFragment() {
+        return fragment;
+    }
+
+    class HeaderViewHolder extends RecyclerView.ViewHolder {
+        private boolean expanded;
         private final ImageView arrow;
-        private final TextInputEditText title;
-        private final TextInputLayout titleLayout;
+        private final MaterialTextView title;
         private final LinearLayout hiddenLayout;
         private final RecyclerView internalRV;
-        private ItineraryInternalRVAdapter internalRVAdapter;
         private final Button addButton;
+        private final View itemView;
 
-        SliderViewHolder(@NonNull View itemView) {
+        HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.itemView = itemView;
             arrow = itemView.findViewById(R.id.itinerary_selected_ic);
             title = itemView.findViewById(R.id.title_header);
-            titleLayout = itemView.findViewById(R.id.layout_title_header);
             hiddenLayout = itemView.findViewById(R.id.itinerary_hidden_layout);
             internalRV = itemView.findViewById(R.id.itinerary_internal_recycler_view);
             addButton = itemView.findViewById(R.id.add_a_note_button);
         }
 
-        void setDetails(PlanHeader header, int position) {
-            arrow.setRotation(-90);
-            title.setText(header.getMyTitle());
+        void setDetails(int position) {
+            PlanHeader header = headers.get(position);
+            itemView.setOnClickListener(view -> expand());
+            expanded = true;
+            expand();
+
+            title.setText(header.getType().getName());
+            addButton.setText(header.getType().getNote());
             addButton.setOnClickListener(view -> {
-                fragment.checkForAddHeader(header.getObjectType());
-                notifyItemChanged(position);
+                checkForAddHeader(header.getType());
+                adapters[position].notifyItemInserted(adapters[position].getItemCount());
             });
-            internalRVAdapter = new ItineraryInternalRVAdapter(this, header.getObjectType(), fragment);
-            internalRVAdapter.setList(header.getObjects());
-            internalRV.setAdapter(internalRVAdapter);
+            if (adapters[position] == null)
+                adapters[position] = new ItineraryInternalRVAdapter(ItineraryRVAdapter.this, header, fragment);
+            internalRV.setAdapter(adapters[position]);
             internalRV.setNestedScrollingEnabled(false);
             internalRV.setLayoutManager(new LinearLayoutManager(context));
         }
 
-        public void editObject(Object object, int adapterPosition) {
-            trip.getPlanHeaders().get(getAdapterPosition()).editObject(object, adapterPosition);
-            fragment.updateTrip(trip);
+        private void expand() {
+            if (!expanded) {
+                arrow.setRotation(0);
+                hiddenLayout.setVisibility(View.VISIBLE);
+            } else {
+                arrow.setRotation(-90);
+                hiddenLayout.setVisibility(View.GONE);
+                imm.hideSoftInputFromWindow(fragment.requireView().getWindowToken(), 0);
+            }
+            expanded = !this.expanded;
         }
-    }
-
-    public void setList(MyTrip trip) {
-        this.trip = trip;
-        hasItems = true;
-        notifyDataSetChanged();
 
     }
 
-    public void updateTitle(String title, int position){
-        trip.getPlanHeaders().get(position).setMyTitle(title);
+    public void checkForAddHeader(PlanType type) {
+        PlanHeader header = null;
+        for (PlanHeader h : headers) {
+            if (h.getType() == type) {
+                header = h;
+                break;
+            }
+        }
+        Plan p = new Plan(type.getType());
+        trip.addPlan(p);
+
+        if (header == null) {
+            header = new PlanHeader(type, new ArrayList<>());
+            headers.add(header);
+            notifyItemInserted(headers.size() - 1);
+            adapters = new ItineraryInternalRVAdapter[headers.size()];
+        }
+
+        header.addPlan(p);
+        if (adapters[headers.indexOf(header)] != null)
+            adapters[headers.indexOf(header)].notifyItemInserted(header.getPlans().size() - 1);
+        fragment.showNewCard();
+        fragment.updateTrip(trip);
+
+    }
+
+    public void editPlan(Plan object, int adapterPosition) {
+        trip.editPlan(object, adapterPosition);
         fragment.updateTrip(trip);
     }
 
-//    public void setList() {
-//        List<PlanHeader> lst = new ArrayList<>();
-//        lst.add(new PlanHeader());
-//        lst.add(new PlanHeader());
-//        lst.add(new PlanHeader());
-//        lst.add(new PlanHeader());
-//        this.planHeaders = lst;
-//        hasItems = true;
-//        notifyDataSetChanged();
-//
-//    }
-
-    public boolean hasItems() {
-        return hasItems;
+    public void deletePlan(Plan plan) {
+        trip.deletePlan(plan);
+        int index = -1;
+        for (PlanHeader h : headers)
+            if (h.getType().getType() == plan.getObjectType()) {
+                index = headers.indexOf(h);
+                break;
+            }
+        headers.get(index).getPlans().remove(plan);
+        if (headers.get(index).getPlans().size() == 0) {
+            notifyItemRemoved(index);
+            headers.remove(index);
+        }
+        fragment.updateTrip(trip);
     }
 
-    public ItineraryFragment getFragment() {
-        return fragment;
-    }
 
 }

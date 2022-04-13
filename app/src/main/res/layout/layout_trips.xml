@@ -53,13 +53,6 @@
             android:textColor="@color/almostWhite"
             android:textSize="16sp" />
 
-        <include
-            layout="@layout/layout_live_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/placeName"
-            android:layout_alignStart="@+id/placeName"
-            android:visibility="gone" />
 
     </RelativeLayout>
 

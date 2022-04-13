@@ -24,14 +24,12 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
     public static boolean hasConnection(String str) {
         if (wifi.isConnected() || mobile.isConnected()) {
-            Log.d("tag", "Network Connected");
             if (recentlyDisplayed) {
                 recentlyDisplayed = false;
                 NetworkChangeReceiver.snack("Internet connection has been restored, Enjoy!");
             }
             return true;
         } else {
-            Log.d("tag", "Network Disconnected");
             if (str != null) {
                 NetworkChangeReceiver.snack(str);
             } else {

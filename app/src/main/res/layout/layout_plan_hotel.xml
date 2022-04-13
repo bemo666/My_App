@@ -70,7 +70,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="20dp"
             android:background="@color/transparent"
-            android:hint="@string/ui_add_note"
+            android:hint="@string/ui_add_a_note"
             android:inputType="text|textLongMessage|textCapSentences"
             android:textColor="@color/black"
             android:textSize="18sp" />

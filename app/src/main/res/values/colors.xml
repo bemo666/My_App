@@ -7,10 +7,16 @@
     <color name="lighterBlue">#96BAF9</color>
     <color name="darkNavyBlue">#2C355C</color>
     <color name="green">#3AD57F</color>
+    <color name="darkerGreen">#05A34C</color>
     <color name="grey">#B5B7C6</color>
+    <color name="kindaDarkGrey">#696969</color>
     <color name="darkGrey">#474851</color>
+    <color name="moreThanBarelyGrey">#E6E6E6</color>
     <color name="barelyGrey">#F5F5F5</color>
     <color name="lightGrey">#D5D5D5</color>
+    <color name="dividerLightGrey">#ECEFF1</color>
+    <color name="actualOrange">#FF9800</color>
+    <color name="lightBlue">#5BC0EE</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

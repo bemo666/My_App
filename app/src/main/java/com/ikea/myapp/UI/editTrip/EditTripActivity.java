@@ -2,7 +2,9 @@ package com.ikea.myapp.UI.editTrip;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -36,19 +38,34 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.ikea.myapp.Adapters.FragmentAdapter;
+import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.models.PlanHeader;
 import com.ikea.myapp.R;
+import com.ikea.myapp.models.PlanType;
 import com.ikea.myapp.utils.MyViewModelFactory;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 public class EditTripActivity extends AppCompatActivity implements View.OnClickListener {
@@ -64,10 +81,9 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     private TabLayout tabLayout;
     private Animation rotateOpen, rotateClose, slideIn, slideOut, fadeIn, fadeOut;
     private FloatingActionButton addButton;
-    private ExtendedFloatingActionButton notes, flights, hotels, rentals;
+    private ExtendedFloatingActionButton notes, flights, hotels, rentals, activities;
     private boolean clicked = false;
     private View mask;
-    private CardView liveBadge, liveDot;
     private EditTripViewModel viewModel;
     private CoordinatorLayout.LayoutParams layoutParams;
     private ItineraryFragment itineraryFragment;
@@ -98,26 +114,17 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         flights = findViewById(R.id.add_flights);
         hotels = findViewById(R.id.add_hotel);
         rentals = findViewById(R.id.add_rental);
+        activities = findViewById(R.id.add_activity);
         mask = findViewById(R.id.editTrip_mask);
-        liveBadge = findViewById(R.id.live_badge);
-        liveDot = findViewById(R.id.live_dot);
         mainImage = findViewById(R.id.editTrip_mainImage);
         tabLayout = findViewById(R.id.editTripTabLayout);
         itineraryFragment = new ItineraryFragment(id);
 
         viewModel = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), id)).get(EditTripViewModel.class);
 
-        viewModel.getTrip(id).observe(this, myTrip -> {
+        viewModel.getTrip().observe(this, myTrip -> {
             trip = myTrip;
             if (trip != null) {
-                if (Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
-                        Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis()) {
-                    liveBadge.setVisibility(View.VISIBLE);
-                    liveDot.startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink));
-                } else {
-                    liveDot.clearAnimation();
-                    liveBadge.setVisibility(View.GONE);
-                }
                 placeName.setText(trip.getDestination());
                 if (trip.getImage() != null)
                     Glide.with(this).load(trip.getImage()).fitCenter().into(mainImage);
@@ -132,6 +139,8 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), list);
         fragments.setAdapter(fragmentAdapter);
         fragments.setUserInputEnabled(false);
+        addButton.setOnClickListener(view -> click());
+
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -143,20 +152,18 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
                 }
                 switch (tab.getPosition()) {
                     case 0:
-                        appBarLayout.setExpanded(true, true);
                         addButton.show();
-                        addButton.setOnClickListener(view -> click());
-
+                        addButton.setEnabled(true);
                         break;
                     case 1:
                         appBarLayout.setExpanded(false, true);
                         addButton.hide();
-                        addButton.setOnClickListener(null);
+                        addButton.setEnabled(false);
                         break;
                     case 2:
                         appBarLayout.setExpanded(false, true);
                         addButton.hide();
-                        addButton.setOnClickListener(null);
+                        addButton.setEnabled(false);
                         break;
                 }
             }
@@ -216,6 +223,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         hotels.setOnClickListener(this);
         rentals.setOnClickListener(this);
         flights.setOnClickListener(this);
+        activities.setOnClickListener(this);
 
 
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MM dd", Locale.UK);
@@ -249,6 +257,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             flights.startAnimation(slideOut);
             hotels.startAnimation(slideOut);
             rentals.startAnimation(slideOut);
+            activities.startAnimation(slideOut);
             addButton.startAnimation(rotateOpen);
             mask.startAnimation(fadeIn);
         } else {
@@ -256,6 +265,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             flights.startAnimation(slideIn);
             hotels.startAnimation(slideIn);
             rentals.startAnimation(slideIn);
+            activities.startAnimation(slideIn);
             addButton.startAnimation(rotateClose);
             mask.startAnimation(fadeOut);
         }
@@ -263,11 +273,12 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
     private void setVisibility() {
         if (!clicked) {
-            appBarLayout.setExpanded(true, true);
+            appBarLayout.setExpanded(true, false);
             notes.show();
             flights.show();
             hotels.show();
             rentals.show();
+            activities.show();
             mask.setVisibility(View.VISIBLE);
 
         } else {
@@ -275,6 +286,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             flights.hide();
             hotels.hide();
             rentals.hide();
+            activities.hide();
             mask.setVisibility(View.GONE);
 
         }
@@ -284,7 +296,15 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         int id = view.getId();
         if (id == notes.getId()) {
-            itineraryFragment.checkForAddHeader(PlanHeader.NOTE);
+            itineraryFragment.checkForAddHeader(PlanType.Note);
+        } else if (id == flights.getId()) {
+            itineraryFragment.checkForAddHeader(PlanType.Flight);
+        } else if (id == hotels.getId()) {
+            itineraryFragment.checkForAddHeader(PlanType.Hotel);
+        } else if (id == rentals.getId()) {
+            itineraryFragment.checkForAddHeader(PlanType.Rental);
+        } else if (id == activities.getId()) {
+            itineraryFragment.checkForAddHeader(PlanType.Activity);
         }
 
         click();
@@ -305,6 +325,9 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             menuBuilder.setOptionalIconsVisible(true);
         }
 
+        if (!FirebaseManager.loggedIn())
+            menu.getItem(0).setEnabled(false);
+
         return true;
     }
 
@@ -322,13 +345,12 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
                 AlertDialog dialog = alertDialog.create();
-//                dialog.getButton(0).setTextColor(ContextCompat.getColor(this, R.color.red));
-//                dialog.getButton(1).setTextColor(ContextCompat.getColor(this, R.color.black));
                 dialog.show();
                 return true;
 
             case R.id.change_image:
-                Toast.makeText(getApplicationContext(), "Call Back Clicked", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Fetching new image", Toast.LENGTH_LONG).show();
+                fetchImage();
                 return true;
 
             case android.R.id.home:
@@ -344,9 +366,44 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    public void setTabPosition(int pos) {
-        tabLayout.selectTab(tabLayout.getTabAt(pos));
+
+    private void fetchImage() {
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.g_apiKey));
+        }
+        List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID, Place.Field.PHOTO_METADATAS);
+        final FetchPlaceRequest placeRequest = FetchPlaceRequest.newInstance(trip.getPlaceId(), fieldList);
+        PlacesClient placesClient = Places.createClient(this);
+        placesClient.fetchPlace(placeRequest).addOnSuccessListener((response) -> {
+            final Place place = response.getPlace();
+            // Get the photo metadata.
+            final List<PhotoMetadata> metadata = place.getPhotoMetadatas();
+            if (metadata == null || metadata.isEmpty()) {
+                Log.d("tag", "No photo metadata.");
+            } else {
+                if (trip.getImageVersion() >= 9)
+                    trip.setImageVersion(0);
+                final PhotoMetadata photoMetadata = metadata.get(trip.getImageVersion());
+                // Create a FetchPhotoRequest.
+                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+//                        .setMaxWidth(500) // Optional.
+//                        .setMaxHeight(300) // Optional.
+                        .build();
+                placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                    Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                    Glide.with(this).load(bitmap).fitCenter().into(mainImage);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+
+                    new FirebaseManager().addTripImage(trip.getId(), baos.toByteArray());
+
+                }).addOnFailureListener((exception) -> {
+                    if (exception instanceof ApiException) {
+                        Log.e("tag", "Place not found: " + exception.getMessage());
+                    }
+                });
+            }
+
+        });
     }
-
-
 }

@@ -26,7 +26,7 @@ public class EditTripViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<MyTrip> getTrip(String id) {
+    public LiveData<MyTrip> getTrip() {
         return trip;
     }
 
@@ -36,6 +36,9 @@ public class EditTripViewModel extends AndroidViewModel {
 
     public void deleteTrip(MyTrip trip) {
         tripRepo.deleteTrip(trip);
+    }
 
+    public void setLocalImage(String id, String image){
+        tripRepo.setLocalImage(id, image);
     }
 }

@@ -1,40 +1,45 @@
 package com.ikea.myapp.UI.editTrip;
 
 import android.content.Context;
+import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ikea.myapp.R;
+import com.ikea.myapp.models.Plan;
 import com.ikea.myapp.models.PlanActivity;
 import com.ikea.myapp.models.PlanFlight;
 import com.ikea.myapp.models.PlanHeader;
 import com.ikea.myapp.models.PlanHotel;
 import com.ikea.myapp.models.PlanNote;
 import com.ikea.myapp.models.PlanRental;
-import com.ikea.myapp.R;
+import com.ikea.myapp.models.PlanType;
+import com.ikea.myapp.models.PlanViewHolder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<ItineraryInternalRVAdapter.SliderViewHolder> {
+public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHolder> {
 
-    private List<Object> objects;
-    private final ItineraryRVAdapter.SliderViewHolder parentAdapter;
-    private final int type;
+    private List<Plan> plans;
+    private PlanType type;
+    private final ItineraryRVAdapter parentAdapter;
     final static ObjectMapper mapper = new ObjectMapper();
     private final InputMethodManager imm;
     private ItineraryFragment fragment;
 
-    public ItineraryInternalRVAdapter(ItineraryRVAdapter.SliderViewHolder parentAdapter, int type, ItineraryFragment fragment) {
-        this.type = type;
+    public ItineraryInternalRVAdapter(ItineraryRVAdapter parentAdapter, PlanHeader header, ItineraryFragment fragment) {
+        this.plans = header.getPlans();
+        this.type = header.getType();
         this.parentAdapter = parentAdapter;
         this.fragment = fragment;
         this.imm = (InputMethodManager) fragment.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -42,104 +47,81 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<ItineraryIn
 
     @NonNull
     @Override
-    public SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layout = R.layout.layout_plan_note;
+    public PlanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (type) {
-            case PlanHeader.NOTE:
-                layout = R.layout.layout_plan_note;
+            case Note:
+                return new NoteViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+            case Hotel:
                 break;
-            case PlanHeader.HOTEL:
-                layout = R.layout.layout_plan_hotel;
+            case Flight:
                 break;
-            case PlanHeader.RENTAL:
-                layout = R.layout.layout_plan_rental;
+            case Rental:
                 break;
-            case PlanHeader.FLIGHT:
-                layout = R.layout.layout_plan_flight;
+            case Activity:
                 break;
-            case PlanHeader.ACTIVITY:
-                layout = R.layout.layout_plan_activity;
-                break;
-
         }
-        return new SliderViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-                layout, parent, false)
-        );
+        return null;
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
-        switch (type) {
-            case PlanHeader.NOTE:
-                holder.setDetails(mapper.convertValue(objects.get(position), PlanNote.class));
-                break;
-            case PlanHeader.HOTEL:
-                break;
-            case PlanHeader.RENTAL:
-                break;
-            case PlanHeader.FLIGHT:
-                break;
-            case PlanHeader.ACTIVITY:
-                break;
-        }
+    public void onBindViewHolder(@NonNull PlanViewHolder holder, int position) {
+        holder.setDetails(plans.get(position));
     }
 
 
     @Override
     public int getItemCount() {
-        if(objects != null)
-            return objects.size();
-        return 0;
+        return plans.size();
     }
 
-    class SliderViewHolder extends RecyclerView.ViewHolder {
-        private EditText text;
-        private PlanNote myNote;
-        private PlanHotel myHotel;
-        private PlanFlight myFlight;
-        private PlanRental myRental;
-        private PlanActivity myActivity;
+    class NoteViewHolder extends PlanViewHolder {
 
-        SliderViewHolder(@NonNull View itemView) {
+        private EditText text;
+        private ImageView delete, confirmDelete;
+        private boolean deletePressed = false;
+
+        NoteViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            switch (type) {
-                case PlanHeader.NOTE:
-                    text = itemView.findViewById(R.id.note_text_edit_text);
-                    text.setOnKeyListener((view, i, keyEvent) -> {
-                        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                            if (i == KeyEvent.KEYCODE_ENTER) {
-                                imm.hideSoftInputFromWindow(fragment.getView().getWindowToken(), 0);
-                                updateNote();
-                            }
-                        }
-                        return false;
-                    });
-                    break;
-            }
+            text = itemView.findViewById(R.id.note_text_edit_text);
+            delete = itemView.findViewById(R.id.itinerary_delete_ic);
+            confirmDelete = itemView.findViewById(R.id.itinerary_confirm_delete);
+
         }
 
-        private void updateNote() {
-            if (myNote != null) {
-                myNote.setNote(text.getText().toString());
-                parentAdapter.editObject((Object) myNote, getAdapterPosition());
-            }
+        public void setDetails(Plan plan) {
+            text.setText(plan.getNote());
+            text.setOnKeyListener((view, i, keyEvent) -> {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (i == KeyEvent.KEYCODE_ENTER) {
+                        imm.hideSoftInputFromWindow(fragment.getView().getWindowToken(), 0);
+                        parentAdapter.editPlan(plan, plans.indexOf(plan));
+                    }
+                }
+                return false;
+            });
+
+            delete.setOnClickListener(view -> {
+                if (deletePressed) {
+                    notifyItemRemoved(plans.indexOf(plan));
+                    plans.remove(plan);
+
+                    parentAdapter.deletePlan(plan);
+                    deletePressed = false;
+                } else {
+                    deletePressed = true;
+                    confirmDelete.setVisibility(View.VISIBLE);
+                    Handler handler = new android.os.Handler();
+                    handler.postDelayed(() -> {
+                        deletePressed = false;
+                        confirmDelete.setVisibility(View.GONE);
+                    }, 3000);
+
+                }
+            });
         }
 
-        void setDetails(Object object) {
-            if (object instanceof PlanNote) {
-                this.myNote = (PlanNote) object;
-                text.setText(myNote.getNote());
-            } else if (object instanceof PlanHotel) {
-
-            }
-        }
     }
-
-    public void setList(List<Object> objects) {
-        this.objects = objects;
-        notifyDataSetChanged();
-    }
-
 
 }

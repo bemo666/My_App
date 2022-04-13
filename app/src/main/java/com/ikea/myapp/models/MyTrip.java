@@ -2,9 +2,9 @@ package com.ikea.myapp.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.android.volley.Header;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
@@ -18,42 +18,43 @@ public class MyTrip implements Serializable {
     @NonNull
     private String id;
     private String placeId;
-    private String startDate, endDate, startStamp, endStamp;
-    private String destination;
+    private String startStamp, endStamp;
+    private String destination, nickname;
     private Double destinationLat;
     private Double destinationLon;
     private Budget budget;
     private CustomCurrency currency;
-    private List<PlanHeader> planHeaders;
+    private List<Plan> plans;
     private String image;
     private String timeZone;
+    private int imageVersion;
 
     public MyTrip() {
     }
 
-    public MyTrip(String destination, LatLng destinationLatLng, String startDate, String startStamp, String endDate,
-                  String endStamp, String placeId, String id, CustomCurrency currency, String timeZone) {
+    public MyTrip(String destination, LatLng destinationLatLng, String startStamp,
+                  String endStamp, String placeId, @NonNull String id, CustomCurrency currency, String timeZone) {
         this.destination = destination;
         this.destinationLat = destinationLatLng.latitude;
         this.destinationLon = destinationLatLng.longitude;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.startStamp = startStamp;
         this.endStamp = endStamp;
         this.placeId = placeId;
         this.id = id;
         this.budget = new Budget();
         this.currency = currency;
-        this.planHeaders = new ArrayList<>();
+        this.plans = new ArrayList<>();
         this.timeZone = timeZone;
+        this.imageVersion = 0;
     }
 
 
+    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -65,28 +66,12 @@ public class MyTrip implements Serializable {
         this.placeId = placeId;
     }
 
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
     public String getStartStamp() {
         return startStamp;
     }
 
     public void setStartStamp(String startStamp) {
         this.startStamp = startStamp;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
     }
 
     public String getEndStamp() {
@@ -125,6 +110,10 @@ public class MyTrip implements Serializable {
         return budget;
     }
 
+    public boolean hasBudgetEntries() {
+        return budget.getExpenses().size() != 0;
+    }
+
     public void setBudget(Budget budget) {
         this.budget = budget;
     }
@@ -137,12 +126,12 @@ public class MyTrip implements Serializable {
         this.currency = currency;
     }
 
-    public List<PlanHeader> getPlanHeaders() {
-        return planHeaders;
+    public List<Plan> getPlans() {
+        return plans;
     }
 
-    public void setPlanHeaders(List<PlanHeader> planHeaders) {
-        this.planHeaders = planHeaders;
+    public void setPlans(List<Plan> plans) {
+        this.plans = plans;
     }
 
     public String getImage() {
@@ -153,20 +142,63 @@ public class MyTrip implements Serializable {
         this.image = image;
     }
 
-    public String getTimeZone() { return timeZone; }
+    public String getTimeZone() {
+        return timeZone;
+    }
 
-    public void setTimeZone(String timeZone) { this.timeZone = timeZone; }
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
 
-    public boolean hasPlanHeaders() {
-        if (this.getPlanHeaders() != null)
-            return (this.planHeaders.size() != 0);
+    public boolean hasPlan(int type) {
+        for (Plan p : plans) {
+            if (p.getObjectType() == type)
+                return true;
+        }
         return false;
     }
 
-    public void addPlanHeader(PlanHeader h) {
-        if (this.planHeaders == null)
-            this.planHeaders = new ArrayList<>();
-        this.planHeaders.add(h);
+    public void addPlan(Plan h) {
+        if (this.plans == null)
+            this.plans = new ArrayList<>();
+        this.plans.add(h);
     }
 
+    public void deletePlan(Plan h) {
+        this.plans.remove(h);
+    }
+
+    public List<PlanHeader> sortList() {
+        List<PlanHeader> headers = new ArrayList<>();
+        for (PlanType t : PlanType.values()) {
+            List<Plan> list = new ArrayList<>();
+            if (plans != null)
+                for (Plan p : plans)
+                    if (p.getObjectType() == t.getType())
+                        list.add(p);
+            if (!list.isEmpty())
+                headers.add(new PlanHeader(t, list));
+        }
+        return headers;
+    }
+
+    public int getImageVersion() {
+        return imageVersion;
+    }
+
+    public void setImageVersion(int imageVersion) {
+        this.imageVersion = imageVersion;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void editPlan(Plan plan, int position){
+        this.plans.set(position, plan);
+    }
 }

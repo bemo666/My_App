@@ -37,13 +37,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="25dp"
                 android:layout_marginVertical="@dimen/spacing"
+                android:alpha="0.8"
+                android:backgroundTint="@color/blue"
                 android:visibility="gone"
                 app:cardCornerRadius="@dimen/card_radius">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/welcome_card_bg">
+                    android:layout_height="match_parent">
 
                     <ImageView
                         android:id="@+id/ic_luggage"
@@ -90,7 +91,7 @@
                         android:paddingVertical="10dp"
                         android:text="@string/ui_create_new_trip"
                         android:textAllCaps="false"
-                        android:textColor="@color/blue"
+                        android:textColor="@color/green"
                         app:cornerRadius="40dp"
                         app:rippleColor="@color/lightGrey" />
 

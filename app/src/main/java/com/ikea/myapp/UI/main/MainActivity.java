@@ -111,9 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragments.setUserInputEnabled(false);
 
         final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(() -> {
-            SplashMask.setVisibility(View.GONE);
-        }, 2250);
+        handler.postDelayed(() -> SplashMask.setVisibility(View.GONE), 2250);
     }
 
     @Override
@@ -134,9 +132,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (id == R.id.profile) {
             startActivity(new Intent(this, ProfileActivity.class));
             return true;
-        } else if (id == R.id.search) {
-            return true;
         }
+//        else if (id == R.id.search) {
+//            return true;
+//        }
         return true;
     }
 

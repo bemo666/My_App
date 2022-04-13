@@ -66,11 +66,13 @@ import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.ikea.myapp.data.remote.FirebaseManager;
+import com.ikea.myapp.utils.getCorrectDate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Currency;
@@ -86,13 +88,10 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private TextInputEditText inputDestination, inputDates;
     private Toolbar toolbar;
     private TextView welcomeText;
-    private FirebaseDatabase firebaseDatabase;
     private FirebaseManager firebaseManager;
-    private FirebaseUser firebaseUser;
-    private DatabaseReference userRef;
     private String placeId = "", destination = "";
     private LatLng destinationLatLng;
-    private String startDate, endDate, startStamp, endStamp;
+    private String startStamp, endStamp;
     private MaterialButton createButton;
     private CustomProgressDialog progressDialog;
     private final Handler handler = new Handler();
@@ -106,10 +105,14 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private Spinner mSpinner;
     private String[] idArray;
     private ArrayAdapter<String> idAdapter;
+    private Pair<Date, Date> rangeDate;
 
 
     //Location Permission
     private final int PERMISSIONS_FINE_LOCATION = 99;
+
+    public NewTripActivity() {
+    }
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -144,17 +147,10 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
 
         MaterialDatePicker<Pair<Long, Long>> datePicker = MaterialDatePicker.Builder.dateRangePicker().setTheme(R.style.ThemeOverlay_App_DatePicker).build();
-
         inputDates.setOnClickListener(view -> datePicker.show(getSupportFragmentManager(), "DATE_PICKER"));
         datePicker.addOnPositiveButtonClickListener(selection -> {
             inputDates.setText(datePicker.getHeaderText());
-            final Pair<Date, Date> rangeDate = new Pair<>(new Date((Long) selection.first), new Date((Long) ((Pair) selection).second));
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
-            startDate = dateFormat.format(rangeDate.first);
-            endDate = dateFormat.format(rangeDate.second);
-            startStamp = String.valueOf(rangeDate.first.getTime());
-            endStamp = String.valueOf(rangeDate.second.getTime());
-
+            rangeDate = new Pair<>(new Date((Long) selection.first), new Date((Long) ((Pair) selection).second));
         });
         createButton.setOnClickListener(this);
         initializeAPIs();
@@ -176,8 +172,6 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         for (int i = 0; i < idAdapter.getCount(); i++) {
             if (idAdapter.getItem(i).equals(TimeZone.getDefault().getID())) {
                 mSpinner.setSelection(i);
-                Log.d("tag", "Spinner: "+mSpinner.getSelectedItem().toString());
-                Log.d("tag", "class: "+mSpinner.getSelectedItem().getClass());
 
             }
         }
@@ -298,7 +292,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private Boolean verifyInput() {
-        return startDate != null && destinationLatLng != null;
+        return rangeDate != null && destinationLatLng != null;
     }
 
     @Override
@@ -333,7 +327,11 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
     private void createTrip() {
         DatabaseReference pushedTrip = firebaseManager.newTrip();
-        MyTrip data = new MyTrip(destination, destinationLatLng, startDate, startStamp, endDate, endStamp, placeId, pushedTrip.getKey(), c, mSpinner.getSelectedItem().toString());
+        TimeZone tz = TimeZone.getTimeZone((String) mSpinner.getSelectedItem());
+        startStamp = String.valueOf(rangeDate.first.getTime() - tz.getOffset(rangeDate.first.getTime()));
+        endStamp = String.valueOf(rangeDate.second.getTime() - tz.getOffset(rangeDate.first.getTime()) + 86399999);
+        MyTrip data = new MyTrip(destination, destinationLatLng, startStamp, endStamp, placeId,
+                Objects.requireNonNull(pushedTrip.getKey()), c, mSpinner.getSelectedItem().toString());
         fetchImage(pushedTrip.getKey());
         if (FirebaseManager.loggedIn()) {
             pushedTrip.setValue(data).addOnCompleteListener(task -> {

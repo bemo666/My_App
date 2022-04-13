@@ -16,10 +16,17 @@
         <LinearLayout
             android:id="@+id/account_info_linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="@dimen/spacing">
-
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/spacing"
+                android:contentDescription="@string/im_attr_log_in_image"
+                android:scaleType="fitCenter"
+                android:src="@drawable/im_user" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_side"
                 android:hint="@string/ui_first_name"
-                app:boxStrokeColor="@color/black">
+                app:boxStrokeColor="@color/orange">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/accountFirstName"
@@ -104,9 +111,10 @@
         <LinearLayout
             android:id="@+id/sign_in_linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:gravity="center"
             android:orientation="vertical"
             android:padding="@dimen/spacing">
 

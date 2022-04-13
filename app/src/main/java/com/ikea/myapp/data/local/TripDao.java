@@ -36,6 +36,10 @@ public interface TripDao {
     @Delete
     void deleteTrip(MyTrip trip);
 
+
+    @Query("UPDATE trips SET imageVersion = CASE WHEN  imageVersion < 9 THEN (imageVersion + 1)  ELSE 1 END WHERE id = :id ")
+    void incrementImageVersion(String id);
+
 //    @Query("Update trips Set image = :image Where id = :id")
 //    void setImage(String id, byte[] image);
 

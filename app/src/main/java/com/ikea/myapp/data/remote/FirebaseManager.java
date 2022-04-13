@@ -11,6 +11,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -18,6 +19,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.ikea.myapp.models.MyTrip;
+import com.ikea.myapp.models.PlanHeader;
 
 import java.util.Objects;
 
@@ -107,6 +109,7 @@ public class FirebaseManager {
         tripsRef.child(trip.getId()).setValue(trip);
     }
 
+
     public DatabaseReference getNameRef() {
         return userdata.child("firstName");
     }
@@ -116,17 +119,15 @@ public class FirebaseManager {
     }
 
     public void addTripImage(String id, byte[] bytes){ //maybe save by location id so it can be reused by different users, or save by userId + tripId
-        storage.child(id + ".jpg").putBytes(bytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-               task.getResult().getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        tripsRef.child(id).child("image").setValue(uri.toString());
-                    }
-                });
-            }
-        });
+        storage.child(id + ".jpg").putBytes(bytes).addOnCompleteListener(task -> task.getResult().getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+            tripsRef.child(id).child("image").setValue(uri.toString());
+            tripsRef.child(id).child("imageVersion").get().addOnSuccessListener(dataSnapshot -> {
+                int i = dataSnapshot.getValue(Integer.class);
+                if(i >= 10)
+                    i = 0;
+                tripsRef.child(id).child("imageVersion").setValue(i + 1);
+            });
+        }));
     }
 
 

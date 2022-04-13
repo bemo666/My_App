@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/darkNavyBlue"
+    android:background="@color/lighterBlue"
     android:orientation="vertical"
     tools:context=".UI.editTrip.BudgetFragment">
 
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:text="$0.00"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="32sp"
             android:textStyle="bold" />
 
@@ -52,7 +52,7 @@
                 android:paddingHorizontal="7dp"
                 android:paddingVertical="3dp"
                 android:text="@string/edittrip_budget"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="15sp" />
 
             <ImageView
@@ -60,7 +60,7 @@
                 android:layout_height="15dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_edit"
-                app:tint="@color/white" />
+                app:tint="@color/black" />
         </LinearLayout>
     </LinearLayout>
 
@@ -72,28 +72,83 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingHorizontal="@dimen/margin_side"
-            android:paddingTop="@dimen/margin_side">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/expenses_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/ui_expenses"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/budget_expenses_rv"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignTop="@id/expenses_text"
-                android:layout_alignBottom="@id/add_expense_button"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="55dp" />
+                android:orientation="vertical"
+                android:layout_above="@+id/add_expense_button"
+                android:paddingHorizontal="@dimen/margin_side"
+                android:paddingTop="@dimen/margin_side">
+
+                <TextView
+                    android:id="@+id/expenses_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ui_expenses"
+                    android:textColor="@color/black"
+                    android:textSize="24sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/budget_expenses_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:scrollbarThumbVertical="@color/grey"
+                    android:layout_below="@id/expenses_text"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/dividerLightGrey"
+                    android:scrollbarAlwaysDrawVerticalTrack="true" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/budget_expenses_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/expenses_text"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="55dp"
+                    android:backgroundTint="@color/barelyGrey"
+                    android:visibility="gone"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:src="@drawable/im_expense" />
+
+                        <TextView
+                            android:id="@+id/welcomeText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/main_welcome_traveler"
+                            android:textColor="@color/black"
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/bs_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:gravity="center_horizontal"
+                            android:text="@string/budget_huge_text"
+                            android:textColor="@color/black"
+                            android:textSize="17sp" />
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+            </RelativeLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/add_expense_button"
@@ -112,10 +167,7 @@
                 app:iconTint="@color/white"
                 app:rippleColor="@color/lightGrey" />
         </RelativeLayout>
-
-
     </androidx.cardview.widget.CardView>
-
 </LinearLayout>
 
 

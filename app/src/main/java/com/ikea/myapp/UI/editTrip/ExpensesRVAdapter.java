@@ -18,10 +18,10 @@ import java.util.List;
 
 public class ExpensesRVAdapter extends RecyclerView.Adapter<ExpensesRVAdapter.ViewHolder> {
 
-    private Context context;
+    private final Context context;
     private List<Expense> expenses;
-    private BudgetFragment fragment;
-    private CustomCurrency currency;
+    private final BudgetFragment fragment;
+    private final CustomCurrency currency;
 
     public ExpensesRVAdapter(BudgetFragment fragment, List<Expense> expenses, CustomCurrency currency) {
         this.context = fragment.requireContext();

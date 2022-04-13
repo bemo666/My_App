@@ -26,7 +26,6 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
     private Context context;
     private final UpcomingFragment fragment;
     private boolean hasTrips = false;
-    private CardView liveBadge, liveDot;
 
     public UpcomingTripsRVAdapter(UpcomingFragment fragment) {
         this.fragment = fragment;
@@ -44,7 +43,7 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
         holder.setCardView(sliderItems.get(position));
-        holder.itemView.setOnClickListener(view -> fragment.goToEditTripActivity(holder.imageView, holder.placeName, liveBadge, position));
+        holder.itemView.setOnClickListener(view -> fragment.goToEditTripActivity(holder.imageView, holder.placeName, position));
     }
 
 
@@ -54,6 +53,10 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
             return sliderItems.size();
         else
             return 0;
+    }
+
+    public void openEditTrip() {
+
     }
 
     class SliderViewHolder extends RecyclerView.ViewHolder {
@@ -66,8 +69,6 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
             imageView = itemView.findViewById(R.id.img);
             placeName = itemView.findViewById(R.id.placeName);
             dates = itemView.findViewById(R.id.dates);
-            liveBadge = itemView.findViewById(R.id.live_badge);
-            liveDot = itemView.findViewById(R.id.live_dot);
 
         }
 
@@ -76,15 +77,7 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
                 Glide.with(context).load(trip.getImage()).fitCenter().into(imageView);
             placeName.setText(trip.getDestination());
             getCorrectDate date = new getCorrectDate(trip);
-            dates.setText(date.getDatesPastFormat());
-            if ((Long.parseLong(trip.getStartStamp()) < Calendar.getInstance().getTimeInMillis() &&
-                    Long.parseLong(trip.getEndStamp()) > Calendar.getInstance().getTimeInMillis())) {
-                liveBadge.setVisibility(View.VISIBLE);
-                liveDot.startAnimation(AnimationUtils.loadAnimation(context, R.anim.blink));
-            } else {
-                liveDot.clearAnimation();
-                liveBadge.setVisibility(View.GONE);
-            }
+            dates.setText(date.getDatesOnlyMonthAndYearFormat());
 
         }
 

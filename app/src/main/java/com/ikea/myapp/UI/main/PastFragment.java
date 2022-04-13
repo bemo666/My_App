@@ -3,6 +3,7 @@ package com.ikea.myapp.UI.main;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +25,10 @@ import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.jjoe64.graphview.GraphView;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 
 public class PastFragment extends Fragment {
@@ -32,7 +37,8 @@ public class PastFragment extends Fragment {
     private TripsViewModel viewmodel;
     private RecyclerView tripSlider;
     private GraphView tripHistoryBarGraph;
-    private List<MyTrip> trips;
+    private List<MyTrip> tripList;
+    private CardView noPastTrips;
 
 
     public PastFragment() {
@@ -40,14 +46,14 @@ public class PastFragment extends Fragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_past, container, false);
+        View view = inflater.inflate(R.layout.fragment_past, container, false);
         tripSlider = view.findViewById(R.id.past_trips_rv);
         tripHistoryBarGraph = view.findViewById(R.id.trip_history_graph);
+        noPastTrips = view.findViewById(R.id.past_no_trips_card);
         viewmodel = ViewModelProviders.of(requireActivity()).get(TripsViewModel.class);
 
 
@@ -58,11 +64,20 @@ public class PastFragment extends Fragment {
         viewmodel.getTrips().observe(getViewLifecycleOwner(), myTrips -> {
             if (myTrips != null) {
                 if (!myTrips.isEmpty()) {
-                    trips = myTrips;
-                    adapter.setTrips(trips);
+                    tripList = new ArrayList<>();
+                    for (MyTrip t : myTrips) {
+                        TimeZone tz = TimeZone.getTimeZone(t.getTimeZone());
+                        long endStamp = Long.parseLong(t.getEndStamp());
+                        if ((endStamp + tz.getOffset(endStamp)) < Calendar.getInstance().getTimeInMillis()) {
+                            tripList.add(t);
+                        }
+                    }
+                    adapter.setTrips(tripList);
                 }
             }
+            displayCorrectTrips();
         });
+
 
 //        Date d1 = new Date(FirebaseManager.getCreationStamp());
 //        Date d2 = new Date(Calendar.getInstance().getTimeInMillis());
@@ -101,6 +116,24 @@ public class PastFragment extends Fragment {
 //        tripHistoryBarGraph.getGridLabelRenderer().setHumanRounding(false);
 
         return view;
+    }
+
+    private void displayCorrectTrips() {
+        if (tripList == null){
+            tripList = new ArrayList<>();
+        }
+        if (tripList.size() == 0) {
+
+            tripSlider.setVisibility(View.GONE);
+            noPastTrips.setVisibility(View.VISIBLE);
+        } else {
+            tripSlider.setVisibility(View.VISIBLE);
+            noPastTrips.setVisibility(View.GONE);
+        }
+    }
+
+    private String getTripIdAt(int position) {
+        return tripList.get(position).getId();
     }
 
     public void goToEditTripActivity(ImageView imageView, TextView textView, int position) {

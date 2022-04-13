@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.utils.getCorrectDate;
@@ -61,10 +62,11 @@ public class PastTripsRVAdapter extends RecyclerView.Adapter<PastTripsRVAdapter.
         }
 
         void setCardView(MyTrip trip) {
-            imageView.setImageResource(R.drawable.im_london2);
+            if (trip.getImage() != null)
+                Glide.with(fragment.requireContext()).load(trip.getImage()).fitCenter().into(imageView);
             placeName.setText(trip.getDestination());
             getCorrectDate date = new getCorrectDate(trip);
-            dates.setText(date.getDatesPastFormat());
+            dates.setText(date.getDatesOnlyMonthAndYearFormat());
 
 //            try {
 //                byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);

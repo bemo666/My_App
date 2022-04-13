@@ -86,10 +86,18 @@
     <string name="ui_change_cover_image">Change cover image</string>
     <string name="edit_trip_map">Map</string>
     <string name="ui_add_a_note">Add a Note</string>
-    <string name="ui_add_note">Add note</string>
+    <string name="ui_add_a_flight">Add a Flight</string>
+    <string name="ui_add_a_hotel">Add a Hotel</string>
+    <string name="ui_add_a_rental_car">Add a Rental Car</string>
+    <string name="ui_add_an_activity">Add an Activity</string>
     <string name="ui_tbd">TBD</string>
     <string name="open_location_settings">Open settings</string>
     <string name="gps_network_not_enabled">Gps network not enabled</string>
     <string name="gps_network_not_enabled_message">In order to find your location your location services have to be enabled</string>
+    <string name="edittrip_activities">Activities</string>
+    <string name="budget_huge_text">It appears you haven\'t added\nany expenses yet, press the \nbutton below to add \n your first expense!</string>
+    <string name="past_huge_text">Plan your trips and have a fun time,\nuntil then i\'ll be waiting patiently.</string>
+    <string name="past_no_past_trips">I can\'t find any past trips</string>
+    <string name="itinerary_huge_text">Get started by pressing the add button below\nand adding activities and/or hotels\nto your itinerary</string>
 
 </resources>

@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itinerary_fragment_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
@@ -12,31 +13,103 @@
     tools:context=".UI.editTrip.ItineraryFragment">
 
     <LinearLayout
+        android:id="@+id/itinerary_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:nestedScrollingEnabled="false"
         android:orientation="vertical"
         tools:ignore="Hardcodedtext">
 
+
+        <EditText
+            android:id="@+id/itinerary_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            android:hint="Nickname"
+            android:inputType="text|textLongMessage|textCapSentences"
+            android:paddingVertical="3dp"
+            android:textColor="@color/blue"
+            android:textColorHint="@color/blue"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <TextView
-            android:id="@+id/editTrip_dates"
+            android:id="@+id/itinerary_dates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:text="Mon Apr 25 - Sun Jun 29, 2023"
+            android:textColor="@color/kindaDarkGrey"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/itinerary_divider"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#ECEFF1" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/itinerary_new_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="dates"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:layout_marginBottom="55dp"
+            android:backgroundTint="@color/barelyGrey"
+            android:visibility="visible"
+            android:layout_marginHorizontal="@dimen/margin_side"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="@dimen/card_radius_thin"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="35dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/im_planning" />
+
+                <TextView
+                    android:id="@+id/welcomeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/main_welcome_traveler"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/bs_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:gravity="center_horizontal"
+                    android:text="Get started by adding activities\nand/or hotels to your itinerary!"
+                    android:textColor="@color/black"
+                    android:textSize="17sp" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/itinerary_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_side"
-            android:background="#ECEFF1"
+            android:layout_marginBottom="80dp"
+            android:background="@color/dividerLightGrey"
+            android:nestedScrollingEnabled="false"
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
     </LinearLayout>
-
-
 </androidx.core.widget.NestedScrollView>

@@ -132,11 +132,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         inputName.setInputType(InputType.TYPE_CLASS_TEXT);
         inputEmail.setInputType(InputType.TYPE_CLASS_TEXT);
         inputPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
         inputPassword.setOnKeyListener((view, i, keyEvent) -> {
             if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                 if (i == KeyEvent.KEYCODE_ENTER) {
                     onClick(firebaseButton);
+                }
+            }
+            return false;
+        });
+        inputEmail.setOnKeyListener((view, i, keyEvent) -> {
+            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                if (i == KeyEvent.KEYCODE_ENTER) {
+                    if (bForgotPassword) {
+                        onClick(firebaseButton);
+                    }
                 }
             }
             return false;
@@ -222,14 +231,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         layoutInputName.setVisibility(View.GONE);
         layoutInputPassword.setVisibility(View.GONE);
         firebaseButton.setText(R.string.login_forgot_password);
-        inputEmail.setOnKeyListener((view, i, keyEvent) -> {
-            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                if (i == KeyEvent.KEYCODE_ENTER) {
-                    onClick(firebaseButton);
-                }
-            }
-            return false;
-        });
     }
 
     @Override

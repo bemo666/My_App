@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
@@ -25,11 +23,16 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.button.MaterialButton;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.ikea.myapp.UI.newTrip.NewTripActivity;
+import com.ikea.myapp.models.MyTrip;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.TimeZone;
 
 
 public class UpcomingFragment extends Fragment {
@@ -42,6 +45,9 @@ public class UpcomingFragment extends Fragment {
     private ViewPager2 tripSlider;
     private TripsViewModel viewmodel;
     private UpcomingTripsRVAdapter adapter;
+    private int sliderPos;
+    private boolean sliderPosChanged;
+    private List<MyTrip> tripList;
 
     public UpcomingFragment() {
         // Required empty public constructor
@@ -62,6 +68,7 @@ public class UpcomingFragment extends Fragment {
         viewmodel = new ViewModelProvider(requireActivity()).get(TripsViewModel.class);
 
         extraIcon.setOnClickListener(view1 -> {
+            adapter.openEditTrip();
         });
 
         tripDetailsInit();
@@ -96,14 +103,18 @@ public class UpcomingFragment extends Fragment {
         viewmodel.getTrips().observe(getViewLifecycleOwner(), myTrips -> {
             if (myTrips != null) {
                 if (!myTrips.isEmpty()) {
-                    hideWelcomeCard();
-                    adapter.setTrips(myTrips);
-                } else {
-                    showWelcomeCard();
+                    tripList = new ArrayList<>();
+                    for (MyTrip t : myTrips) {
+                        TimeZone tz = TimeZone.getTimeZone(t.getTimeZone());
+                        long endStamp = Long.parseLong(t.getEndStamp());
+                        if ((endStamp + tz.getOffset(endStamp)) >= Calendar.getInstance().getTimeInMillis()) {
+                            tripList.add(t);
+                        }
+                    }
+                    adapter.setTrips(tripList);
                 }
-            } else {
-                showWelcomeCard();
             }
+            handleWelcomeCard();
         });
 
         CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
@@ -116,19 +127,22 @@ public class UpcomingFragment extends Fragment {
 
     }
 
-    private void showWelcomeCard() {
-        tripSlider.setVisibility(View.GONE);
-        welcomeCard.setVisibility(View.VISIBLE);
-        planBar.setVisibility(View.GONE);
-        rv_details.setVisibility(View.GONE);
-        createTrip.setOnClickListener(v -> startActivityForResult(new Intent(getActivity(), NewTripActivity.class), 200));
-    }
-
-    private void hideWelcomeCard() {
-        welcomeCard.setVisibility(View.GONE);
-        planBar.setVisibility(View.VISIBLE);
-        tripSlider.setVisibility(View.VISIBLE);
-        rv_details.setVisibility(View.VISIBLE);
+    private void handleWelcomeCard() {
+        if (tripList == null){
+            tripList = new ArrayList<>();
+        }
+        if (tripList.size() == 0) {
+            tripSlider.setVisibility(View.GONE);
+            welcomeCard.setVisibility(View.VISIBLE);
+            planBar.setVisibility(View.GONE);
+            rv_details.setVisibility(View.GONE);
+            createTrip.setOnClickListener(v -> startActivityForResult(new Intent(getActivity(), NewTripActivity.class), 200));
+        } else {
+            welcomeCard.setVisibility(View.GONE);
+            planBar.setVisibility(View.VISIBLE);
+            tripSlider.setVisibility(View.VISIBLE);
+            rv_details.setVisibility(View.VISIBLE);
+        }
     }
 
     private void tripDetailsInit() {
@@ -139,15 +153,36 @@ public class UpcomingFragment extends Fragment {
         rv_details.setLayoutManager(layoutManager2);
     }
 
-    public void goToEditTripActivity(ImageView imageView, TextView textView, CardView cardView, int position) {
+    public void goToEditTripActivity(ImageView imageView, TextView textView, int position) {
         Intent intent = new Intent(getContext(), EditTripActivity.class);
-        intent.putExtra("id", viewmodel.getTripIdAt(position));
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+        intent.putExtra("id", getTripIdAt(position));
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(),
                 Pair.create(imageView, ViewCompat.getTransitionName(imageView)),
                 Pair.create(textView, ViewCompat.getTransitionName(textView))
-                ,Pair.create(cardView, ViewCompat.getTransitionName(cardView))
         );
         this.startActivity(intent, options.toBundle());
 
+    }
+
+    private String getTripIdAt(int position) {
+        return tripList.get(position).getId();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (sliderPosChanged) {
+            tripSlider.setCurrentItem(sliderPos);
+            sliderPosChanged = false;
+        }
+    }
+
+    public void setSliderPos(int sliderPos) {
+        this.sliderPos = sliderPos;
+        sliderPosChanged = true;
+    }
+
+    public int getSliderPos() {
+        return sliderPos;
     }
 }

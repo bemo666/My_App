@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -203,7 +204,11 @@ public class TripRepo {
     }
 
     public void setLocalImage(String id, String image){
-        appExecutors.diskIO().execute( () -> tripDao.setTripImage(id, image));
+        appExecutors.diskIO().execute( () -> {
+            tripDao.setTripImage(id, image);
+            tripDao.incrementImageVersion(id);
+        });
+
     }
 
 //    public void setLocalImage(String id, byte[] image){
