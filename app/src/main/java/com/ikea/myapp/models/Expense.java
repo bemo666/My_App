@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Expense implements Serializable {
 
-    private String description;
+    private String description, id;
     private ExpenseTypes type;
     private Double price;
 
@@ -42,5 +42,13 @@ public class Expense implements Serializable {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

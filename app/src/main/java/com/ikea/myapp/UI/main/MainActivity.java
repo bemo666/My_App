@@ -1,9 +1,14 @@
 package com.ikea.myapp.UI.main;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -30,14 +35,17 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.ikea.myapp.Adapters.FragmentAdapter;
+import com.ikea.myapp.Notification;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.profile.ProfileActivity;
 import com.ikea.myapp.UI.newTrip.NewTripActivity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String CHANNEL_ID = "Trip Reminder";
     //Declaring Variables
     private FloatingActionButton addFab;
     private TabLayout tabLayout;
@@ -133,9 +141,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, ProfileActivity.class));
             return true;
         }
-//        else if (id == R.id.search) {
-//            return true;
-//        }
         return true;
     }
 
@@ -151,5 +156,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onBackPressed();
         finishAffinity();
     }
-
 }

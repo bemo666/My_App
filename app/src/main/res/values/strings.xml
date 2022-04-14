@@ -49,12 +49,12 @@
     <string name="newtrip_inspiration_text"><b>Need some flight inspiration?</b>\nFill in your city of origin to find a destination that suits you!</string>
     <string name="newtrip_timezone"><b>Timezone</b></string>
 
-    <string name="edit_trip_hotels">Hotels</string>
-    <string name="edit_trip_flights">Flights</string>
-    <string name="edit_trip_notes">Notes</string>
-    <string name="edit_trip_overview">Overview</string>
-    <string name="edit_trip_itinerary">Itinerary</string>
-    <string name="edit_trip_budget">Budget</string>
+    <string name="ui_hotels">Hotels</string>
+    <string name="ui_flights">Flights</string>
+    <string name="ui_notes">Notes</string>
+    <string name="ui_overview">Overview</string>
+    <string name="ui_itinerary">Itinerary</string>
+    <string name="ui_budget">Budget</string>
 
     <string name="profile_not_signed_in"><b>It appears you aren\'t signed in</b>\n\nCreate an account or sign in to have your trips sync across all your devices!</string>
     <string name="profile_delete_account">Delete Account</string>
@@ -99,5 +99,17 @@
     <string name="past_huge_text">Plan your trips and have a fun time,\nuntil then i\'ll be waiting patiently.</string>
     <string name="past_no_past_trips">I can\'t find any past trips</string>
     <string name="itinerary_huge_text">Get started by pressing the add button below\nand adding activities and/or hotels\nto your itinerary</string>
+    <string name="rental_pick_up">Pick-up</string>
+    <string name="ui_address">Address</string>
+    <string name="ui_date">Date</string>
+    <string name="ui_time">Time</string>
+    <string name="rental_drop_off">Drop-off</string>
+    <string name="ui_confirmation_number">Confirmation number</string>
+    <string name="ui_cost">Cost</string>
+    <string name="rental_car_details">Car details</string>
+    <string name="hotel_check_in">Check-in</string>
+    <string name="hotel_check_out">Check-out</string>
+    <string name="timezone_select_timezone">Select Timezone</string>
+    <string name="ui_timezone"><b>Timezone</b></string>
 
 </resources>

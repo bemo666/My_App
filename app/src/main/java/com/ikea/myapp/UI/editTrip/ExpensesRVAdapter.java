@@ -58,7 +58,7 @@ public class ExpensesRVAdapter extends RecyclerView.Adapter<ExpensesRVAdapter.Vi
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            icon = itemView.findViewById(R.id.expense_icon);
+            icon = itemView.findViewById(R.id.note_icon);
             title = itemView.findViewById(R.id.expense_type_text);
             description = itemView.findViewById(R.id.expense_description_text);
             cost = itemView.findViewById(R.id.expense_cost);

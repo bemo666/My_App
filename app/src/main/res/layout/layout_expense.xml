@@ -9,7 +9,7 @@
     android:padding="5dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/expense_cardview"
+        android:id="@+id/note_cardview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -19,7 +19,7 @@
         app:contentPadding="5dp">
 
         <ImageView
-            android:id="@+id/expense_icon"
+            android:id="@+id/note_icon"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_margin="5dp"
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/expense_cardview"
+        android:layout_toEndOf="@+id/note_cardview"
         android:text="Lodging"
         android:textColor="@color/black" />
 

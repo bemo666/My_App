@@ -15,6 +15,22 @@ public class Plan {
         this.objectType = objectType;
     }
 
+
+    public Plan(Long startLocationLat, Long startLocationLong, Long endLocationLat, Long endLocationLong, String startLocation, String endLocation, String startLocationId, String endLocationId, String startLocationAddress, String endLocationAddress, String startTime, String endTime) {
+        this.startLocationLat = startLocationLat;
+        this.startLocationLong = startLocationLong;
+        this.endLocationLat = endLocationLat;
+        this.endLocationLong = endLocationLong;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
+        this.startLocationId = startLocationId;
+        this.endLocationId = endLocationId;
+        this.startLocationAddress = startLocationAddress;
+        this.endLocationAddress = endLocationAddress;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
     public Plan() {
     }
 

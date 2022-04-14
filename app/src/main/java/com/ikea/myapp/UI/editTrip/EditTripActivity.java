@@ -217,7 +217,10 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         setSupportActionBar(toolbar);
         setTitle(" ");
 
-        mask.setOnClickListener(view -> click());
+        mask.setOnClickListener(view -> {
+            click();
+            Log.d("tag", "mask clicked on ");
+        });
         addButton.setOnClickListener(view -> click());
         notes.setOnClickListener(this);
         hotels.setOnClickListener(this);

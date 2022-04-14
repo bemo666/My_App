@@ -2,6 +2,8 @@ package com.ikea.myapp.utils;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.ikea.myapp.Notification;
 import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.utils.NetworkChangeReceiver;
 
@@ -31,6 +34,11 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
         registerReceiver(receiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
 
         registerActivityLifecycleCallbacks(this);
+
+
+        createNotificationChannel();
+
+
 
     }
 
@@ -70,6 +78,18 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
 
+    }
+
+    private void createNotificationChannel() {
+        CharSequence name = Notification.CHANNEL_NAME;
+        String description = Notification.CHANNEL_DESCRIPTION;
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel(Notification.CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 
 }

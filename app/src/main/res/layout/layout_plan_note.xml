@@ -14,7 +14,7 @@
         android:padding="5dp">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/expense_cardview"
+            android:id="@+id/note_cardview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/grey"
@@ -23,7 +23,7 @@
             app:contentPadding="2dp">
 
             <ImageView
-                android:id="@+id/expense_icon"
+                android:id="@+id/note_icon"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_margin="5dp"
@@ -38,16 +38,17 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@+id/itinerary_delete_ic"
-            android:layout_toEndOf="@id/expense_cardview"
+            android:layout_toStartOf="@+id/note_delete_ic"
+            android:layout_toEndOf="@id/note_cardview"
             android:background="@color/transparent"
             android:hint="@string/ui_add_a_note"
+            android:imeOptions="actionDone"
             android:inputType="text|textLongMessage|textCapSentences"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/itinerary_delete_ic"
+            android:id="@+id/note_delete_ic"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
@@ -61,7 +62,7 @@
             app:tint="@color/black" />
 
         <ImageView
-            android:id="@+id/itinerary_confirm_delete"
+            android:id="@+id/note_confirm_delete"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_alignParentEnd="true"

@@ -1,46 +1,42 @@
 package com.ikea.myapp.UI.newTrip;
 
-import android.Manifest;
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.app.AlarmManager;
+import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
@@ -50,30 +46,24 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.UploadTask;
-import com.ikea.myapp.data.remote.AmadeusApi;
+import com.ikea.myapp.Notification;
+import com.ikea.myapp.UI.profile.CurrenciesRVAdapter;
 import com.ikea.myapp.models.CustomCurrency;
 import com.ikea.myapp.models.CustomProgressDialog;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.ikea.myapp.data.remote.FirebaseManager;
-import com.ikea.myapp.utils.getCorrectDate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Date;
@@ -85,7 +75,7 @@ import java.util.TimeZone;
 public class NewTripActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Declaring Variables
-    private TextInputEditText inputDestination, inputDates;
+    private TextInputEditText inputDestination, inputDates, inputTimezone;
     private Toolbar toolbar;
     private TextView welcomeText;
     private FirebaseManager firebaseManager;
@@ -102,10 +92,12 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
-    private Spinner mSpinner;
-    private String[] idArray;
-    private ArrayAdapter<String> idAdapter;
+    private String timezone;
     private Pair<Date, Date> rangeDate;
+    private BottomSheetDialog timezoneSheet;
+    private RecyclerView timezoneRV;
+    private TimezoneRVAdapter timezoneRVAdapter;
+    private EditText timezoneSearchBar;
 
 
     //Location Permission
@@ -130,10 +122,15 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         inputDates = findViewById(R.id.inputDates);
         createButton = findViewById(R.id.create_trip);
         toolbar = findViewById(R.id.newTripToolbar);
-        mSpinner = findViewById(R.id.mytimezonespinner);
+        inputTimezone = findViewById(R.id.inputTimezone);
         c = new CustomCurrency(Currency.getInstance(Locale.US));
         firebaseManager = new FirebaseManager();
         progressDialog = new CustomProgressDialog(this, "Creating Trip");
+
+        timezoneSheet = new BottomSheetDialog(this);
+        timezoneSheet.setContentView(R.layout.dialog_timezone_selector);
+        timezoneRV = timezoneSheet.findViewById(R.id.timezone_recycler_view);
+        timezoneSearchBar = timezoneSheet.findViewById(R.id.timezone_search_edit_text);
 
 
         viewmodel = new ViewModelProvider(this).get(NewTripActivityViewModel.class);
@@ -165,18 +162,38 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
 
     private void populateAndUpdateTimeZone() {
-        idArray = TimeZone.getAvailableIDs();
-        idAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, idArray);
-        idAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(idAdapter);
-        for (int i = 0; i < idAdapter.getCount(); i++) {
-            if (idAdapter.getItem(i).equals(TimeZone.getDefault().getID())) {
-                mSpinner.setSelection(i);
+        inputTimezone.setOnClickListener(view -> timezoneSheet.show());
+        timezoneRVAdapter = new TimezoneRVAdapter(this);
+        timezoneRV.setAdapter(timezoneRVAdapter);
+        timezoneRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        timezoneSearchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-        }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                timezoneRVAdapter.searchUpdate(editable.toString());
+            }
+        });
     }
 
+    @Nullable
+    @Override
+    protected Dialog onCreateDialog(int id, Bundle args) {
+        Dialog dialog = super.onCreateDialog(id, args);
+        if (dialog instanceof BottomSheetDialog) {
+            ((BottomSheetDialog) dialog).getBehavior().setSkipCollapsed(false);
+            ((BottomSheetDialog) dialog).getBehavior().setState(STATE_EXPANDED);
+        }
+        return dialog;
+    }
 
     private void initializeAPIs() {
         //Initialize the places api
@@ -291,9 +308,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         return super.onOptionsItemSelected(item);
     }
 
-    private Boolean verifyInput() {
-        return rangeDate != null && destinationLatLng != null;
-    }
+    private Boolean verifyInput() { return rangeDate != null && destinationLatLng != null && timezone != null; }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -327,20 +342,17 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
     private void createTrip() {
         DatabaseReference pushedTrip = firebaseManager.newTrip();
-        TimeZone tz = TimeZone.getTimeZone((String) mSpinner.getSelectedItem());
+        TimeZone tz = TimeZone.getDefault();
         startStamp = String.valueOf(rangeDate.first.getTime() - tz.getOffset(rangeDate.first.getTime()));
         endStamp = String.valueOf(rangeDate.second.getTime() - tz.getOffset(rangeDate.first.getTime()) + 86399999);
         MyTrip data = new MyTrip(destination, destinationLatLng, startStamp, endStamp, placeId,
-                Objects.requireNonNull(pushedTrip.getKey()), c, mSpinner.getSelectedItem().toString());
+                Objects.requireNonNull(pushedTrip.getKey()), c, timezone);
         fetchImage(pushedTrip.getKey());
         if (FirebaseManager.loggedIn()) {
             pushedTrip.setValue(data).addOnCompleteListener(task -> {
                 progressDialog.hide();
                 if (task.isSuccessful()) {
-                    Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
-                    intent.putExtra("id", pushedTrip.getKey());
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
-                    handler.postDelayed(this::finish, 900);
+                    tripCreated(pushedTrip.getKey());
                 } else {
                     Toast.makeText(getApplicationContext(), "Failed to create new trip, Try again later", Toast.LENGTH_SHORT).show();
                 }
@@ -348,13 +360,20 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
         } else {
             viewmodel.insertLocalTrip(data);
-
-            Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
-            intent.putExtra("id", pushedTrip.getKey());
-            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
-            handler.postDelayed(this::finish, 900);
-
+            tripCreated(pushedTrip.getKey());
         }
+    }
+
+    private void tripCreated(String key) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,
+                (Long.parseLong(startStamp) - 27000000),
+                PendingIntent.getBroadcast(getApplicationContext(), 0,
+                        new Intent(this, Notification.class), 0));
+        Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
+        intent.putExtra("id", key);
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+        handler.postDelayed(this::finish, 900);
     }
 
     private void fetchImage(String key) {
@@ -378,10 +397,9 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
 
-                    if(FirebaseManager.loggedIn()){
+                    if (FirebaseManager.loggedIn()) {
                         firebaseManager.addTripImage(key, baos.toByteArray());
-                    }
-                    else{
+                    } else {
                         File file = new File(getFilesDir(), key + ".jpg");
 
                         try (FileOutputStream fos = openFileOutput(file.getName(), Context.MODE_PRIVATE)) {
@@ -400,6 +418,12 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             }
 
         });
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+        inputTimezone.setText(this.timezone);
+        timezoneSheet.dismiss();
     }
 }
 

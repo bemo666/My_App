@@ -4,11 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,7 +15,6 @@ import com.ikea.myapp.R;
 import com.ikea.myapp.utils.getCorrectDate;
 import com.makeramen.roundedimageview.RoundedImageView;
 
-import java.util.Calendar;
 import java.util.List;
 
 public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRVAdapter.SliderViewHolder> {
@@ -36,7 +33,7 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
     @Override
     public SliderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new SliderViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.layout_trips, parent, false)
+                R.layout.layout_upcoming_trip, parent, false)
         );
     }
 
@@ -74,7 +71,7 @@ public class UpcomingTripsRVAdapter extends RecyclerView.Adapter<UpcomingTripsRV
 
         void setCardView(MyTrip trip) {
             if (trip.getImage() != null)
-                Glide.with(context).load(trip.getImage()).fitCenter().into(imageView);
+                Glide.with(context).load(trip.getImage()).centerCrop().into(imageView);
             placeName.setText(trip.getDestination());
             getCorrectDate date = new getCorrectDate(trip);
             dates.setText(date.getDatesOnlyMonthAndYearFormat());

@@ -1,9 +1,6 @@
 package com.ikea.myapp.UI.editTrip;
 
 import android.content.Context;
-import android.icu.text.MessagePattern;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +45,7 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
     @Override
     public HeaderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.layout_itinerary_recyclerview_item, parent, false)
+                R.layout.layout_plan_header, parent, false)
         );
     }
 
@@ -122,7 +119,7 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 adapters[position].notifyItemInserted(adapters[position].getItemCount());
             });
             if (adapters[position] == null)
-                adapters[position] = new ItineraryInternalRVAdapter(ItineraryRVAdapter.this, header, fragment);
+                adapters[position] = new ItineraryInternalRVAdapter(ItineraryRVAdapter.this, header, fragment, trip.getCurrency());
             internalRV.setAdapter(adapters[position]);
             internalRV.setNestedScrollingEnabled(false);
             internalRV.setLayoutManager(new LinearLayoutManager(context));

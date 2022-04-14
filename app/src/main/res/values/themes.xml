@@ -135,6 +135,22 @@
         <item name="boxStrokeWidth">2dp</item>
     </style>
 
+    <style name="ItineraryTextBoxes" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxCornerRadiusBottomEnd">5dp</item>
+        <item name="boxCornerRadiusBottomStart">0dp</item>
+        <item name="boxCornerRadiusTopEnd">0dp</item>
+        <item name="boxCornerRadiusTopStart">5dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="boxStrokeColor">@color/blue</item>
+        <item name="hintTextColor">@color/kindaDarkGrey</item>
+        <item name="errorIconDrawable">@null</item>
+        <item name="boxStrokeErrorColor">@color/red</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlHighlight">@color/black</item>
+        <item name="colorControlNormal">@color/black</item>
+    </style>
+
     <style name="ThemeOverlay.App.DatePicker" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
         <item name="colorPrimary">@color/blue</item>
         <item name="colorOnPrimary">@color/darkGrey</item>
@@ -170,6 +186,7 @@
         <item name="elevation">5dp</item>
         <item name="backgroundTint">@color/white</item>
     </style>
+
     <style name="MainTabWidget">
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
@@ -180,13 +197,11 @@
     </style>
 
 
-    <style name="AppBottomSheetDialogTheme"
-        parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
     </style>
 
-    <style name="AppModalStyle"
-        parent="Widget.Design.BottomSheet.Modal">
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/shape_round_top</item>
     </style>
 
