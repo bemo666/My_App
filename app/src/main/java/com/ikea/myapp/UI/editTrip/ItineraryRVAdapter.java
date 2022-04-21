@@ -1,6 +1,7 @@
 package com.ikea.myapp.UI.editTrip;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textview.MaterialTextView;
 import com.ikea.myapp.R;
+import com.ikea.myapp.models.Budget;
+import com.ikea.myapp.models.Expense;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.models.Plan;
 import com.ikea.myapp.models.PlanHeader;
@@ -25,7 +28,6 @@ import java.util.List;
 
 public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.HeaderViewHolder> {
 
-    private final Context context;
     private final ItineraryFragment fragment;
     private MyTrip trip;
     private List<PlanHeader> headers;
@@ -35,10 +37,8 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
     public ItineraryRVAdapter(ItineraryFragment fragment) {
         this.fragment = fragment;
-        this.context = fragment.getContext();
-        assert context != null;
         headers = new ArrayList<>();
-        this.imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        this.imm = (InputMethodManager) fragment.requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @NonNull
@@ -78,14 +78,39 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
         notifyItemRemoved(trip.getPlans().indexOf(h));
     }
 
-//    public void updateTitle(String title, int position){
-//        trip.getPlanHeaders().get(position).setMyTitle(title);
-//        fragment.updateTrip(trip);
-//    }
-
     public ItineraryFragment getFragment() {
         return fragment;
     }
+
+    public void editBudget(Expense cost) {
+        boolean found = false;
+        if (trip.hasBudgetEntries()){
+            int i = 0;
+            for (Expense e : trip.getBudget().getExpenses()) {
+                if (e.hasId()) {
+                    if (e.getId().equals(cost.getId())) {
+                        found = true;
+                        trip.getBudget().editExpense(cost, i);
+                        Log.d("tag", "was called");
+                    }
+                }
+                i++;
+
+            }
+            if(!found){
+                trip.getBudget().addExpense(cost);
+                Log.d("tag", "was called2");
+
+            }
+        } else {
+            Budget b = new Budget();
+            b.addExpense(cost);
+            trip.setBudget(b);
+            Log.d("tag", "was called3");
+
+        }
+    }
+
 
     class HeaderViewHolder extends RecyclerView.ViewHolder {
         private boolean expanded;
@@ -122,7 +147,7 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 adapters[position] = new ItineraryInternalRVAdapter(ItineraryRVAdapter.this, header, fragment, trip.getCurrency());
             internalRV.setAdapter(adapters[position]);
             internalRV.setNestedScrollingEnabled(false);
-            internalRV.setLayoutManager(new LinearLayoutManager(context));
+            internalRV.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
         }
 
         void expand() {
@@ -182,6 +207,18 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
     }
 
     public void deletePlan(Plan plan) {
+        if (plan.getCost() != null) {
+            if (trip.hasBudgetEntries()) {
+                for (Expense e : trip.getBudget().getExpenses()) {
+                    if (e.hasId()) {
+                        if (e.getId().equals(plan.getCost().getId())) {
+                            trip.getBudget().deleteExpense(e);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         trip.deletePlan(plan);
         int index = -1;
         for (PlanHeader h : headers)

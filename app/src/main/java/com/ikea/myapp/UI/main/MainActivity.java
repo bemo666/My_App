@@ -120,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> SplashMask.setVisibility(View.GONE), 2250);
+
+
     }
 
     @Override

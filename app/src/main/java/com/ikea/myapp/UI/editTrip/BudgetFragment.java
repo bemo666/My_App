@@ -1,5 +1,7 @@
 package com.ikea.myapp.UI.editTrip;
 
+import static com.ikea.myapp.utils.Utils.prettyPrint;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -38,6 +40,7 @@ import com.ikea.myapp.models.CustomCurrency;
 import com.ikea.myapp.models.Expense;
 import com.ikea.myapp.models.ExpenseTypes;
 import com.ikea.myapp.models.MyTrip;
+import com.ikea.myapp.models.PlanType;
 import com.ikea.myapp.utils.MyViewModelFactory;
 
 import java.math.BigDecimal;
@@ -189,7 +192,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
             expensesRVAdapter.setExpenses(trip.getBudget().getExpenses());
             dismissExpenseSheet();
         });
-        if (!ex.getDescription().isEmpty())
+        if (ex.getDescription() != (null) && !ex.getDescription().isEmpty())
             description.setText(ex.getDescription());
         expenseTypeSelector.setText(ex.getType().name());
         expenseTypeIcon.setImageResource(ex.getType().getImage());
@@ -287,6 +290,20 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
             if (!amount.getText().toString().isEmpty() && type != null) {
                 BigDecimal bd = new BigDecimal(amount.getText().toString()).setScale(2, RoundingMode.HALF_UP);
                 Expense expense = new Expense(description.getText().toString(), type, bd.doubleValue());
+                if (currentPos != -1){
+                    if (trip.getBudget().getExpenses().get(currentPos).hasId()){
+                        expense.setId(trip.getBudget().getExpenses().get(currentPos).getId());
+                        trip.getPlans().forEach(plan -> {
+                            if (plan.getCost() != null){
+                                if(plan.getCost().hasId()) {
+                                    if (plan.getCost().getId().equals(expense.getId())) {
+                                        plan.setCost(expense);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
 
                 if (trip.getBudget() == null) {
                     Budget budget1 = new Budget();
@@ -384,10 +401,5 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         budgetCurrencySymbol.setText(trip.getCurrency().getSymbol());
 
         currencySheet.dismiss();
-    }
-
-    public String prettyPrint(double d) {
-        int i = (int) d;
-        return d == i ? String.valueOf(i) : String.valueOf(d);
     }
 }

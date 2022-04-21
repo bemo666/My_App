@@ -1,5 +1,7 @@
 package com.ikea.myapp.UI.editTrip;
 
+import static com.ikea.myapp.utils.Utils.prettyPrint;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +44,7 @@ public class ExpensesRVAdapter extends RecyclerView.Adapter<ExpensesRVAdapter.Vi
         holder.icon.setImageResource(expense.getType().getImage());
         holder.title.setText(expense.getType().name());
         holder.description.setText(expense.getDescription());
-        holder.cost.setText(currency.getSymbol() + fragment.prettyPrint(expense.getPrice()));
+        holder.cost.setText(currency.getSymbol() + prettyPrint(expense.getPrice()));
         holder.itemView.setOnClickListener(view -> fragment.editExpense(position));
     }
 

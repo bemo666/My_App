@@ -118,7 +118,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         mask = findViewById(R.id.editTrip_mask);
         mainImage = findViewById(R.id.editTrip_mainImage);
         tabLayout = findViewById(R.id.editTripTabLayout);
-        itineraryFragment = new ItineraryFragment(id);
+        itineraryFragment = new ItineraryFragment(id, this);
 
         viewModel = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), id)).get(EditTripViewModel.class);
 
@@ -134,7 +134,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         //Fragments setup
         ArrayList<Fragment> list = new ArrayList<>();
         list.add(itineraryFragment);
-        list.add(new MapFragment(id));
+        list.add(new MapFragment(id, this));
         list.add(new BudgetFragment(id));
         FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), list);
         fragments.setAdapter(fragmentAdapter);
@@ -219,7 +219,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
         mask.setOnClickListener(view -> {
             click();
-            Log.d("tag", "mask clicked on ");
         });
         addButton.setOnClickListener(view -> click());
         notes.setOnClickListener(this);
@@ -243,8 +242,12 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finishAfterTransition();
+        if(!clicked) {
+            super.onBackPressed();
+            finishAfterTransition();
+        } else {
+            click();
+        }
     }
 
     private void click() {
@@ -406,5 +409,10 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             }
 
         });
+
+    }
+    public void openMapsFragment(){
+        fragments.setCurrentItem(1);
+        tabLayout.selectTab(tabLayout.getTabAt(1), true);
     }
 }

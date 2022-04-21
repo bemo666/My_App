@@ -105,9 +105,11 @@ public class UpcomingFragment extends Fragment {
                 if (!myTrips.isEmpty()) {
                     tripList = new ArrayList<>();
                     for (MyTrip t : myTrips) {
-                        TimeZone tz = TimeZone.getTimeZone(t.getTimeZone());
-                        long endStamp = Long.parseLong(t.getEndStamp());
-                        if ((endStamp + tz.getOffset(endStamp)) >= Calendar.getInstance().getTimeInMillis()) {
+                        long endStamp = t.getEndStamp();
+                        TimeZone tz = TimeZone.getDefault();
+                        long currentTime = Calendar.getInstance().getTimeInMillis() + tz.getOffset(Calendar.getInstance().getTimeInMillis());
+
+                        if (endStamp >= currentTime) {
                             tripList.add(t);
                         }
                     }

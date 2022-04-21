@@ -6,57 +6,46 @@ public class Plan {
     private String airline, flightCode;
     private Long startLocationLat, startLocationLong, endLocationLat, endLocationLong;
     private String startLocation, endLocation, startLocationId, endLocationId, startLocationAddress, endLocationAddress;
-    private String startTime, endTime;
+    private Long startTime, endTime,  startDate, endDate;
     private String note, confirmationNumber;
     private Expense cost;
+    private boolean hasEnd;
+
+    public boolean isHasEnd() { return hasEnd; }
+
+    public void setHasEnd(boolean hasEnd) { this.hasEnd = hasEnd; }
+
     private int objectType;
 
     public Plan(int objectType) {
         this.objectType = objectType;
     }
 
+    public Long getStartDate() { return startDate; }
 
-    public Plan(Long startLocationLat, Long startLocationLong, Long endLocationLat, Long endLocationLong, String startLocation, String endLocation, String startLocationId, String endLocationId, String startLocationAddress, String endLocationAddress, String startTime, String endTime) {
-        this.startLocationLat = startLocationLat;
-        this.startLocationLong = startLocationLong;
-        this.endLocationLat = endLocationLat;
-        this.endLocationLong = endLocationLong;
-        this.startLocation = startLocation;
-        this.endLocation = endLocation;
-        this.startLocationId = startLocationId;
-        this.endLocationId = endLocationId;
-        this.startLocationAddress = startLocationAddress;
-        this.endLocationAddress = endLocationAddress;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
+    public void setStartDate(Long startDate) { this.startDate = startDate; }
 
-    public Plan() {
-    }
+    public Long getEndDate() { return endDate; }
 
-    public boolean hasStartLocation(){
-        return startLocation != null;
-    }
-    
-    public boolean hasEndLocation(){
-        return endLocation != null; 
-    }
+    public void setEndDate(Long endDate) { this.endDate = endDate; }
+
+    public Plan() { }
+
+    public boolean hasStartLocation(){ return startLocation != null; }
+
+    public boolean hasEndLocation(){ return endLocation != null; }
 
     public Long getStartLocationLat() {
         return startLocationLat;
     }
 
-    public void setStartLocationLat(Long startLocationLat) {
-        this.startLocationLat = startLocationLat;
-    }
+    public void setStartLocationLat(Long startLocationLat) { this.startLocationLat = startLocationLat; }
 
     public Long getStartLocationLong() {
         return startLocationLong;
     }
 
-    public void setStartLocationLong(Long startLocationLong) {
-        this.startLocationLong = startLocationLong;
-    }
+    public void setStartLocationLong(Long startLocationLong) { this.startLocationLong = startLocationLong; }
 
     public Long getEndLocationLat() {
         return endLocationLat;
@@ -94,9 +83,7 @@ public class Plan {
         return startLocationId;
     }
 
-    public void setStartLocationId(String startLocationId) {
-        this.startLocationId = startLocationId;
-    }
+    public void setStartLocationId(String startLocationId) { this.startLocationId = startLocationId; }
 
     public String getEndLocationId() {
         return endLocationId;
@@ -106,35 +93,27 @@ public class Plan {
         this.endLocationId = endLocationId;
     }
 
-    public String getStartLocationAddress() {
-        return startLocationAddress;
-    }
+    public String getStartLocationAddress() { return startLocationAddress; }
 
-    public void setStartLocationAddress(String startLocationAddress) {
-        this.startLocationAddress = startLocationAddress;
-    }
+    public void setStartLocationAddress(String startLocationAddress) { this.startLocationAddress = startLocationAddress; }
 
     public String getEndLocationAddress() {
         return endLocationAddress;
     }
 
-    public void setEndLocationAddress(String endLocationAddress) {
-        this.endLocationAddress = endLocationAddress;
-    }
+    public void setEndLocationAddress(String endLocationAddress) { this.endLocationAddress = endLocationAddress; }
 
-    public String getStartTime() {
-        return startTime;
-    }
+    public Long getStartTime() { return startTime; }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(Long startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public Long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
 
@@ -150,25 +129,17 @@ public class Plan {
         return confirmationNumber;
     }
 
-    public void setConfirmationNumber(String confirmationNumber) {
-        this.confirmationNumber = confirmationNumber;
-    }
+    public void setConfirmationNumber(String confirmationNumber) { this.confirmationNumber = confirmationNumber; }
 
-    public Expense getCost() {
-        return cost;
-    }
+    public Expense getCost() { return cost; }
 
     public void setCost(Expense cost) {
         this.cost = cost;
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
     public String getAirline() {
         return airline;

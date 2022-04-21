@@ -39,6 +39,7 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_forgot_password.xml" value="0.21910112359550563" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_login.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_maptest.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_new_trip.xml" value="0.2" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_profile.xml" value="0.3892921960072595" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/activity_sign_in.xml" value="0.264" />
@@ -62,7 +63,7 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_map.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_overview.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_past.xml" value="0.2234375" />
-        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_upcoming.xml" value="0.4446397188049209" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/fragment_upcoming.xml" value="0.275" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/ic_image_failed.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_currency.xml" value="0.72" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_expense.xml" value="0.4" />
@@ -73,11 +74,11 @@
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_live_badge.xml" value="0.1" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_live_dot.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_past_trips.xml" value="0.536" />
-        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_activity.xml" value="0.532258064516129" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_activity.xml" value="0.31494661921708184" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_flight.xml" value="0.2234375" />
-        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_hotel.xml" value="0.45750452079566006" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_hotel.xml" value="0.2875816993464052" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_note.xml" value="0.536" />
-        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_rental.xml" value="0.5336658354114713" />
+        <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_plan_rental.xml" value="0.2" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_suggested_destinations.xml" value="0.2234375" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_trip_details.xml" value="0.6" />
         <entry key="..\:/Users/benle/AndroidStudioProjects/MyApp/app/src/main/res/layout/layout_trips.xml" value="0.2952158693115519" />

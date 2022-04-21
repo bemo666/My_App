@@ -17,23 +17,20 @@ public class MyTrip implements Serializable {
     @PrimaryKey
     @NonNull
     private String id;
-    private String placeId;
-    private String startStamp, endStamp;
+    private String placeId, image;
+    private Long startStamp, endStamp;
     private String destination, nickname;
-    private Double destinationLat;
-    private Double destinationLon;
+    private Double destinationLat, destinationLon;
     private Budget budget;
     private CustomCurrency currency;
     private List<Plan> plans;
-    private String image;
-    private String timeZone;
     private int imageVersion;
 
     public MyTrip() {
     }
 
-    public MyTrip(String destination, LatLng destinationLatLng, String startStamp,
-                  String endStamp, String placeId, @NonNull String id, CustomCurrency currency, String timeZone) {
+    public MyTrip(String destination, LatLng destinationLatLng, Long startStamp,
+                  Long endStamp, String placeId, @NonNull String id, CustomCurrency currency) {
         this.destination = destination;
         this.destinationLat = destinationLatLng.latitude;
         this.destinationLon = destinationLatLng.longitude;
@@ -44,7 +41,6 @@ public class MyTrip implements Serializable {
         this.budget = new Budget();
         this.currency = currency;
         this.plans = new ArrayList<>();
-        this.timeZone = timeZone;
         this.imageVersion = 0;
     }
 
@@ -66,19 +62,19 @@ public class MyTrip implements Serializable {
         this.placeId = placeId;
     }
 
-    public String getStartStamp() {
+    public Long getStartStamp() {
         return startStamp;
     }
 
-    public void setStartStamp(String startStamp) {
+    public void setStartStamp(Long startStamp) {
         this.startStamp = startStamp;
     }
 
-    public String getEndStamp() {
+    public Long getEndStamp() {
         return endStamp;
     }
 
-    public void setEndStamp(String endStamp) {
+    public void setEndStamp(Long endStamp) {
         this.endStamp = endStamp;
     }
 
@@ -140,14 +136,6 @@ public class MyTrip implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public String getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        this.timeZone = timeZone;
     }
 
     public boolean hasPlan(int type) {

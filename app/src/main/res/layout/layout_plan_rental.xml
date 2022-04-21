@@ -11,6 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -25,16 +27,19 @@
             android:textSize="13sp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/ItineraryTextBoxes"
             android:id="@+id/rental_pick_up_address_layout"
+            style="@style/ItineraryTextBoxes"
             android:hint="@string/ui_address"
-            app:endIconDrawable="@drawable/ic_directions"
+            app:endIconDrawable="@drawable/ic_map"
             app:endIconMode="custom">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/rental_pick_up_address"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:imeOptions="actionNext"
+                android:inputType="textShortMessage"
+                android:nextClusterForward="@id/rental_pick_up_date"
                 android:paddingVertical="4dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -44,8 +49,8 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/ItineraryTextBoxes"
                 android:id="@+id/rental_pick_up_date_layout"
+                style="@style/ItineraryTextBoxes"
                 android:layout_width="wrap_content"
                 android:layout_marginEnd="15dp"
                 android:hint="@string/ui_date"
@@ -55,12 +60,15 @@
                     android:id="@+id/rental_pick_up_date"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:imeOptions="actionNext"
                     android:paddingVertical="4dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/ItineraryTextBoxes"
                 android:id="@+id/rental_pick_up_time_layout"
+                style="@style/ItineraryTextBoxes"
                 android:layout_width="wrap_content"
                 android:hint="@string/ui_time"
                 android:minWidth="80dp">
@@ -69,6 +77,8 @@
                     android:id="@+id/rental_pick_up_time"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
                     android:paddingVertical="4dp" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -84,10 +94,10 @@
             android:textSize="13sp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/ItineraryTextBoxes"
             android:id="@+id/rental_drop_off_address_layout"
+            style="@style/ItineraryTextBoxes"
             android:hint="@string/ui_address"
-            app:endIconDrawable="@drawable/ic_directions"
+            app:endIconDrawable="@drawable/ic_map"
             app:endIconMode="custom">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -103,8 +113,8 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/ItineraryTextBoxes"
                 android:id="@+id/rental_drop_off_date_layout"
+                style="@style/ItineraryTextBoxes"
                 android:layout_width="wrap_content"
                 android:layout_marginEnd="15dp"
                 android:hint="@string/ui_date"
@@ -114,12 +124,14 @@
                     android:id="@+id/rental_drop_off_date"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
                     android:paddingVertical="4dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/ItineraryTextBoxes"
                 android:id="@+id/rental_drop_off_time_layout"
+                style="@style/ItineraryTextBoxes"
                 android:layout_width="wrap_content"
                 android:hint="@string/ui_time"
                 android:minWidth="80dp">
@@ -128,6 +140,9 @@
                     android:id="@+id/rental_drop_off_time"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:inputType="time"
                     android:paddingVertical="4dp" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -145,8 +160,10 @@
                 android:id="@+id/rental_car_details"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:inputType="text"
                 android:paddingVertical="6dp" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/ItineraryTextBoxes"
             android:hint="@string/ui_confirmation_number">
@@ -155,6 +172,7 @@
                 android:id="@+id/rental_confirmation_number"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:inputType="text"
                 android:paddingVertical="6dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -162,8 +180,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/rental_money_symbol"
@@ -171,24 +189,24 @@
                 android:layout_height="30dp"
                 android:layout_gravity="bottom"
                 android:gravity="center"
-                android:text="$"
+                android:text="@string/ui_currency_symbol"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/ItineraryTextBoxes"
                 android:layout_width="wrap_content"
-                android:minWidth="90dp"
-                android:hint="@string/ui_cost">
+                android:hint="@string/ui_cost"
+                android:minWidth="90dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rental_cost"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:autoSizeTextType="uniform"
-                    android:inputType="number"
                     android:imeOptions="actionDone"
-                    android:paddingVertical="4dp" />
+                    android:inputType="number"
+                    android:paddingVertical="4dp"
+                    app:autoSizeTextType="uniform" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -198,7 +216,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/rental_saved_check"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/rental_save"
+                android:src="@drawable/ic_check_mark"
+                android:visibility="gone"
+                app:tint="@color/green" />
 
             <Button
                 android:id="@+id/rental_save"
@@ -207,7 +237,7 @@
                 android:layout_alignParentEnd="true"
                 android:backgroundTint="@color/blue"
                 android:elevation="0dp"
-                android:text="save" />
+                android:text="@string/ui_save" />
 
             <Button
                 android:id="@+id/rental_delete"
@@ -215,17 +245,17 @@
                 android:layout_height="40dp"
                 android:backgroundTint="@color/red"
                 android:elevation="0dp"
-                android:text="delete" />
+                android:text="@string/ui_delete" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/rental_confirm_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="100dp"
-                app:cardElevation="3dp"
-                android:visibility="gone"
                 android:layout_alignEnd="@id/rental_delete"
-                android:layout_marginEnd="-5dp">
+                android:layout_marginEnd="-5dp"
+                android:visibility="gone"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="10dp">
 
                 <ImageView
                     android:layout_width="12dp"

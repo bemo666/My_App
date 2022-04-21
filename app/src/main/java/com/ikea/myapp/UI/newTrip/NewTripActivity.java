@@ -81,7 +81,8 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private FirebaseManager firebaseManager;
     private String placeId = "", destination = "";
     private LatLng destinationLatLng;
-    private String startStamp, endStamp;
+    private long startStamp;
+    private long endStamp;
     private MaterialButton createButton;
     private CustomProgressDialog progressDialog;
     private final Handler handler = new Handler();
@@ -89,15 +90,15 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private Place dest;
     private List<Place.Field> fieldList;
     private CustomCurrency c;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private LocationRequest locationRequest;
-    private LocationCallback locationCallback;
-    private String timezone;
+//    private FusedLocationProviderClient fusedLocationProviderClient;
+//    private LocationRequest locationRequest;
+//    private LocationCallback locationCallback;
+//    private String timezone;
     private Pair<Date, Date> rangeDate;
-    private BottomSheetDialog timezoneSheet;
-    private RecyclerView timezoneRV;
-    private TimezoneRVAdapter timezoneRVAdapter;
-    private EditText timezoneSearchBar;
+//    private BottomSheetDialog timezoneSheet;
+//    private RecyclerView timezoneRV;
+//    private TimezoneRVAdapter timezoneRVAdapter;
+//    private EditText timezoneSearchBar;
 
 
     //Location Permission
@@ -122,20 +123,20 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         inputDates = findViewById(R.id.inputDates);
         createButton = findViewById(R.id.create_trip);
         toolbar = findViewById(R.id.newTripToolbar);
-        inputTimezone = findViewById(R.id.inputTimezone);
+//        inputTimezone = findViewById(R.id.inputTimezone);
         c = new CustomCurrency(Currency.getInstance(Locale.US));
         firebaseManager = new FirebaseManager();
         progressDialog = new CustomProgressDialog(this, "Creating Trip");
 
-        timezoneSheet = new BottomSheetDialog(this);
-        timezoneSheet.setContentView(R.layout.dialog_timezone_selector);
-        timezoneRV = timezoneSheet.findViewById(R.id.timezone_recycler_view);
-        timezoneSearchBar = timezoneSheet.findViewById(R.id.timezone_search_edit_text);
+//        timezoneSheet = new BottomSheetDialog(this);
+//        timezoneSheet.setContentView(R.layout.dialog_timezone_selector);
+//        timezoneRV = timezoneSheet.findViewById(R.id.timezone_recycler_view);
+//        timezoneSearchBar = timezoneSheet.findViewById(R.id.timezone_search_edit_text);
 
 
         viewmodel = new ViewModelProvider(this).get(NewTripActivityViewModel.class);
 
-        populateAndUpdateTimeZone();
+//        populateAndUpdateTimeZone();
         viewmodel.getName().observe(this, name -> {
             if (name != null) {
                 welcomeText.setText(getString(R.string.newtrip_hey) + name + getString(R.string.ui_comma));
@@ -161,39 +162,28 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    private void populateAndUpdateTimeZone() {
-        inputTimezone.setOnClickListener(view -> timezoneSheet.show());
-        timezoneRVAdapter = new TimezoneRVAdapter(this);
-        timezoneRV.setAdapter(timezoneRVAdapter);
-        timezoneRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        timezoneSearchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                timezoneRVAdapter.searchUpdate(editable.toString());
-            }
-        });
-    }
-
-    @Nullable
-    @Override
-    protected Dialog onCreateDialog(int id, Bundle args) {
-        Dialog dialog = super.onCreateDialog(id, args);
-        if (dialog instanceof BottomSheetDialog) {
-            ((BottomSheetDialog) dialog).getBehavior().setSkipCollapsed(false);
-            ((BottomSheetDialog) dialog).getBehavior().setState(STATE_EXPANDED);
-        }
-        return dialog;
-    }
+//    private void populateAndUpdateTimeZone() {
+//        inputTimezone.setOnClickListener(view -> timezoneSheet.show());
+//        timezoneRVAdapter = new TimezoneRVAdapter(this);
+//        timezoneRV.setAdapter(timezoneRVAdapter);
+//        timezoneRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+//        timezoneSearchBar.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                timezoneRVAdapter.searchUpdate(editable.toString());
+//            }
+//        });
+//    }
 
     private void initializeAPIs() {
         //Initialize the places api
@@ -308,7 +298,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         return super.onOptionsItemSelected(item);
     }
 
-    private Boolean verifyInput() { return rangeDate != null && destinationLatLng != null && timezone != null; }
+    private Boolean verifyInput() { return rangeDate != null && destinationLatLng != null; }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -342,11 +332,10 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
     private void createTrip() {
         DatabaseReference pushedTrip = firebaseManager.newTrip();
-        TimeZone tz = TimeZone.getDefault();
-        startStamp = String.valueOf(rangeDate.first.getTime() - tz.getOffset(rangeDate.first.getTime()));
-        endStamp = String.valueOf(rangeDate.second.getTime() - tz.getOffset(rangeDate.first.getTime()) + 86399999);
+        startStamp = rangeDate.first.getTime();
+        endStamp = rangeDate.second.getTime() + 86399999;
         MyTrip data = new MyTrip(destination, destinationLatLng, startStamp, endStamp, placeId,
-                Objects.requireNonNull(pushedTrip.getKey()), c, timezone);
+                Objects.requireNonNull(pushedTrip.getKey()), c);
         fetchImage(pushedTrip.getKey());
         if (FirebaseManager.loggedIn()) {
             pushedTrip.setValue(data).addOnCompleteListener(task -> {
@@ -366,8 +355,9 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
     private void tripCreated(String key) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        TimeZone tz = TimeZone.getDefault();
         alarmManager.set(AlarmManager.RTC_WAKEUP,
-                (Long.parseLong(startStamp) - 27000000),
+                (startStamp + tz.getOffset(startStamp) - 129600000),
                 PendingIntent.getBroadcast(getApplicationContext(), 0,
                         new Intent(this, Notification.class), 0));
         Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
@@ -388,10 +378,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             } else {
                 final PhotoMetadata photoMetadata = metadata.get(0);
                 // Create a FetchPhotoRequest.
-                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-//                        .setMaxWidth(500) // Optional.
-//                        .setMaxHeight(300) // Optional.
-                        .build();
+                final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata).build();
                 placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                     Bitmap bitmap = fetchPhotoResponse.getBitmap();
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -420,10 +407,10 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-        inputTimezone.setText(this.timezone);
-        timezoneSheet.dismiss();
-    }
+//    public void setTimezone(String timezone) {
+//        this.timezone = timezone;
+//        inputTimezone.setText(this.timezone);
+//        timezoneSheet.dismiss();
+//    }
 }
 

@@ -111,5 +111,14 @@
     <string name="hotel_check_out">Check-out</string>
     <string name="timezone_select_timezone">Select Timezone</string>
     <string name="ui_timezone"><b>Timezone</b></string>
+    <string name="ui_airport">Airport</string>
+    <string name="ui_currency_symbol">$</string>
+    <string name="flight_airline">Airline</string>
+    <string name="flight_flight_number">Flight number</string>
+    <string name="flight_departure">Departure</string>
+    <string name="flight_arrival">Arrival</string>
+    <string name="ui_start">Start</string>
+    <string name="ui_end">End</string>
+    <string name="ui_name">Name</string>
 
 </resources>

@@ -169,7 +169,7 @@
             android:layout_marginStart="5dp"
             android:background="@color/transparent"
             android:hint="@string/ui_description"
-            android:inputType="text"
+            android:inputType="text|textMultiLine"
             android:padding="10dp"
             android:textColor="@color/darkGrey"
             android:textSize="18sp" />

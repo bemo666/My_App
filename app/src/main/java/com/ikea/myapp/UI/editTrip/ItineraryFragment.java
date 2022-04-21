@@ -26,25 +26,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.ikea.myapp.models.Expense;
 import com.ikea.myapp.models.MyTrip;
-import com.ikea.myapp.models.Plan;
-import com.ikea.myapp.models.PlanActivity;
-import com.ikea.myapp.models.PlanFlight;
-import com.ikea.myapp.models.PlanHeader;
-import com.ikea.myapp.models.PlanHotel;
-import com.ikea.myapp.models.PlanNote;
-import com.ikea.myapp.models.PlanRental;
 import com.ikea.myapp.R;
 import com.ikea.myapp.models.PlanType;
 import com.ikea.myapp.utils.getCorrectDate;
 
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.Objects;
 
 public class ItineraryFragment extends Fragment {
     private TextView dates;
     private final String id;
-    private MyTrip trip;
+    protected MyTrip trip;
     private EditText nickname;
     private EditTripViewModel viewModel;
     private RecyclerView itineraryRV;
@@ -56,11 +50,13 @@ public class ItineraryFragment extends Fragment {
     private boolean nicknameChanged;
     private InputMethodManager imm;
     private View divider;
+    private EditTripActivity editTripActivity;
 
 
 
-    public ItineraryFragment(String id) {
+    public ItineraryFragment(String id, EditTripActivity editTripActivity) {
         this.id = id;
+        this.editTripActivity = editTripActivity;
     }
 
     @Override
@@ -129,13 +125,12 @@ public class ItineraryFragment extends Fragment {
             imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
         });
         dates.setOnClickListener(view2 -> {
-            Pair<Long, Long> currentRange = new Pair<>(Long.parseLong(trip.getStartStamp()), Long.parseLong(trip.getEndStamp()));
+            Pair<Long, Long> currentRange = new Pair<>(trip.getStartStamp(), trip.getEndStamp());
             MaterialDatePicker<Pair<Long, Long>> datePicker = MaterialDatePicker.Builder.dateRangePicker().setTitleText("Select new Date Range").setSelection(currentRange).setTheme(R.style.ThemeOverlay_App_DatePicker).build();
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 Pair<Date, Date> rangeDate = new Pair<>(new Date((Long) selection.first), new Date((Long) ((Pair) selection).second));
-                TimeZone tz = TimeZone.getTimeZone(trip.getTimeZone());
-                trip.setStartStamp(String.valueOf(rangeDate.first.getTime() - tz.getOffset(rangeDate.first.getTime())));
-                trip.setEndStamp(String.valueOf(rangeDate.second.getTime() - tz.getOffset(rangeDate.first.getTime()) + 86399999));
+                trip.setStartStamp(rangeDate.first.getTime());
+                trip.setEndStamp(rangeDate.second.getTime() + 86399999);
                 viewModel.updateTrip(trip);
                 dates.setText(date.getStartDatelongFormat() + getResources().getString(R.string.ui_dash) + date.getEndDateLongFormat());
             });
@@ -178,6 +173,18 @@ public class ItineraryFragment extends Fragment {
     }
 
     public void expandHeader(int index) {
-        new Handler(Looper.getMainLooper()).postDelayed(() -> ((ItineraryRVAdapter.HeaderViewHolder) itineraryRV.findViewHolderForAdapterPosition(index)).forceExpand(), 200);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> ((ItineraryRVAdapter.HeaderViewHolder) Objects.requireNonNull(itineraryRV.findViewHolderForAdapterPosition(index))).forceExpand(), 200);
+    }
+
+    public long getStartMonth() {
+        return trip.getStartStamp();
+    }
+
+    public long getEndMonth() {
+        return trip.getEndStamp();
+    }
+
+    public void openMap() {
+        editTripActivity.openMapsFragment();
     }
 }

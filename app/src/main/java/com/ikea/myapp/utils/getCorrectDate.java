@@ -1,5 +1,7 @@
 package com.ikea.myapp.utils;
 
+import android.util.Log;
+
 import com.ikea.myapp.models.MyTrip;
 
 import java.text.ParseException;
@@ -22,12 +24,13 @@ public class getCorrectDate {
 
     public getCorrectDate(MyTrip trip) {
         this.trip = trip;
-        tripStart = new Date(Long.parseLong(trip.getStartStamp()));
-        tripEnd = new Date(Long.parseLong(trip.getEndStamp()));
-        simpleFormatMonth.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
-        simpleFormatYear.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
-        simpleFormatMonthAndYear.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
-        simpleFormatJustMonth.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
+        TimeZone tz = TimeZone.getTimeZone("GMT");
+        tripStart = new Date(trip.getStartStamp());
+        tripEnd = new Date(trip.getEndStamp());
+        simpleFormatMonth.setTimeZone(tz);
+        simpleFormatYear.setTimeZone(tz);
+        simpleFormatMonthAndYear.setTimeZone(tz);
+        simpleFormatJustMonth.setTimeZone(tz);
     }
 
     public String getStartDatelongFormat() {
@@ -74,11 +77,11 @@ public class getCorrectDate {
     }
 
     public String getStartTime(){
-        dateFormat.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
+//        dateFormat.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
         return dateFormat.format(tripStart);
     }
     public String getEndTime(){
-        dateFormat.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
+//        dateFormat.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
         return dateFormat.format(tripEnd);
     }
 }

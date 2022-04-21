@@ -1,237 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:backgroundTint="@color/barelyGrey"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="0dp">
-
-    <LinearLayout
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/hotel_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/transparent"
-            android:hint="@string/ui_address"
-            android:inputType="text|textLongMessage|textCapSentences"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="3dp"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="italic" />
+        android:layout_margin="5dp"
+        android:backgroundTint="@color/barelyGrey"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/hotel_check_in"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/hotel_address_layout"
+                style="@style/ItineraryTextBoxes"
+                android:hint="@string/ui_address"
+                app:endIconDrawable="@drawable/ic_map"
+                app:endIconMode="custom">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/hotel_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:imeOptions="actionNext"
+                    android:inputType="textShortMessage"
+                    android:paddingVertical="4dp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="5dp">
 
-                <EditText
-                    android:id="@+id/hotel_check_in_date"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="5dp"
-                    android:background="@color/transparent"
-                    android:hint="@string/ui_date"
-                    android:inputType="date"
-                    android:minWidth="75dp"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="3dp"
+                    android:text="@string/hotel_check_in"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:textSize="13sp" />
 
-                <EditText
-                    android:id="@+id/hotel_check_in_time"
-                    android:layout_width="wrap_content"
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/transparent"
-                    android:hint="@string/ui_time"
-                    android:inputType="date"
-                    android:minWidth="75dp"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="3dp"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/hotel_check_in_date_layout"
+                        style="@style/ItineraryTextBoxes"
+                        android:layout_width="wrap_content"
+                        android:layout_marginEnd="15dp"
+                        android:hint="@string/ui_date"
+                        android:minWidth="80dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/hotel_check_in_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="false"
+                            android:focusableInTouchMode="false"
+                            android:imeOptions="actionNext"
+                            android:paddingVertical="4dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/hotel_check_in_time_layout"
+                        style="@style/ItineraryTextBoxes"
+                        android:layout_width="wrap_content"
+                        android:hint="@string/ui_time"
+                        android:minWidth="80dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/hotel_check_in_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="false"
+                            android:focusableInTouchMode="false"
+                            android:paddingVertical="4dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/hotel_check_out"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/hotel_check_out"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/hotel_check_out_date_layout"
+                        style="@style/ItineraryTextBoxes"
+                        android:layout_width="wrap_content"
+                        android:layout_marginEnd="15dp"
+                        android:hint="@string/ui_date"
+                        android:minWidth="80dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/hotel_check_out_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="false"
+                            android:focusableInTouchMode="false"
+                            android:imeOptions="actionNext"
+                            android:paddingVertical="4dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/hotel_check_out_time_layout"
+                        style="@style/ItineraryTextBoxes"
+                        android:layout_width="wrap_content"
+                        android:hint="@string/ui_time"
+                        android:minWidth="80dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/hotel_check_out_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clickable="false"
+                            android:focusableInTouchMode="false"
+                            android:paddingVertical="4dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/ItineraryTextBoxes"
+                android:hint="@string/ui_notes">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/hotel_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:paddingVertical="6dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/ItineraryTextBoxes"
+                android:hint="@string/ui_confirmation_number">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/hotel_confirmation_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:paddingVertical="6dp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/hotel_money_symbol"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom"
+                    android:gravity="center"
+                    android:text="@string/ui_currency_symbol"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/ItineraryTextBoxes"
+                    android:layout_width="wrap_content"
+                    android:hint="@string/ui_cost"
+                    android:minWidth="90dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/hotel_cost"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:paddingVertical="4dp"
+                        app:autoSizeTextType="uniform" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/hotel_check_out_date"
+                <ImageView
+                    android:id="@+id/hotel_saved_check"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@+id/hotel_save"
+                    android:src="@drawable/ic_check_mark"
+                    android:visibility="gone"
+                    app:tint="@color/green" />
+
+                <Button
+                    android:id="@+id/hotel_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:backgroundTint="@color/blue"
+                    android:elevation="0dp"
+                    android:text="@string/ui_save" />
+
+                <Button
+                    android:id="@+id/hotel_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:backgroundTint="@color/red"
+                    android:elevation="0dp"
+                    android:text="@string/ui_delete" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/hotel_confirm_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/transparent"
-                    android:hint="@string/ui_date"
-                    android:inputType="date"
-                    android:minWidth="75dp"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="3dp"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:layout_alignEnd="@id/hotel_delete"
+                    android:layout_marginEnd="-5dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="100dp"
+                    app:cardElevation="10dp">
 
-                <EditText
-                    android:id="@+id/hotel_check_out_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/transparent"
-                    android:hint="@string/ui_time"
-                    android:inputType="date"
-                    android:minWidth="75dp"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="3dp"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/ic_check_circle"
+                        android:visibility="visible"
+                        app:tint="@color/green" />
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
         </LinearLayout>
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp" />
-
-        <EditText
-            android:id="@+id/hotel_notes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/transparent"
-            android:hint="@string/ui_notes"
-            android:inputType="text|textNoSuggestions"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="3dp"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="italic" />
-
-        <EditText
-            android:id="@+id/hotel_confirmation_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/transparent"
-            android:hint="@string/ui_confirmation_number"
-            android:inputType="text|textNoSuggestions"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="3dp"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="italic" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:id="@+id/expense_money_symbol"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="$"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/hotel_cost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:hint="@string/ui_cost"
-                android:inputType="text|textNoSuggestions"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="3dp"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="italic" />
-        </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/hotel_nav_1"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="nav1" />
-        <Button
-            android:id="@+id/hotel_save"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="save" />
-        <Button
-            android:id="@+id/hotel_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="delete" />
-
-    </LinearLayout>
-
-
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>

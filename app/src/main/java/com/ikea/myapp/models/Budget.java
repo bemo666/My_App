@@ -1,5 +1,7 @@
 package com.ikea.myapp.models;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +14,12 @@ public class Budget implements Serializable {
 
     public Budget(Double budget) {
         this.budget = budget;
-        this.currentTally = new Double(0);
+        this.currentTally = (double) 0;
         expenses = new ArrayList<>();
     }
 
     public Budget() {
-        this.currentTally = new Double(0);
+        this.currentTally = (double) 0;
         expenses = new ArrayList<>();
         this.budget = 0.0;
     }
@@ -42,16 +44,24 @@ public class Budget implements Serializable {
 
     public void addExpense(Expense expense) {
         expenses.add(expense);
-        currentTally += expense.getPrice();
-    }
+        currentTally = 0.0;
+        for (Expense e0: this.getExpenses()) { currentTally += e0.getPrice(); }    }
     public void editExpense(Expense expense, int position) {
-        currentTally -= expenses.get(position).getPrice();
-        currentTally += expense.getPrice();
         expenses.set(position, expense);
+        currentTally = 0.0;
+        for (Expense e: this.getExpenses()) { currentTally += e.getPrice(); }
     }
     public void deleteExpense(int position) {
-        currentTally -= expenses.get(position).getPrice();
         expenses.remove(position);
+        currentTally = 0.0;
+        for (Expense e1: this.getExpenses()) { currentTally += e1.getPrice(); }
+    }
+
+    public void deleteExpense(Expense e) {
+        int num = expenses.indexOf(e);
+        expenses.remove(num);
+        currentTally = 0.0;
+        for (Expense e2: this.getExpenses()) { currentTally += e2.getPrice(); }
     }
 
     public Double getCurrentTally() {

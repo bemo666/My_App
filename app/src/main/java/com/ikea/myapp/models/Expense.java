@@ -44,9 +44,9 @@ public class Expense implements Serializable {
         this.price = price;
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+
+    public boolean hasId(){ return this.id != null;}
 
     public void setId(String id) {
         this.id = id;

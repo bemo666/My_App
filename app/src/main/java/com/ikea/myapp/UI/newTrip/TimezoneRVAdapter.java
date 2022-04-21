@@ -44,7 +44,7 @@ public class TimezoneRVAdapter extends RecyclerView.Adapter<TimezoneRVAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String timezone = searchList.get(position);
         holder.text1.setText(timezone);
-        holder.itemView.setOnClickListener(view -> activity.setTimezone(timezone));
+//        holder.itemView.setOnClickListener(view -> activity.setTimezone(timezone));
 
     }
 
@@ -65,14 +65,10 @@ public class TimezoneRVAdapter extends RecyclerView.Adapter<TimezoneRVAdapter.Vi
             searchList = timezones;
         } else {
             searchList = new ArrayList<>();
-            int i = 0;
             for (String zone : timezones) {
-                i++;
                 if (zone.toLowerCase().contains(str.toLowerCase())) {
                     searchList.add(zone);
-                }
-                Log.d("tag", "searchUpdate: "+ i);
-            }
+                } }
         }
         notifyDataSetChanged();
     }
