@@ -81,7 +81,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private TextView welcomeText;
     private FirebaseManager firebaseManager;
     private String placeId = "", destination = "";
-    private LatLng destinationLatLng;
+    private LatLng destinationLatLng, ne, sw;
     private long startStamp;
     private long endStamp;
     private MaterialButton createButton;
@@ -155,7 +155,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         inputDestination.setFocusable(false);
         inputDestination.setOnClickListener(view -> {
             initializeAPIs();
-            fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID, Place.Field.PHOTO_METADATAS);
+            fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID, Place.Field.PHOTO_METADATAS, Place.Field.VIEWPORT, Place.Field.ADDRESS_COMPONENTS);
             Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY
                     , fieldList).build(NewTripActivity.this);
             startActivityForResult(intent, 100);
@@ -183,6 +183,8 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             inputDestination.setText(dest.getName());
             destinationLatLng = dest.getLatLng();
             placeId = dest.getId();
+            sw = Objects.requireNonNull(dest.getViewport()).southwest;
+            ne = Objects.requireNonNull(dest.getViewport()).northeast;
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
             Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
@@ -219,7 +221,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         startStamp = rangeDate.first.getTime();
         endStamp = rangeDate.second.getTime() + 86399999;
 
-        MyTrip data = new MyTrip(destination, destinationLatLng, startStamp, start, endStamp, end, placeId,
+        MyTrip data = new MyTrip(destination, destinationLatLng, sw, ne, startStamp, start, endStamp, end, placeId,
                 Objects.requireNonNull(pushedTrip.getKey()), c);
         fetchImage(pushedTrip.getKey());
         if (FirebaseManager.loggedIn()) {

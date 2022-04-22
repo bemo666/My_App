@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlanHeader implements Serializable {
+public class PlanHeader {
 
     private PlanType type;
     private List<Plan> plans;

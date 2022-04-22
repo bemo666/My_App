@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
@@ -38,21 +40,23 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.main.MainActivity;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.utils.MyViewModelFactory;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
+//    private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
+//    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003;
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private final String id;
     private EditTripViewModel viewModel;
-    private boolean mLocationPermissionGranted;
+//    private boolean mLocationPermissionGranted;
     private final EditTripActivity editTripActivity;
     private GoogleMap mMap;
     private MyTrip trip;
@@ -72,7 +76,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkMapServices();
+        isServicesOK();
     }
 
     @Override
@@ -90,25 +94,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+//        Handler handler = new Handler();
+//        handler.postDelayed(() -> {
+//                    mMap.setOnMapClickListener(latLng -> {
+//                        mMap.addMarker(new MarkerOptions().position(latLng).title("idk bro"));
+//                    });
+//                }, 200);
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(editTripActivity);
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    if (location != null) {
-//                        updateLocationVar(location);
-                    }
-                }
-                fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-            }
-        };
+//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(editTripActivity);
+//        locationRequest = LocationRequest.create();
+//        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+//
+//        locationCallback = new LocationCallback() {
+//            @Override
+//            public void onLocationResult(LocationResult locationResult) {
+//                if (locationResult == null) {
+//                    return;
+//                }
+//                for (Location location : locationResult.getLocations()) {
+//                    if (location != null) {
+////                        updateLocationVar(location);
+//                    }
+//                }
+//                fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+//            }
+//        };
 //        getLocation.setOnClickListener(view -> {
 //            updateGPS();
 //        });
@@ -116,52 +127,52 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
-    private boolean checkMapServices() {
-        if (isServicesOK()) {
-            return isMapsEnabled();
-        }
-        return false;
-    }
+//    private boolean checkMapServices() {
+//        if (isServicesOK()) {
+//            return isMapsEnabled();
+//        }
+//        return false;
+//    }
 
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme_LocationOff);
-        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
-                .setPositiveButton("Yes", (dialog, id) -> {
-                    Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
-                })
-                .setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
+//    private void buildAlertMessageNoGps() {
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme_LocationOff);
+//        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
+//                .setPositiveButton("Yes", (dialog, id) -> {
+//                    Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                    startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
+//                })
+//                .setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
+//        final AlertDialog alert = builder.create();
+//        alert.show();
+//    }
 
-    public boolean isMapsEnabled() {
-        final LocationManager manager = (LocationManager) editTripActivity.getSystemService(Context.LOCATION_SERVICE);
+//    public boolean isMapsEnabled() {
+//        final LocationManager manager = (LocationManager) editTripActivity.getSystemService(Context.LOCATION_SERVICE);
+//
+//        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+//            buildAlertMessageNoGps();
+//            return false;
+//        }
+//        return true;
+//    }
 
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-            return false;
-        }
-        return true;
-    }
-
-    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ContextCompat.checkSelfPermission(editTripActivity,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-            getChatrooms();
-        } else {
-            ActivityCompat.requestPermissions(editTripActivity,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
+//    private void getLocationPermission() {
+//        /*
+//         * Request location permission, so that we can get the location of the
+//         * device. The result of the permission request is handled by a callback,
+//         * onRequestPermissionsResult.
+//         */
+//        if (ContextCompat.checkSelfPermission(editTripActivity,
+//                android.Manifest.permission.ACCESS_FINE_LOCATION)
+//                == PackageManager.PERMISSION_GRANTED) {
+//            mLocationPermissionGranted = true;
+//            getChatrooms();
+//        } else {
+//            ActivityCompat.requestPermissions(editTripActivity,
+//                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+//                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+//        }
+//    }
 
     public boolean isServicesOK() {
         Log.d("tag", "isServicesOK: checking google services version");
@@ -183,41 +194,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return false;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        mLocationPermissionGranted = false;
+//        switch (requestCode) {
+//            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    mLocationPermissionGranted = true;
+//                }
+//            }
+//        }
+//    }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("tag", "onActivityResult: called.");
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ENABLE_GPS: {
-                if (mLocationPermissionGranted) {
-                    getChatrooms();
-                } else {
-                    getLocationPermission();
-                }
-            }
-        }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        Log.d("tag", "onActivityResult: called.");
+//        switch (requestCode) {
+//            case PERMISSIONS_REQUEST_ENABLE_GPS: {
+//                if (mLocationPermissionGranted) {
+//                    getChatrooms();
+//                } else {
+//                    getLocationPermission();
+//                }
+//            }
+//        }
+//
+//    }
 
-    }
-
-    private void getChatrooms() {
-        Log.d("tag", "getChatrooms: ...");
-    }
+//    private void getChatrooms() {
+//        Log.d("tag", "getChatrooms: ...");
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -233,17 +244,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void updateMap() {
         if (trip != null && mMap != null) {
-            area = new LatLng(trip.getDestinationLat(), trip.getDestinationLon());
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(area));
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            mMap.moveCamera(CameraUpdateFactory.zoomTo(10));
             if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             mMap.setMyLocationEnabled(true);
-        } else {
-
+            area = new LatLng(trip.getDestinationLat(), trip.getDestinationLon());
+//            mMap.moveCamera(CameraUpdateFactory.newLatLng(area));
+            LatLng sw = new LatLng(trip.getSwLat(), trip.getSwLon());
+            LatLng ne = new LatLng(trip.getNeLat(), trip.getNeLon());
+            LatLngBounds bounds = new LatLngBounds(sw, ne);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+            mMap.setOnMyLocationButtonClickListener(() -> {
+                updateGPS();
+                return false;
+            });
         }
     }
 
@@ -259,22 +275,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //    }
 
 
-    @SuppressLint("MissingPermission")
-    private void getLiveLocation() {
-        Log.d("tag", "getting live location");
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-    }
+//    @SuppressLint("MissingPermission")
+//    private void getLiveLocation() {
+//        Log.d("tag", "getting live location");
+//        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+//    }
 
     private void updateGPS() {
         if (ActivityCompat.checkSelfPermission(editTripActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (locationEnabled()) {
-                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
-                    if (location != null) {
-//                        updateLocationVar(location);
-                    } else {
-                        getLiveLocation();
-                    }
-                });
+                return;
+//                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
+//                    if (location != null) {
+////                        updateLocationVar(location);
+//                    } else {
+//                        getLiveLocation();
+//                    }
+//                });
             }
         } else {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);

@@ -4,7 +4,7 @@ import com.ikea.myapp.R;
 
 import java.io.Serializable;
 
-public enum ExpenseTypes implements Serializable {
+public enum ExpenseTypes {
 
     Flight(R.drawable.ic_airplane),
     Lodging(R.drawable.ic_bed_side),

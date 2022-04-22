@@ -2,7 +2,7 @@ package com.ikea.myapp.models;
 
 import java.io.Serializable;
 
-public class CustomDateTime implements Serializable {
+public class CustomDateTime {
     private int minute, hour, dayOfMonth, dayOfWeek, month, year;
 
     public CustomDateTime(int minute, int hour, int dayOfMonth, int dayOfWeek, int month, int year) {

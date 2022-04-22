@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "trips")
-public class MyTrip implements Serializable {
+public class MyTrip {
 
     @PrimaryKey
     @NonNull
@@ -22,6 +22,8 @@ public class MyTrip implements Serializable {
     private Long startStamp, endStamp;
     private String destination, nickname;
     private Double destinationLat, destinationLon;
+    private Double neLat, neLon;
+    private Double swLat, swLon;
     private Budget budget;
     private CustomCurrency currency;
     private List<Plan> plans;
@@ -31,6 +33,8 @@ public class MyTrip implements Serializable {
     }
 
     public MyTrip(String destination, LatLng destinationLatLng,
+                  LatLng sw,
+                  LatLng ne,
                   Long startStamp,
                   CustomDateTime start,
                   Long endStamp,
@@ -49,6 +53,10 @@ public class MyTrip implements Serializable {
         this.currency = currency;
         this.plans = new ArrayList<>();
         this.imageVersion = 0;
+        neLat = ne.latitude;
+        neLon = ne.longitude;
+        swLat = sw.latitude;
+        swLon = sw.longitude;
     }
 
 
@@ -196,4 +204,20 @@ public class MyTrip implements Serializable {
     public CustomDateTime getEnd() { return end; }
 
     public void setEnd(CustomDateTime end) { this.end = end; }
+
+    public Double getNeLat() { return neLat; }
+
+    public void setNeLat(Double neLat) { this.neLat = neLat; }
+
+    public Double getNeLon() { return neLon; }
+
+    public void setNeLon(Double neLon) { this.neLon = neLon; }
+
+    public Double getSwLat() { return swLat; }
+
+    public void setSwLat(Double swLat) { this.swLat = swLat; }
+
+    public Double getSwLon() { return swLon; }
+
+    public void setSwLon(Double swLon) { this.swLon = swLon; }
 }

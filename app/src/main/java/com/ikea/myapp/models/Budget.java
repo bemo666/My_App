@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Budget implements Serializable {
+public class Budget {
 
     private Double budget, currentTally;
     private List<Expense> expenses;
@@ -44,25 +44,27 @@ public class Budget implements Serializable {
 
     public void addExpense(Expense expense) {
         expenses.add(expense);
-        currentTally = 0.0;
-        for (Expense e0: this.getExpenses()) { currentTally += e0.getPrice(); }    }
+        fixTally();
+    }
+
     public void editExpense(Expense expense, int position) {
         expenses.set(position, expense);
-        currentTally = 0.0;
-        for (Expense e: this.getExpenses()) { currentTally += e.getPrice(); }
+        fixTally();
     }
     public void deleteExpense(int position) {
         expenses.remove(position);
-        currentTally = 0.0;
-        for (Expense e1: this.getExpenses()) { currentTally += e1.getPrice(); }
+        fixTally();
     }
 
     public void deleteExpense(Expense e) {
-        int num = expenses.indexOf(e);
-        expenses.remove(num);
-        currentTally = 0.0;
-        for (Expense e2: this.getExpenses()) { currentTally += e2.getPrice(); }
+        expenses.remove(e);
+        fixTally();
     }
+    private void fixTally() {
+        currentTally = 0.0;
+        for (Expense e0: this.getExpenses()) { currentTally += e0.getPrice(); }
+    }
+
 
     public Double getCurrentTally() {
         return currentTally;

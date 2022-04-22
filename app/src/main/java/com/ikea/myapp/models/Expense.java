@@ -2,7 +2,7 @@ package com.ikea.myapp.models;
 
 import java.io.Serializable;
 
-public class Expense implements Serializable {
+public class Expense {
 
     private String description, id;
     private ExpenseTypes type;

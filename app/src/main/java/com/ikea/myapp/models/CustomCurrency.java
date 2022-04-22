@@ -3,7 +3,7 @@ package com.ikea.myapp.models;
 import java.io.Serializable;
 import java.util.Currency;
 
-public class CustomCurrency implements Serializable {
+public class CustomCurrency {
     private String displayName;
     private String currencyCode;
     private String symbol;
