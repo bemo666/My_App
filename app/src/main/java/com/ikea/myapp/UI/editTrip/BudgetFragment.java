@@ -103,7 +103,6 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         expensessRV = view.findViewById(R.id.budget_expenses_rv);
         budgetLinearLayout = view.findViewById(R.id.budget_linear_layout);
         noExpensesCard = view.findViewById(R.id.budget_expenses_card);
-        viewModel = ViewModelProviders.of(requireActivity()).get(EditTripViewModel.class);
         cancelButton2 = setBudgetSheet.findViewById(R.id.set_budget_cancel_button);
         saveButton2 = setBudgetSheet.findViewById(R.id.set_budget_save_button);
         budgetET = setBudgetSheet.findViewById(R.id.set_budget_edit_text);

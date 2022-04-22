@@ -3,7 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     tools:context=".UI.editTrip.MapFragment">
-
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        tools:context=".MapsActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        map:uiZoomControls="true"
+        map:uiRotateGestures="true"
+        map:mapType="normal"
+        map:uiScrollGestures="true"
+        map:uiTiltGestures="true"
+        map:uiZoomGestures="true"/>
 </FrameLayout>

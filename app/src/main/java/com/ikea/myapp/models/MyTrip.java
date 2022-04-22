@@ -18,6 +18,7 @@ public class MyTrip implements Serializable {
     @NonNull
     private String id;
     private String placeId, image;
+    private CustomDateTime start, end;
     private Long startStamp, endStamp;
     private String destination, nickname;
     private Double destinationLat, destinationLon;
@@ -29,13 +30,19 @@ public class MyTrip implements Serializable {
     public MyTrip() {
     }
 
-    public MyTrip(String destination, LatLng destinationLatLng, Long startStamp,
-                  Long endStamp, String placeId, @NonNull String id, CustomCurrency currency) {
+    public MyTrip(String destination, LatLng destinationLatLng,
+                  Long startStamp,
+                  CustomDateTime start,
+                  Long endStamp,
+                  CustomDateTime end,
+                  String placeId, @NonNull String id, CustomCurrency currency) {
         this.destination = destination;
         this.destinationLat = destinationLatLng.latitude;
         this.destinationLon = destinationLatLng.longitude;
         this.startStamp = startStamp;
         this.endStamp = endStamp;
+        this.start = start;
+        this.end = end;
         this.placeId = placeId;
         this.id = id;
         this.budget = new Budget();
@@ -62,21 +69,13 @@ public class MyTrip implements Serializable {
         this.placeId = placeId;
     }
 
-    public Long getStartStamp() {
-        return startStamp;
-    }
+    public Long getStartStamp() { return startStamp; }
 
-    public void setStartStamp(Long startStamp) {
-        this.startStamp = startStamp;
-    }
+    public void setStartStamp(Long startStamp) { this.startStamp = startStamp; }
 
-    public Long getEndStamp() {
-        return endStamp;
-    }
+    public Long getEndStamp() { return endStamp; }
 
-    public void setEndStamp(Long endStamp) {
-        this.endStamp = endStamp;
-    }
+    public void setEndStamp(Long endStamp) { this.endStamp = endStamp; }
 
     public String getDestination() {
         return destination;
@@ -189,4 +188,12 @@ public class MyTrip implements Serializable {
     public void editPlan(Plan plan, int position){
         this.plans.set(position, plan);
     }
+
+    public CustomDateTime getStart() { return start; }
+
+    public void setStart(CustomDateTime start) { this.start = start; }
+
+    public CustomDateTime getEnd() { return end; }
+
+    public void setEnd(CustomDateTime end) { this.end = end; }
 }

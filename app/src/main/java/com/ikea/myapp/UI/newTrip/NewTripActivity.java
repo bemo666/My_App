@@ -54,6 +54,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.ikea.myapp.Notification;
 import com.ikea.myapp.UI.profile.CurrenciesRVAdapter;
 import com.ikea.myapp.models.CustomCurrency;
+import com.ikea.myapp.models.CustomDateTime;
 import com.ikea.myapp.models.CustomProgressDialog;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
@@ -75,7 +76,7 @@ import java.util.TimeZone;
 public class NewTripActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Declaring Variables
-    private TextInputEditText inputDestination, inputDates, inputTimezone;
+    private TextInputEditText inputDestination, inputDates;
     private Toolbar toolbar;
     private TextView welcomeText;
     private FirebaseManager firebaseManager;
@@ -90,19 +91,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private Place dest;
     private List<Place.Field> fieldList;
     private CustomCurrency c;
-//    private FusedLocationProviderClient fusedLocationProviderClient;
-//    private LocationRequest locationRequest;
-//    private LocationCallback locationCallback;
-//    private String timezone;
     private Pair<Date, Date> rangeDate;
-//    private BottomSheetDialog timezoneSheet;
-//    private RecyclerView timezoneRV;
-//    private TimezoneRVAdapter timezoneRVAdapter;
-//    private EditText timezoneSearchBar;
-
-
-    //Location Permission
-    private final int PERMISSIONS_FINE_LOCATION = 99;
 
     public NewTripActivity() {
     }
@@ -123,20 +112,13 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         inputDates = findViewById(R.id.inputDates);
         createButton = findViewById(R.id.create_trip);
         toolbar = findViewById(R.id.newTripToolbar);
-//        inputTimezone = findViewById(R.id.inputTimezone);
         c = new CustomCurrency(Currency.getInstance(Locale.US));
         firebaseManager = new FirebaseManager();
         progressDialog = new CustomProgressDialog(this, "Creating Trip");
 
-//        timezoneSheet = new BottomSheetDialog(this);
-//        timezoneSheet.setContentView(R.layout.dialog_timezone_selector);
-//        timezoneRV = timezoneSheet.findViewById(R.id.timezone_recycler_view);
-//        timezoneSearchBar = timezoneSheet.findViewById(R.id.timezone_search_edit_text);
-
 
         viewmodel = new ViewModelProvider(this).get(NewTripActivityViewModel.class);
 
-//        populateAndUpdateTimeZone();
         viewmodel.getName().observe(this, name -> {
             if (name != null) {
                 welcomeText.setText(getString(R.string.newtrip_hey) + name + getString(R.string.ui_comma));
@@ -161,30 +143,6 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         initializeLocationStuff();
     }
 
-
-//    private void populateAndUpdateTimeZone() {
-//        inputTimezone.setOnClickListener(view -> timezoneSheet.show());
-//        timezoneRVAdapter = new TimezoneRVAdapter(this);
-//        timezoneRV.setAdapter(timezoneRVAdapter);
-//        timezoneRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//        timezoneSearchBar.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                timezoneRVAdapter.searchUpdate(editable.toString());
-//            }
-//        });
-//    }
-
     private void initializeAPIs() {
         //Initialize the places api
         if (!Places.isInitialized()) {
@@ -203,91 +161,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             startActivityForResult(intent, 100);
 
         });
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-//        locationRequest = LocationRequest.create();
-//        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-//
-//        locationCallback = new LocationCallback() {
-//            @Override
-//            public void onLocationResult(LocationResult locationResult) {
-//                if (locationResult == null) {
-//                    return;
-//                }
-//                for (Location location : locationResult.getLocations()) {
-//                    if (location != null) {
-//                        updateLocationVar(location);
-//                    }
-//                }
-//                fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-//            }
-//        };
-//        getLocation.setOnClickListener(view -> {
-//            updateGPS();
-//        });
     }
-
-//    private void updateLocationVar(Location location) {
-//        if (location != null) {
-//            originLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-//            Toast.makeText(this, originLatLng.toString(), Toast.LENGTH_SHORT).show();
-//        } else {
-//            Toast.makeText(this, "Can't find your current location", Toast.LENGTH_SHORT).show();
-//            getLiveLocation();
-//        }
-//    }
-//
-//
-//    @SuppressLint("MissingPermission")
-//    private void getLiveLocation() {
-//        Log.d("tag", "getting live location");
-//        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-//    }
-//
-//    private void updateGPS() {
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            if (locationEnabled()) {
-//                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
-//                    if (location != null) {
-//                        updateLocationVar(location);
-//                    } else {
-//                        getLiveLocation();
-//                    }
-//                });
-//            }
-//        } else {
-//            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_FINE_LOCATION);
-//        }
-//    }
-//
-//    private boolean locationEnabled() {
-//        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        boolean gps_enabled = false;
-//        boolean network_enabled = false;
-//
-//        try {
-//            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-//        } catch (Exception ex) {
-//        }
-//
-//        try {
-//            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-//        } catch (Exception ex) {
-//        }
-//
-//        if (!gps_enabled && !network_enabled) {
-//            androidx.appcompat.app.AlertDialog.Builder alertDialog = new androidx.appcompat.app.AlertDialog.Builder(this, R.style.AlertDialogTheme_LocationOff);
-//            alertDialog.setTitle(R.string.gps_network_not_enabled);
-//            alertDialog.setMessage(R.string.gps_network_not_enabled_message);
-//            alertDialog.setPositiveButton(R.string.open_location_settings, (dialog, which) -> {
-//                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-//            });
-//            alertDialog.setNegativeButton(R.string.ui_cancel, (dialog, which) -> dialog.cancel());
-//            androidx.appcompat.app.AlertDialog dialog = alertDialog.create();
-//            dialog.show();
-//            return false;
-//        } else
-//            return true;
-//    }
 
 
     @Override
@@ -332,9 +206,20 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
     private void createTrip() {
         DatabaseReference pushedTrip = firebaseManager.newTrip();
+        CustomDateTime start = new CustomDateTime(0, 0,
+                rangeDate.first.getDate(),
+                rangeDate.first.getDay(),
+                rangeDate.first.getMonth()+1,
+                rangeDate.first.getYear()+1900);
+        CustomDateTime end = new CustomDateTime(59, 11,
+                rangeDate.first.getDate(),
+                rangeDate.first.getDay(),
+                rangeDate.first.getMonth()+1,
+                rangeDate.first.getYear()+1900);
         startStamp = rangeDate.first.getTime();
         endStamp = rangeDate.second.getTime() + 86399999;
-        MyTrip data = new MyTrip(destination, destinationLatLng, startStamp, endStamp, placeId,
+
+        MyTrip data = new MyTrip(destination, destinationLatLng, startStamp, start, endStamp, end, placeId,
                 Objects.requireNonNull(pushedTrip.getKey()), c);
         fetchImage(pushedTrip.getKey());
         if (FirebaseManager.loggedIn()) {
