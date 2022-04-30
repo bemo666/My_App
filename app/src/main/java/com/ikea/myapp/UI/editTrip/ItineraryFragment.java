@@ -1,8 +1,12 @@
 package com.ikea.myapp.UI.editTrip;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
@@ -24,7 +28,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.ikea.myapp.models.Expense;
 import com.ikea.myapp.models.MyTrip;
@@ -51,6 +60,7 @@ public class ItineraryFragment extends Fragment {
     private InputMethodManager imm;
     private View divider;
     private EditTripActivity editTripActivity;
+    private View view;
 
 
 
@@ -62,7 +72,7 @@ public class ItineraryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_itinerary, container, false);
+        view = inflater.inflate(R.layout.fragment_itinerary, container, false);
         dates = view.findViewById(R.id.itinerary_dates);
         itineraryRV = view.findViewById(R.id.itinerary_recycler_view);
         nickname = view.findViewById(R.id.itinerary_nickname);
@@ -131,6 +141,8 @@ public class ItineraryFragment extends Fragment {
                 Pair<Date, Date> rangeDate = new Pair<>(new Date((Long) selection.first), new Date((Long) ((Pair) selection).second));
                 trip.setStartStamp(rangeDate.first.getTime());
                 trip.setEndStamp(rangeDate.second.getTime() + 86399999);
+                view2.clearFocus();
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 viewModel.updateTrip(trip);
                 dates.setText(date.getStartDatelongFormat() + getResources().getString(R.string.ui_dash) + date.getEndDateLongFormat());
             });
@@ -139,6 +151,7 @@ public class ItineraryFragment extends Fragment {
 
         return view;
     }
+
 
     public void showNewCard() {
         if (trip.getPlans() != null) {
@@ -186,5 +199,13 @@ public class ItineraryFragment extends Fragment {
 
     public void openMap() {
         editTripActivity.openMapsFragment();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        view.clearFocus();
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        rvAdapter.onActivityResult(requestCode, resultCode, data);
     }
 }

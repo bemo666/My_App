@@ -1,11 +1,15 @@
 package com.ikea.myapp.data;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -85,9 +89,8 @@ public class TripRepo {
             firebaseManager.deleteTrip(trip);
         } else {
             appExecutors.diskIO().execute(() -> tripDao.deleteTrip(trip));
-            //todo - delete photo
-            new File(application.getApplicationContext().getFilesDir(), trip.getId() + ".jpg").delete();
         }
+        new File(application.getApplicationContext().getFilesDir(), trip.getId() +  "_"+ (trip.getImageVersion()) + ".jpg" ).delete();
     }
 
     public void deleteTable() {
@@ -97,109 +100,110 @@ public class TripRepo {
     public MutableLiveData<List<MyTrip>> getRemoteTrips() {
         MutableLiveData<List<MyTrip>> trips = new MutableLiveData<>();
         trips.setValue(null);
-        firebaseManager.getTripsRef().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<MyTrip> list = trips.getValue();
-                if (list == null) list = new ArrayList<>();
-                int i = 0;
-                for (DataSnapshot child: snapshot.getChildren()) {
-                    if(list.size() <= i)
-                        list.add(child.getValue(MyTrip.class));
-                    else
-                        list.set(i, child.getValue(MyTrip.class));
-                    i++;
-                }
-                trips.setValue(list);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-//        firebaseManager.getTripsRef().addChildEventListener(new ChildEventListener() {
+//        firebaseManager.getTripsRef().addValueEventListener(new ValueEventListener() {
 //            @Override
-//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
 //                List<MyTrip> list = trips.getValue();
-//                if (list == null) list = new ArrayList<MyTrip>();
-//                int i;
-//                if (previousChildName == null) {
-//                    i = 0;
-//                } else {
-//                    for (i = 0; i < list.size(); i++) {
-//                        if (list.get(i).getId().equals(previousChildName)) {
-//                            i++;
-//                            break;
-//                        }
-//                    }
+//                if (list == null) list = new ArrayList<>();
+//                int i = 0;
+//                for (DataSnapshot child: snapshot.getChildren()) {
+//                    if(list.size() <= i)
+//                        list.add(child.getValue(MyTrip.class));
+//                    else
+//                        list.set(i, child.getValue(MyTrip.class));
+//                    i++;
 //                }
-//
-//                list.add(i, snapshot.getValue(MyTrip.class));
-//                trips.setValue(list);
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                List<MyTrip> list = trips.getValue();
-//                if (list == null) list = new ArrayList<MyTrip>();
-//                int i;
-//                if (previousChildName == null) {
-//                    i = 0;
-//                } else {
-//                    for (i = 0; i < list.size(); i++) {
-//                        if (list.get(i).getId().equals(previousChildName)) {
-//                            i++;
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//                list.set(i, snapshot.getValue(MyTrip.class));
-//                trips.setValue(list);
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//                List<MyTrip> list = trips.getValue();
-//                for (MyTrip t : trips.getValue()) {
-//                    if (t.getId().equals((snapshot.getValue(MyTrip.class).getId()))) {
-//                        list.remove(t);
-//                        break;
-//                    }
-//                }
-//
-//                trips.setValue(list);
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                List<MyTrip> list = trips.getValue();
-//                if (list == null) list = new ArrayList<MyTrip>();
-//                int i;
-//                if (previousChildName == null) {
-//                    i = 0;
-//                } else {
-//                    for (i = 0; i < list.size(); i++) {
-//                        if (list.get(i).getId().equals(previousChildName)) {
-//                            i++;
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//                list.set(i, snapshot.getValue(MyTrip.class));
 //                trips.setValue(list);
 //            }
 //
 //            @Override
 //            public void onCancelled(@NonNull DatabaseError error) {
-//                List<MyTrip> list = trips.getValue();
-//                if (list != null) {
-//                    trips.setValue(list);
-//                }
+//
 //            }
 //        });
+        firebaseManager.getTripsRef().addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                List<MyTrip> list = trips.getValue();
+                if (list == null) list = new ArrayList<MyTrip>();
+                int i;
+                if (previousChildName == null) {
+                    i = 0;
+                } else {
+                    for (i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(previousChildName)) {
+                            i++;
+                            break;
+                        }
+                    }
+                }
+
+                list.add(i, snapshot.getValue(MyTrip.class));
+                trips.setValue(list);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                List<MyTrip> list = trips.getValue();
+                if (list == null) list = new ArrayList<MyTrip>();
+                int i;
+                if (previousChildName == null) {
+                    i = 0;
+                } else {
+                    for (i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(previousChildName)) {
+                            i++;
+                            break;
+                        }
+                    }
+                }
+
+                list.set(i, snapshot.getValue(MyTrip.class));
+                trips.setValue(list);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                List<MyTrip> list = trips.getValue();
+                for (MyTrip t : trips.getValue()) {
+                    if (t.getId().equals((snapshot.getValue(MyTrip.class).getId()))) {
+                        list.remove(t);
+                        break;
+                    }
+                }
+
+                trips.setValue(list);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                List<MyTrip> list = trips.getValue();
+                if (list == null) list = new ArrayList<MyTrip>();
+                int i;
+                if (previousChildName == null) {
+                    i = 0;
+                } else {
+                    for (i = 0; i < list.size(); i++) {
+                        if (list.get(i).getId().equals(previousChildName)) {
+                            i++;
+                            break;
+                        }
+                    }
+                }
+
+                list.set(i, snapshot.getValue(MyTrip.class));
+                trips.setValue(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                List<MyTrip> list = trips.getValue();
+                if (list != null) {
+                    trips.setValue(list);
+                }
+            }
+        });
         return trips;
     }
 
@@ -220,13 +224,20 @@ public class TripRepo {
         return trip;
     }
 
-    public void setLocalImage(String id, String image){
-        appExecutors.diskIO().execute( () -> {
-            tripDao.setTripImage(id, image);
-            tripDao.incrementImageVersion(id);
-        });
 
+    public void setImage(String id, String image, int version) {
+        new File(application.getApplicationContext().getFilesDir(), id +  "_"+ version + ".jpg" ).delete();
+
+        if (FirebaseManager.loggedIn()) {
+            firebaseManager.addTripImage(id, image, version);
+        } else {
+            appExecutors.diskIO().execute(() -> {
+                tripDao.setTripImage(id, image);
+                tripDao.incrementImageVersion(id);
+            });
+        }
     }
+
 
 //    public void setLocalImage(String id, byte[] image){
 //        appExecutors.diskIO().execute(new Runnable() {

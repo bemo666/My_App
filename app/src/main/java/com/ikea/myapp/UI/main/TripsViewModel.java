@@ -53,4 +53,8 @@ public class TripsViewModel extends AndroidViewModel {
             return trips.getValue().get(i).getId();
         } else return null;
     }
+
+    public void setImage(String id, String url, int version){
+        tripRepo.setImage(id, url, version);
+    }
 }

@@ -37,9 +37,9 @@
                 android:id="@+id/rental_pick_up_address"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:imeOptions="actionNext"
+                android:clickable="false"
+                android:focusableInTouchMode="false"
                 android:inputType="textShortMessage"
-                android:nextClusterForward="@id/rental_pick_up_date"
                 android:paddingVertical="4dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -104,6 +104,9 @@
                 android:id="@+id/rental_drop_off_address"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clickable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="textShortMessage"
                 android:paddingVertical="4dp" />
         </com.google.android.material.textfield.TextInputLayout>
 

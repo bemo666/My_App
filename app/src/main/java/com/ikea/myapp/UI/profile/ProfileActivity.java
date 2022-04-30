@@ -26,7 +26,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.LoginActivity;
 import com.ikea.myapp.UI.main.MainActivity;
+import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.data.remote.FirebaseManager;
+import com.ikea.myapp.utils.Utils;
 
 import java.util.Currency;
 import java.util.Objects;
@@ -115,6 +117,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         } else if (id == R.id.sign_out_button) {
             if (FirebaseManager.loggedIn()) {
                 firebaseManager.SignOut();
+                Utils.clearApplicationData(getApplicationContext());
                 Toast.makeText(ProfileActivity.this, getString(R.string.login_logout_successful), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, MainActivity.class));
             }

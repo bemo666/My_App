@@ -1,7 +1,5 @@
 package com.ikea.myapp.models;
 
-import java.io.Serializable;
-
 public class Expense {
 
     private String description, id;

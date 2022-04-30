@@ -7,6 +7,7 @@ import android.app.ActivityOptions;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -172,7 +175,9 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         return super.onOptionsItemSelected(item);
     }
 
-    private Boolean verifyInput() { return rangeDate != null && destinationLatLng != null; }
+    private Boolean verifyInput() {
+        return rangeDate != null && destinationLatLng != null;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -211,13 +216,13 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         CustomDateTime start = new CustomDateTime(0, 0,
                 rangeDate.first.getDate(),
                 rangeDate.first.getDay(),
-                rangeDate.first.getMonth()+1,
-                rangeDate.first.getYear()+1900);
+                rangeDate.first.getMonth() + 1,
+                rangeDate.first.getYear() + 1900);
         CustomDateTime end = new CustomDateTime(59, 11,
                 rangeDate.first.getDate(),
                 rangeDate.first.getDay(),
-                rangeDate.first.getMonth()+1,
-                rangeDate.first.getYear()+1900);
+                rangeDate.first.getMonth() + 1,
+                rangeDate.first.getYear() + 1900);
         startStamp = rangeDate.first.getTime();
         endStamp = rangeDate.second.getTime() + 86399999;
 
@@ -241,12 +246,19 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void tripCreated(String key) {
+
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         TimeZone tz = TimeZone.getDefault();
+        Intent displayNotification = new Intent(this, Notification.class);
+        displayNotification.putExtra("id", key);
+        displayNotification.putExtra("tripName", destination);
+        displayNotification.putExtra("tripTime", startStamp);
+
         alarmManager.set(AlarmManager.RTC_WAKEUP,
                 (startStamp + tz.getOffset(startStamp) - 129600000),
                 PendingIntent.getBroadcast(getApplicationContext(), 0,
-                        new Intent(this, Notification.class), 0));
+                        displayNotification, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+
         Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
         intent.putExtra("id", key);
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
@@ -271,18 +283,15 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
 
-                    if (FirebaseManager.loggedIn()) {
-                        firebaseManager.addTripImage(key, baos.toByteArray());
-                    } else {
-                        File file = new File(getFilesDir(), key + ".jpg");
+                    File file = new File(getFilesDir(), key + "_1" + ".jpg");
 
-                        try (FileOutputStream fos = openFileOutput(file.getName(), Context.MODE_PRIVATE)) {
-                            fos.write(baos.toByteArray());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        viewmodel.setLocalImage(key, file.getAbsolutePath());
+                    try (FileOutputStream fos = openFileOutput(file.getName(), Context.MODE_PRIVATE)) {
+                        fos.write(baos.toByteArray());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+
+                    viewmodel.setImage(key, file.getAbsolutePath(), 0);
 
                 }).addOnFailureListener((exception) -> {
                     if (exception instanceof ApiException) {
@@ -293,11 +302,5 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
         });
     }
-
-//    public void setTimezone(String timezone) {
-//        this.timezone = timezone;
-//        inputTimezone.setText(this.timezone);
-//        timezoneSheet.dismiss();
-//    }
 }
 

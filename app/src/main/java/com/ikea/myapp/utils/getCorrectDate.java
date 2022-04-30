@@ -75,10 +75,6 @@ public class getCorrectDate {
     public String getDatesOnlyMonthAndYearFormat() {
         endDate = simpleFormatMonthAndYear.format(tripEnd);
         if (tripStart.getYear() == tripEnd.getYear()) {
-            Log.d("tag", "start time: "+tripStart.getTime());
-            Log.d("tag", "end month: "+tripEnd.getMonth());
-            Log.d("tag", "end time: "+tripEnd.getTime());
-
             if (tripStart.getMonth() == tripEnd.getMonth()) {
                 return endDate;
             } else{

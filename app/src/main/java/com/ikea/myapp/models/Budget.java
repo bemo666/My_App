@@ -1,8 +1,5 @@
 package com.ikea.myapp.models;
 
-import android.util.Log;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

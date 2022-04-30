@@ -33,6 +33,7 @@
             android:paddingVertical="3dp"
             android:textColor="@color/blue"
             android:textColorHint="@color/blue"
+            android:imeOptions="actionDone"
             android:textSize="20sp"
             android:textStyle="bold" />
 

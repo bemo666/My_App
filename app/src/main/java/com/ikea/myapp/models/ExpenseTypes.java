@@ -2,8 +2,6 @@ package com.ikea.myapp.models;
 
 import com.ikea.myapp.R;
 
-import java.io.Serializable;
-
 public enum ExpenseTypes {
 
     Flight(R.drawable.ic_airplane),

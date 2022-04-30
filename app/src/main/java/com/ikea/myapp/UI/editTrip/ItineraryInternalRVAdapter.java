@@ -1,9 +1,14 @@
 package com.ikea.myapp.UI.editTrip;
 
+import static android.app.Activity.RESULT_OK;
 import static com.ikea.myapp.utils.Utils.prettyPrint;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +22,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -30,6 +42,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 import com.ikea.myapp.R;
+import com.ikea.myapp.VibrationService;
 import com.ikea.myapp.models.CustomCurrency;
 import com.ikea.myapp.models.Expense;
 import com.ikea.myapp.models.ExpenseTypes;
@@ -40,6 +53,8 @@ import com.ikea.myapp.models.PlanViewHolder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +69,9 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
     private final InputMethodManager imm;
     private final ItineraryFragment fragment;
     private final CustomCurrency currency;
+    private List<PlanViewHolder> viewHolders;
+    List<Place.Field> fieldList;
+    Intent intent;
 
     public ItineraryInternalRVAdapter(ItineraryRVAdapter parentAdapter, PlanHeader header, ItineraryFragment fragment, CustomCurrency currency) {
         this.plans = header.getPlans();
@@ -62,24 +80,42 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         this.fragment = fragment;
         this.imm = (InputMethodManager) fragment.requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         this.currency = currency;
+        if (!Places.isInitialized()) {
+            Places.initialize(fragment.requireContext(), fragment.getString(R.string.g_apiKey));
+        }
+        fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID, Place.Field.ADDRESS_COMPONENTS,
+                Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.PRICE_LEVEL, Place.Field.RATING, Place.Field.WEBSITE_URI, Place.Field.BUSINESS_STATUS,
+                Place.Field.TYPES, Place.Field.USER_RATINGS_TOTAL);
+        intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY
+                , fieldList).build(fragment.requireContext());
     }
 
     @NonNull
     @Override
     public PlanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        PlanViewHolder viewHolder = null;
         switch (type) {
             case Note:
-                return new NoteViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                viewHolder = new NoteViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                break;
             case Hotel:
-                return new HotelViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                viewHolder = new HotelViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                break;
             case Flight:
-                return new FlightViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                viewHolder = new FlightViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                break;
             case Rental:
-                return new RentalViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                viewHolder = new RentalViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                break;
             case Activity:
-                return new ActivityViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                viewHolder = new ActivityViewHolder(LayoutInflater.from(parent.getContext()).inflate(type.getLayout(), parent, false));
+                break;
         }
-        return null;
+        if (viewHolders == null) {
+            viewHolders = new ArrayList<>();
+        }
+        viewHolders.add(viewHolder);
+        return viewHolder;
     }
 
     @Override
@@ -93,12 +129,92 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         return plans.size();
     }
 
+    public void onResult(int requestCode, int resultCode, Intent data) {
+        if (viewHolders != null)
+            for (PlanViewHolder viewHolder : viewHolders) {
+                viewHolder.onResult(requestCode, resultCode, data);
+            }
+    }
+
+    private Plan putResultsInStart(Place result, Plan plan) {
+        if (result.getName() != null)
+            plan.setStartLocation(result.getName());
+        if (result.getId() != null)
+            plan.setStartLocationId(result.getId());
+        if (result.getAddress() != null)
+            plan.setStartLocationAddress(result.getAddress());
+        if (result.getBusinessStatus() != null)
+            plan.setStartLocationStatus(result.getBusinessStatus().name());
+        if (result.getLatLng() != null)
+            plan.setStartLocationLat(result.getLatLng().latitude);
+        if (result.getLatLng() != null)
+            plan.setStartLocationLong(result.getLatLng().longitude);
+        if (result.getPhoneNumber() != null)
+            plan.setStartLocationPhoneNumber(result.getPhoneNumber());
+        if (result.getRating() != null)
+            plan.setStartLocationRating(result.getRating());
+        if (result.getUserRatingsTotal() != null)
+            plan.setStartLocationRatingCount(result.getUserRatingsTotal());
+        if (result.getWebsiteUri() != null)
+            plan.setStartLocationUrl(result.getWebsiteUri().toString());
+        if (result.getTypes() != null) {
+            List<String> list = new ArrayList<>();
+            for (Place.Type t : result.getTypes()) {
+                String type = t.toString().replaceAll("_", " ").toLowerCase();
+                list.add(type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase());
+            }
+            plan.setStartEstablishmentTypes(list);
+        }
+        if(result.getOpeningHours() != null) {
+            List<String> list = new ArrayList<>(result.getOpeningHours().getWeekdayText());
+            plan.setStartLocationTimes(list);
+        }
+        return plan;
+    }
+
+    private Plan putResultsInEnd(Place result, Plan plan) {
+        if (result.getName() != null)
+            plan.setEndLocation(result.getName());
+        if (result.getId() != null)
+            plan.setEndLocationId(result.getId());
+        if (result.getAddress() != null)
+            plan.setEndLocationAddress(result.getAddress());
+        if (result.getBusinessStatus() != null)
+            plan.setEndLocationStatus(result.getBusinessStatus().name());
+        if (result.getLatLng() != null)
+            plan.setEndLocationLat(result.getLatLng().latitude);
+        if (result.getLatLng() != null)
+            plan.setEndLocationLong(result.getLatLng().longitude);
+        if (result.getPhoneNumber() != null)
+            plan.setEndLocationPhoneNumber(result.getPhoneNumber());
+        if (result.getRating() != null)
+            plan.setEndLocationRating(result.getRating());
+        if (result.getUserRatingsTotal() != null)
+            plan.setEndLocationRatingCount(result.getUserRatingsTotal());
+        if (result.getWebsiteUri() != null)
+            plan.setEndLocationUrl(result.getWebsiteUri().toString());
+        if (result.getTypes() != null) {
+            List<String> list = new ArrayList<>();
+            for (Place.Type t : result.getTypes()) {
+                String type = t.toString().replaceAll("_", " ").toLowerCase();
+                list.add(type.substring(0, 1).toUpperCase() + type.substring(1).toLowerCase());
+            }
+            plan.setEndEstablishmentTypes(list);
+        }
+        if(result.getOpeningHours() != null) {
+            List<String> list = new ArrayList<>(result.getOpeningHours().getWeekdayText());
+            plan.setEndLocationTimes(list);
+        }
+        return plan;
+    }
+
     class NoteViewHolder extends PlanViewHolder {
 
         private final EditText text;
         private final ImageView delete;
         private final ImageView confirmDelete;
-        private boolean deletePressed = false;
+        private final ImageView save2;
+        private boolean deletePressed, textChanged, saved;
 
         NoteViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -106,20 +222,35 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             text = itemView.findViewById(R.id.note_text_edit_text);
             delete = itemView.findViewById(R.id.note_delete_ic);
             confirmDelete = itemView.findViewById(R.id.note_confirm_delete);
+            save2 = itemView.findViewById(R.id.note_save_ic);
 
         }
 
         public void setDetails(Plan plan) {
             text.setText(plan.getNote());
-            text.setOnKeyListener((view, i, keyEvent) -> {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (i == KeyEvent.KEYCODE_ENTER) {
-                        imm.hideSoftInputFromWindow(fragment.requireView().getWindowToken(), 0);
-                        plan.setNote(text.getText().toString());
-                        parentAdapter.editPlan(plan, plans.indexOf(plan));
-                    }
+            text.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
                 }
-                return false;
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    textChanged = true;
+                    changeButtons();
+                }
+            });
+            save2.setOnClickListener(view -> {
+                imm.hideSoftInputFromWindow(fragment.requireView().getWindowToken(), 0);
+                plan.setNote(text.getText().toString());
+                parentAdapter.editPlan(plan, plans.indexOf(plan));
+                saved = true;
+                changeButtons();
             });
 
             delete.setOnClickListener(view -> {
@@ -142,6 +273,26 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             });
         }
 
+        @Override
+        public void onResult(int requestCode, int resultCode, Intent data) {
+        }
+
+        private void changeButtons() {
+            if (textChanged) {
+                save2.setVisibility(View.VISIBLE);
+                delete.setVisibility(View.GONE);
+                confirmDelete.setVisibility(View.GONE);
+            } else {
+                save2.setVisibility(View.GONE);
+                delete.setVisibility(View.VISIBLE);
+            }
+            if (saved) {
+                saved = false;
+                save2.setVisibility(View.GONE);
+                delete.setVisibility(View.VISIBLE);
+            }
+        }
+
     }
 
     class RentalViewHolder extends PlanViewHolder {
@@ -158,6 +309,8 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         Handler handler = new android.os.Handler();
         DateFormat date = new SimpleDateFormat("MMM dd, yyyy");
         DateFormat time = new SimpleDateFormat("HH:mm");
+        final int PICKUP_ADDRESS_REQUEST = 100;
+        final int DROPOFF_ADDRESS_REQUEST = 101;
 
 
         RentalViewHolder(@NonNull View itemView) {
@@ -190,8 +343,10 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
 
         public void setDetails(Plan plan) {
             this.plan = plan;
-            pickupAddress.setText(plan.getStartLocationAddress());
-            dropoffAddress.setText(plan.getEndLocationAddress());
+            dropoffAddressLayout.setEndIconOnClickListener(view -> fragment.openMap());
+            pickupAddressLayout.setEndIconOnClickListener(view -> fragment.openMap());
+            pickupAddress.setOnClickListener(view -> fragment.startActivityForResult(intent, PICKUP_ADDRESS_REQUEST));
+            dropoffAddress.setOnClickListener(view -> fragment.startActivityForResult(intent, DROPOFF_ADDRESS_REQUEST));
             carDetails.setText(plan.getNote());
             confirmationNum.setText(plan.getConfirmationNumber());
             CalendarConstraints.Builder constraints = new CalendarConstraints.Builder();
@@ -249,6 +404,8 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             setEndTime();
             setStartDate();
             setEndDate();
+            setStartAddress();
+            setEndAddress();
 
             cost.setOnEditorActionListener((v, actionId, event) -> {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
@@ -273,6 +430,27 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     }, 3000);
                 }
             });
+        }
+
+        @Override
+        public void onResult(int requestCode, int resultCode, Intent data) {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == PICKUP_ADDRESS_REQUEST) {
+                    Place result = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+                    plan = putResultsInStart(result, plan);
+                    setStartAddress();
+//                    Log.d("tag", "addresscomponents: " + result.getAddressComponents());
+//                    Log.d("tag", "attributions: " + result.getAttributions());
+//                    Log.d("tag", "pricelevel: " + result.getPriceLevel());
+                } else if (requestCode == DROPOFF_ADDRESS_REQUEST) {
+                    Place result = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+                    plan = putResultsInEnd(result, plan);
+                    setEndAddress();
+                }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
+                Toast.makeText(fragment.requireContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
+            }
         }
 
         private void setEndDate() {
@@ -300,6 +478,18 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             if (plan.getStartTime() != null) {
                 Date start = new Date(plan.getStartTime());
                 pickupTime.setText(time.format(start));
+            }
+        }
+
+        private void setEndAddress() {
+            if (plan.getEndLocationAddress() != null) {
+                dropoffAddress.setText(plan.getEndLocationAddress());
+            }
+        }
+
+        private void setStartAddress() {
+            if (plan.getStartLocationAddress() != null) {
+                pickupAddress.setText(plan.getStartLocationAddress());
             }
         }
 
@@ -334,7 +524,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         }
 
         private void updateCost(String editable) {
-            if(!editable.equals("")) {
+            if (!editable.equals("")) {
                 if (plan.getCost() != null) {
                     if (!plan.getCost().hasId()) {
                         plan.getCost().setId(UUID.randomUUID().toString());
@@ -350,9 +540,8 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                 }
             }
         }
-
-
     }
+
 
     class FlightViewHolder extends PlanViewHolder {
 
@@ -368,7 +557,8 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         Handler handler = new android.os.Handler();
         DateFormat date = new SimpleDateFormat("MMM dd, yyyy");
         DateFormat time = new SimpleDateFormat("HH:mm");
-
+        final int DEPARTURE_AIRPORT_REQUEST = 102;
+        final int ARRIVAL_AIRPORT_REQUEST = 103;
 
         FlightViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -408,8 +598,8 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             this.plan = plan;
             departureAirportLayout.setEndIconOnClickListener(view -> fragment.openMap());
             arrivalAirportLayout.setEndIconOnClickListener(view -> fragment.openMap());
-            departureAirport.setText(plan.getStartLocationAddress());
-            arrivalAirport.setText(plan.getEndLocationAddress());
+            departureAirport.setOnClickListener(view -> fragment.startActivityForResult(intent, DEPARTURE_AIRPORT_REQUEST));
+            arrivalAirport.setOnClickListener(view -> fragment.startActivityForResult(intent, ARRIVAL_AIRPORT_REQUEST));
             flightNumber.setText(plan.getFlightCode());
             airline.setText(plan.getAirline());
             confirmationNumber.setText(plan.getConfirmationNumber());
@@ -468,6 +658,8 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             setEndTime();
             setStartDate();
             setEndDate();
+            setStartAddress();
+            setEndAddress();
 
             cost.setOnEditorActionListener((v, actionId, event) -> {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
@@ -492,6 +684,24 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     }, 3000);
                 }
             });
+        }
+
+        @Override
+        public void onResult(int requestCode, int resultCode, Intent data) {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == DEPARTURE_AIRPORT_REQUEST) {
+                    Place result = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+                    plan = putResultsInStart(result, plan);
+                    setStartAddress();
+                } else if (requestCode == ARRIVAL_AIRPORT_REQUEST) {
+                    Place result = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+                    plan = putResultsInEnd(result, plan);
+                    setEndAddress();
+                }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
+                Toast.makeText(fragment.requireContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
+            }
         }
 
         private void setEndDate() {
@@ -519,6 +729,18 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             if (plan.getStartTime() != null) {
                 Date start = new Date(plan.getStartTime());
                 departureTime.setText(time.format(start));
+            }
+        }
+
+        private void setEndAddress() {
+            if (plan.getEndLocation() != null) {
+                arrivalAirport.setText(plan.getEndLocation());
+            }
+        }
+
+        private void setStartAddress() {
+            if (plan.getStartLocation() != null) {
+                departureAirport.setText(plan.getStartLocation());
             }
         }
 
@@ -554,7 +776,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         }
 
         private void updateCost(String editable) {
-            if(!editable.equals("")) {
+            if (!editable.equals("")) {
                 if (plan.getCost() != null) {
                     if (!plan.getCost().hasId()) {
                         plan.getCost().setId(UUID.randomUUID().toString());
@@ -574,7 +796,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
 
     class HotelViewHolder extends PlanViewHolder {
 
-        TextInputEditText address, checkInTime, checkInDate, checkOutTime, checkOutDate, cost, confirmationNumber;
+        TextInputEditText address, checkInTime, checkInDate, checkOutTime, checkOutDate, cost, confirmationNumber, notes;
         TextInputLayout addressLayout;
         Plan plan;
         Button save, delete;
@@ -586,6 +808,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         Handler handler = new android.os.Handler();
         DateFormat date = new SimpleDateFormat("MMM dd, yyyy");
         DateFormat time = new SimpleDateFormat("HH:mm");
+        final int HOTEL_ADDRESS_REQUEST = 104;
 
 
         HotelViewHolder(@NonNull View itemView) {
@@ -599,6 +822,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             confirmationNumber = itemView.findViewById(R.id.hotel_confirmation_number);
             cost = itemView.findViewById(R.id.hotel_cost);
             currencySymbol = itemView.findViewById(R.id.hotel_money_symbol);
+            notes = itemView.findViewById(R.id.hotel_notes);
 
             addressLayout = itemView.findViewById(R.id.hotel_address_layout);
 
@@ -617,8 +841,10 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         public void setDetails(Plan plan) {
             this.plan = plan;
             addressLayout.setEndIconOnClickListener(view -> fragment.openMap());
-            address.setText(plan.getStartLocationAddress());
+            address.setOnClickListener(view -> fragment.startActivityForResult(intent, HOTEL_ADDRESS_REQUEST));
+
             confirmationNumber.setText(plan.getConfirmationNumber());
+            notes.setText(plan.getNote());
             if (plan.getCost() != null) {
                 currencySymbol.setText(currency.getSymbol());
                 cost.setText(prettyPrint(plan.getCost().getPrice()));
@@ -673,6 +899,8 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             setEndTime();
             setStartDate();
             setEndDate();
+            setAddress();
+
 
             cost.setOnEditorActionListener((v, actionId, event) -> {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
@@ -697,6 +925,20 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     }, 3000);
                 }
             });
+        }
+
+        @Override
+        public void onResult(int requestCode, int resultCode, Intent data) {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == HOTEL_ADDRESS_REQUEST) {
+                    Place result = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+                    plan = putResultsInStart(result, plan);
+                    setAddress();
+                }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
+                Toast.makeText(fragment.requireContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
+            }
         }
 
         private void setEndDate() {
@@ -727,7 +969,14 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             }
         }
 
+        private void setAddress() {
+            if (plan.getStartLocationAddress() != null) {
+                address.setText(plan.getStartLocationAddress());
+            }
+        }
+
         private void savePlan() {
+            plan.setNote(Objects.requireNonNull(notes.getText()).toString());
             plan.setStartLocationAddress(Objects.requireNonNull(address.getText()).toString());
             plan.setConfirmationNumber(Objects.requireNonNull(confirmationNumber.getText()).toString());
             updateCost(Objects.requireNonNull(cost.getText()).toString());
@@ -756,7 +1005,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         }
 
         private void updateCost(String editable) {
-            if(!editable.equals("")) {
+            if (!editable.equals("")) {
                 if (plan.getCost() != null) {
                     if (!plan.getCost().hasId()) {
                         plan.getCost().setId(UUID.randomUUID().toString());
@@ -792,7 +1041,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         Handler handler = new android.os.Handler();
         DateFormat date = new SimpleDateFormat("MMM dd, yyyy");
         DateFormat time = new SimpleDateFormat("HH:mm");
-
+        final int ACTIVITY_ADDRESS_REQUEST = 105;
 
         ActivityViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -827,14 +1076,14 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         public void setDetails(Plan plan) {
             this.plan = plan;
             endSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+                fragment.requireActivity().startService(new Intent(fragment.requireActivity(), VibrationService.class));
                 plan.setHasEnd(b);
                 setSwitch();
             });
             setSwitch();
             endSwitch.setChecked(plan.isHasEnd());
             addressLayout.setEndIconOnClickListener(view -> fragment.openMap());
-            address.setText(plan.getStartLocationAddress());
-            name.setText(plan.getName());
+            address.setOnClickListener(view -> fragment.startActivityForResult(intent, ACTIVITY_ADDRESS_REQUEST));
             notes.setText(plan.getNote());
             confirmationNumber.setText(plan.getConfirmationNumber());
             CalendarConstraints.Builder constraints = new CalendarConstraints.Builder();
@@ -892,6 +1141,8 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             setEndTime();
             setStartDate();
             setEndDate();
+            setAddress();
+            setName();
 
             cost.setOnEditorActionListener((v, actionId, event) -> {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
@@ -916,6 +1167,20 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     }, 3000);
                 }
             });
+        }
+
+        @Override
+        public void onResult(int requestCode, int resultCode, Intent data) {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == ACTIVITY_ADDRESS_REQUEST) {
+                    Place result = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+                    plan = putResultsInStart(result, plan);
+                    setAddress();
+                }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
+                Toast.makeText(fragment.requireContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
+            }
         }
 
         private void setSwitch() {
@@ -958,6 +1223,18 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             }
         }
 
+        private void setAddress() {
+            if (plan.getStartLocationAddress() != null) {
+                address.setText(plan.getStartLocationAddress());
+            }
+        }
+
+        private void setName() {
+            if (plan.getStartLocation() != null) {
+                name.setText(plan.getStartLocation());
+            }
+        }
+
         private void savePlan() {
             plan.setStartLocationAddress(Objects.requireNonNull(address.getText()).toString());
             plan.setName(Objects.requireNonNull(name.getText()).toString());
@@ -989,7 +1266,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         }
 
         private void updateCost(String editable) {
-            if(!editable.equals("")) {
+            if (!editable.equals("")) {
                 if (plan.getCost() != null) {
                     if (!plan.getCost().hasId()) {
                         plan.getCost().setId(UUID.randomUUID().toString());

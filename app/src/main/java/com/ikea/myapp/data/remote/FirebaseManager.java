@@ -1,6 +1,7 @@
 package com.ikea.myapp.data.remote;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -21,6 +22,7 @@ import com.google.firebase.storage.UploadTask;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.models.PlanHeader;
 
+import java.io.File;
 import java.util.Objects;
 
 public class FirebaseManager {
@@ -28,7 +30,6 @@ public class FirebaseManager {
     private static final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private static boolean loggedIn = firebaseAuth.getCurrentUser() != null;
     private final DatabaseReference userdata, tripsRef;
-    private final StorageReference storage;
 
     public FirebaseManager() {
         firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
@@ -40,14 +41,15 @@ public class FirebaseManager {
         if (loggedIn) {
             userdata = FirebaseDatabase.getInstance().getReference("UserData").child(Objects.requireNonNull(firebaseAuth.getUid()));
             tripsRef = userdata.child("Trips");
-            storage = FirebaseStorage.getInstance().getReference("trip_pictures");
         } else {
             userdata = null;
             tripsRef = null;
-            storage = null;
         }
     }
-    public static boolean loggedIn(){ return loggedIn;}
+
+    public static boolean loggedIn() {
+        return loggedIn;
+    }
 
 
     public static Long getCreationStamp() {
@@ -90,8 +92,8 @@ public class FirebaseManager {
         firebaseAuth.signOut();
     }
 
-    public DatabaseReference newTrip(){
-        if(tripsRef == null)
+    public DatabaseReference newTrip() {
+        if (tripsRef == null)
             return FirebaseDatabase.getInstance().getReference().push();
         return tripsRef.push();
     }
@@ -100,7 +102,7 @@ public class FirebaseManager {
         return tripsRef.orderByChild("startStamp");
     }
 
-    public DatabaseReference getTripRef(String id){
+    public DatabaseReference getTripRef(String id) {
         return tripsRef.child(id);
     }
 
@@ -118,21 +120,15 @@ public class FirebaseManager {
         return userdata.child("currency/displayName");
     }
 
-    public void addTripImage(String id, byte[] bytes){ //maybe save by location id so it can be reused by different users, or save by userId + tripId
-        storage.child(id + ".jpg").putBytes(bytes).addOnCompleteListener(task -> task.getResult().getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
-            tripsRef.child(id).child("image").setValue(uri.toString());
-            tripsRef.child(id).child("imageVersion").get().addOnSuccessListener(dataSnapshot -> {
-                int i = dataSnapshot.getValue(Integer.class);
-                if(i >= 10)
-                    i = 0;
-                tripsRef.child(id).child("imageVersion").setValue(i + 1);
-            });
-        }));
+    public void addTripImage(String id, String url, int version) { //maybe save by location id so it can be reused by different users, or save by userId + tripId
+        tripsRef.child(id).child("image").setValue(url);
+        tripsRef.child(id).child("imageVersion").setValue(version + 1);
+
     }
 
 
     public void deleteTrip(MyTrip trip) {
+        Log.d("tag", "firebase deleted " + trip.getId());
         tripsRef.child(trip.getId()).removeValue();
-        storage.child(trip.getId() + ".jpg").delete();
     }
 }

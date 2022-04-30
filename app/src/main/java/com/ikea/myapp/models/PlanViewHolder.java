@@ -1,5 +1,6 @@
 package com.ikea.myapp.models;
 
+import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -12,4 +13,6 @@ public abstract class PlanViewHolder extends RecyclerView.ViewHolder {
     }
 
     public abstract void setDetails(Plan plan);
+
+    public abstract void onResult(int requestCode, int resultCode, Intent data);
 }

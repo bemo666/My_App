@@ -23,12 +23,12 @@ public class NewTripActivityViewModel extends AndroidViewModel {
     public NewTripActivityViewModel(@NonNull Application application) {
         super(application);
         name = new MutableLiveData<>();
+        tripRepo = new TripRepo(application);
         if (FirebaseManager.loggedIn()) {
             firebaseManager = new FirebaseManager();
             fetchName();
-        } else{
+        } else {
             name.setValue(null);
-            tripRepo = new TripRepo(application);
         }
     }
 
@@ -46,12 +46,12 @@ public class NewTripActivityViewModel extends AndroidViewModel {
         });
     }
 
-    public void insertLocalTrip(MyTrip trip){
+    public void insertLocalTrip(MyTrip trip) {
         tripRepo.insertLocalTrip(trip);
     }
 
-    public void setLocalImage(String id, String image){
-        tripRepo.setLocalImage(id, image);
+    public void setImage(String id, String image, int version) {
+        tripRepo.setImage(id, image,version);
     }
 
 

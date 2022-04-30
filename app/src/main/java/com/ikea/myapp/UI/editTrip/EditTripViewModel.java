@@ -38,7 +38,8 @@ public class EditTripViewModel extends AndroidViewModel {
         tripRepo.deleteTrip(trip);
     }
 
-    public void setLocalImage(String id, String image){
-        tripRepo.setLocalImage(id, image);
+
+    public void setImage(String id, String image, int version) {
+        tripRepo.setImage(id, image, version);
     }
 }

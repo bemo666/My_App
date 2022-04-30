@@ -60,6 +60,19 @@
             android:src="@drawable/ic_trash"
             android:visibility="visible"
             app:tint="@color/black" />
+        <ImageView
+            android:id="@+id/note_save_ic"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_check_circle"
+            android:visibility="gone"
+            app:tint="@color/green" />
 
         <ImageView
             android:id="@+id/note_confirm_delete"

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,14 @@ import com.google.android.material.button.MaterialButton;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.ikea.myapp.UI.newTrip.NewTripActivity;
+import com.ikea.myapp.VibrationService;
 import com.ikea.myapp.models.MyTrip;
+import com.ikea.myapp.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.TimeZone;
 
 
@@ -46,7 +50,8 @@ public class UpcomingFragment extends Fragment {
     private TripsViewModel viewmodel;
     private UpcomingTripsRVAdapter adapter;
     private int sliderPos;
-    private boolean sliderPosChanged;
+    private static String sliderId;
+    private static boolean sliderIdChanged;
     private List<MyTrip> tripList;
 
     public UpcomingFragment() {
@@ -68,7 +73,7 @@ public class UpcomingFragment extends Fragment {
         viewmodel = new ViewModelProvider(requireActivity()).get(TripsViewModel.class);
 
         extraIcon.setOnClickListener(view1 -> {
-            adapter.openEditTrip();
+
         });
 
         tripDetailsInit();
@@ -98,12 +103,19 @@ public class UpcomingFragment extends Fragment {
         tripSlider.setOffscreenPageLimit(3);
         tripSlider.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         tripSlider.setNestedScrollingEnabled(true);
+        tripSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                sliderPos = position;
+            }
+        });
 
 
         viewmodel.getTrips().observe(getViewLifecycleOwner(), myTrips -> {
             if (myTrips != null) {
+                tripList = new ArrayList<>();
                 if (!myTrips.isEmpty()) {
-                    tripList = new ArrayList<>();
                     for (MyTrip t : myTrips) {
                         long endStamp = t.getEndStamp();
                         TimeZone tz = TimeZone.getDefault();
@@ -113,8 +125,8 @@ public class UpcomingFragment extends Fragment {
                             tripList.add(t);
                         }
                     }
-                    adapter.setTrips(tripList);
                 }
+                adapter.setTrips(tripList);
             }
             handleWelcomeCard();
         });
@@ -130,7 +142,7 @@ public class UpcomingFragment extends Fragment {
     }
 
     private void handleWelcomeCard() {
-        if (tripList == null){
+        if (tripList == null) {
             tripList = new ArrayList<>();
         }
         if (tripList.size() == 0) {
@@ -173,18 +185,32 @@ public class UpcomingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (sliderPosChanged) {
-            tripSlider.setCurrentItem(sliderPos);
-            sliderPosChanged = false;
+        int i = 0;
+        if (sliderId != null && sliderIdChanged) {
+            for (MyTrip t : tripList) {
+                if (t.getId().equals(sliderId)) {
+                    sliderPos = i;
+                    break;
+                }
+                i++;
+            }
+            sliderIdChanged = false;
+        } else {
+            sliderPos = 0;
         }
+        tripSlider.setCurrentItem(sliderPos);
     }
 
-    public void setSliderPos(int sliderPos) {
-        this.sliderPos = sliderPos;
-        sliderPosChanged = true;
+    public static void setSliderId(String id) {
+        sliderIdChanged = true;
+        sliderId = id;
     }
 
-    public int getSliderPos() {
-        return sliderPos;
+    public static String getSliderId() {
+        return sliderId;
+    }
+
+    public void setImage(String id, String absolutePath, int imageVersion) {
+        viewmodel.setImage(id, absolutePath, imageVersion);
     }
 }

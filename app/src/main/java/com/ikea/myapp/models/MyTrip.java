@@ -4,10 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.android.volley.Header;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -193,9 +191,7 @@ public class MyTrip {
         this.nickname = nickname;
     }
 
-    public void editPlan(Plan plan, int position){
-        this.plans.set(position, plan);
-    }
+    public void editPlan(Plan plan, int position){ this.plans.set(position, plan); }
 
     public CustomDateTime getStart() { return start; }
 

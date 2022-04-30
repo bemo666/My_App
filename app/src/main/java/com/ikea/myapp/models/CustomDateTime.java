@@ -1,7 +1,5 @@
 package com.ikea.myapp.models;
 
-import java.io.Serializable;
-
 public class CustomDateTime {
     private int minute, hour, dayOfMonth, dayOfWeek, month, year;
 

@@ -1,21 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     tools:context=".UI.editTrip.MapFragment">
-    <fragment
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/map"
-        tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        map:uiZoomControls="true"
-        map:uiRotateGestures="true"
         map:mapType="normal"
+        map:uiRotateGestures="true"
         map:uiScrollGestures="true"
         map:uiTiltGestures="true"
-        map:uiZoomGestures="true"/>
-</FrameLayout>
+        map:uiZoomControls="true"
+        map:uiZoomGestures="true"
+        tools:context=".MapsActivity" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:layout_marginBottom="8dp"
+        android:layout_alignParentBottom="true">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/map_zoom_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_above="@+id/map_card"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="15dp"
+            map:cardBackgroundColor="@color/white"
+            map:cardCornerRadius="50dp"
+            map:cardElevation="0dp"
+            map:contentPadding="9dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_zoom_in"
+                map:tint="@color/black" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/map_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/white"
+            android:padding="10dp"
+            android:visibility="visible"
+            map:cardCornerRadius="10dp"
+            map:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/marker_chip_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:paddingHorizontal="10dp" />
+
+                <LinearLayout
+                    android:id="@+id/marker_location_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_location"
+                        map:tint="#009688" />
+
+                    <TextView
+                        android:id="@+id/marker_location_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="0dp"
+                        android:textColor="@color/quantum_googblueA700" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/marker_time_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_time"
+                        map:tint="#009688" />
+
+                    <TextView
+                        android:id="@+id/marker_time_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="0dp"
+                        android:textColor="@color/darkGrey" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/marker_rating_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_star"
+                        map:tint="#FFC107" />
+
+                    <TextView
+                        android:id="@+id/marker_rating_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="0dp"
+                        android:textColor="#FFC107" />
+
+                    <TextView
+                        android:id="@+id/marker_rating_review_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="0dp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/marker_url_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_link"
+                        map:tint="#009688" />
+
+                    <TextView
+                        android:id="@+id/marker_url_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="?attr/selectableItemBackground"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:padding="0dp"
+                        android:textColor="@color/quantum_googblueA700" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/marker_phone_number_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_phone"
+                        map:tint="#009688" />
+
+                    <TextView
+                        android:id="@+id/marker_phone_number_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="0dp"
+                        android:textColor="@color/quantum_googblueA700" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</RelativeLayout>

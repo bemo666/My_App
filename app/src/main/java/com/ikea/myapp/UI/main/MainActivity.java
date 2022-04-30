@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.ikea.myapp.Notification;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.profile.ProfileActivity;
 import com.ikea.myapp.UI.newTrip.NewTripActivity;
+import com.ikea.myapp.VibrationService;
 
 import java.util.ArrayList;
 import java.util.Calendar;

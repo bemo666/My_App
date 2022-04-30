@@ -1,6 +1,7 @@
 package com.ikea.myapp.UI.editTrip;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,13 +112,19 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
         }
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        for (ItineraryInternalRVAdapter a : adapters) {
+            a.onResult(requestCode, resultCode, data);
+        }
+    }
+
 
     class HeaderViewHolder extends RecyclerView.ViewHolder {
         private boolean expanded;
         private final ImageView arrow;
         private final MaterialTextView title;
         private final LinearLayout hiddenLayout;
-        private final RecyclerView internalRV;
+        protected final RecyclerView internalRV;
         private final Button addButton;
         private final View itemView;
 

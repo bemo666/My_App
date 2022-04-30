@@ -3,6 +3,7 @@ package com.ikea.myapp.UI;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -37,6 +38,7 @@ import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.R;
 import com.ikea.myapp.utils.Utils;
 
+import java.io.File;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -242,6 +244,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (!validateEmail() | !validatePassword()) {
                     } else {
                         progressDialog = new CustomProgressDialog(this, "Signing In");
+                        Utils.clearApplicationData(getApplicationContext());
                         progressDialog.show();
                         firebaseManager.SignIn(email, password).addOnCompleteListener(task -> {
                             new TripRepo(getApplication()).deleteTable();
@@ -337,6 +340,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -51,12 +51,14 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.ikea.myapp.Adapters.FragmentAdapter;
+import com.ikea.myapp.UI.main.UpcomingFragment;
 import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.models.PlanHeader;
 import com.ikea.myapp.R;
 import com.ikea.myapp.models.PlanType;
 import com.ikea.myapp.utils.MyViewModelFactory;
+import com.ikea.myapp.utils.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -127,14 +129,14 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             if (trip != null) {
                 placeName.setText(trip.getDestination());
                 if (trip.getImage() != null)
-                    Glide.with(this).load(trip.getImage()).fitCenter().into(mainImage);
+                    Glide.with(this).load(trip.getImage()).fitCenter().skipMemoryCache(true).into(mainImage);
             }
         });
 
         //Fragments setup
         ArrayList<Fragment> list = new ArrayList<>();
         list.add(itineraryFragment);
-        list.add(new MapFragment(id, this));
+        list.add(new MapFragment(id));
         list.add(new BudgetFragment(id));
         FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle(), list);
         fragments.setAdapter(fragmentAdapter);
@@ -226,17 +228,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         rentals.setOnClickListener(this);
         flights.setOnClickListener(this);
         activities.setOnClickListener(this);
-
-
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MM dd", Locale.UK);
-//        Date startDate = null;
-//        try {
-//            startDate = dateFormat.parse(trip.getStartStamp());
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-
-
     }
 
 
@@ -331,9 +322,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             menuBuilder.setOptionalIconsVisible(true);
         }
 
-        if (!FirebaseManager.loggedIn())
-            menu.getItem(0).setEnabled(false);
-
         return true;
     }
 
@@ -345,8 +333,10 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
                         .setTitle(R.string.ui_delete_trip)
                         .setMessage("Are you sure you want to delete your trip to " + trip.getDestination() + "?")
                         .setPositiveButton("DELETE", (dialog, which) -> {
-                            if (trip != null)
+                            if (trip != null){
                                 viewModel.deleteTrip(trip);
+                                Log.d("tag", "deletetd");
+                            }
                             finish();
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
@@ -395,11 +385,18 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
                 placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
                     Bitmap bitmap = fetchPhotoResponse.getBitmap();
-                    Glide.with(this).load(bitmap).fitCenter().into(mainImage);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
 
-                    new FirebaseManager().addTripImage(trip.getId(), baos.toByteArray());
+                    File file = new File(getFilesDir(), id + "_" + (trip.getImageVersion() + 1 ) + ".jpg");
+
+                    try (FileOutputStream fos = openFileOutput(file.getName(), Context.MODE_PRIVATE)) {
+                        fos.write(baos.toByteArray());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    viewModel.setImage(trip.getId(), file.getAbsolutePath(), trip.getImageVersion());
 
                 }).addOnFailureListener((exception) -> {
                     if (exception instanceof ApiException) {
@@ -414,5 +411,11 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     public void openMapsFragment(){
         fragments.setCurrentItem(1);
         tabLayout.selectTab(tabLayout.getTabAt(1), true);
+    }
+
+    @Override
+    protected void onPause() {
+        UpcomingFragment.setSliderId(id);
+        super.onPause();
     }
 }
