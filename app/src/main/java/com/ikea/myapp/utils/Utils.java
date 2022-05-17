@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import java.io.File;
 
 public class Utils {
+    private static Integer num;
 
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -28,5 +29,13 @@ public class Utils {
                 }
             }
         }
+    }
+
+    public static int getNumber(){
+        if(num == null){
+            num = 10;
+        }
+        num++;
+        return num;
     }
 }

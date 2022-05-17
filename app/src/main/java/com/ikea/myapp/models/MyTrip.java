@@ -15,7 +15,7 @@ public class MyTrip {
     @PrimaryKey
     @NonNull
     private String id;
-    private String placeId, image;
+    private String placeId, image, country;
     private CustomDateTime start, end;
     private Long startStamp, endStamp;
     private String destination, nickname;
@@ -37,7 +37,8 @@ public class MyTrip {
                   CustomDateTime start,
                   Long endStamp,
                   CustomDateTime end,
-                  String placeId, @NonNull String id, CustomCurrency currency) {
+                  String placeId, @NonNull String id, CustomCurrency currency,
+                  String country) {
         this.destination = destination;
         this.destinationLat = destinationLatLng.latitude;
         this.destinationLon = destinationLatLng.longitude;
@@ -55,6 +56,7 @@ public class MyTrip {
         neLon = ne.longitude;
         swLat = sw.latitude;
         swLon = sw.longitude;
+        this.country = country;
     }
 
 
@@ -216,4 +218,8 @@ public class MyTrip {
     public Double getSwLon() { return swLon; }
 
     public void setSwLon(Double swLon) { this.swLon = swLon; }
+
+    public String getCountry() { return country; }
+
+    public void setCountry(String country) { this.country = country; }
 }

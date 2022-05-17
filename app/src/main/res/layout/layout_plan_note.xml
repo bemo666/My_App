@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginHorizontal="5dp"
     android:backgroundTint="@color/barelyGrey"
     app:cardCornerRadius="10dp"
+    android:layout_marginBottom="7dp"
     app:cardElevation="0dp">
 
     <RelativeLayout
@@ -59,20 +61,7 @@
             android:padding="5dp"
             android:src="@drawable/ic_trash"
             android:visibility="visible"
-            app:tint="@color/black" />
-        <ImageView
-            android:id="@+id/note_save_ic"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:padding="5dp"
-            android:src="@drawable/ic_check_circle"
-            android:visibility="gone"
-            app:tint="@color/green" />
+            app:tint="@color/kindaDarkGrey" />
 
         <ImageView
             android:id="@+id/note_confirm_delete"

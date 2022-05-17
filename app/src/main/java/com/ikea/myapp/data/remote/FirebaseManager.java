@@ -1,28 +1,19 @@
 package com.ikea.myapp.data.remote;
 
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.ikea.myapp.models.MyTrip;
-import com.ikea.myapp.models.PlanHeader;
 
-import java.io.File;
 import java.util.Objects;
 
 public class FirebaseManager {
@@ -98,6 +89,10 @@ public class FirebaseManager {
         return tripsRef.push();
     }
 
+    public DatabaseReference getCountriesReference(){
+        return userdata.child("Countries");
+    }
+
     public Query getTripsRef() {
         return tripsRef.orderByChild("startStamp");
     }
@@ -130,5 +125,9 @@ public class FirebaseManager {
     public void deleteTrip(MyTrip trip) {
         Log.d("tag", "firebase deleted " + trip.getId());
         tripsRef.child(trip.getId()).removeValue();
+    }
+
+    public DatabaseReference getTripImage(String id){
+        return tripsRef.child(id).child("image");
     }
 }

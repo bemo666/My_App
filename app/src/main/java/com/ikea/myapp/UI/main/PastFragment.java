@@ -12,18 +12,18 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
-import com.jjoe64.graphview.GraphView;
+import com.ikea.myapp.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,9 +36,9 @@ public class PastFragment extends Fragment {
     //Variables
     private TripsViewModel viewmodel;
     private RecyclerView tripSlider;
-    private GraphView tripHistoryBarGraph;
-    private List<MyTrip> tripList;
+    private List<MyTrip> pastTripList, totalTripList;
     private CardView noPastTrips;
+    private TextView countriesNum, countriesText, tripsNum, tripsText;
 
 
     public PastFragment() {
@@ -52,8 +52,11 @@ public class PastFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_past, container, false);
         tripSlider = view.findViewById(R.id.past_trips_rv);
-        tripHistoryBarGraph = view.findViewById(R.id.trip_history_graph);
         noPastTrips = view.findViewById(R.id.past_no_trips_card);
+        countriesNum = view.findViewById(R.id.past_countries_num);
+        countriesText = view.findViewById(R.id.past_countries_text);
+        tripsNum = view.findViewById(R.id.past_trips_num);
+        tripsText = view.findViewById(R.id.past_trips_text);
         viewmodel = ViewModelProviders.of(requireActivity()).get(TripsViewModel.class);
 
 
@@ -64,66 +67,55 @@ public class PastFragment extends Fragment {
         viewmodel.getTrips().observe(getViewLifecycleOwner(), myTrips -> {
             if (myTrips != null) {
                 if (!myTrips.isEmpty()) {
-                    tripList = new ArrayList<>();
+                    pastTripList = new ArrayList<>();
+                    totalTripList = new ArrayList<>();
                     for (MyTrip t : myTrips) {
                         long endStamp = t.getEndStamp();
-                        TimeZone tz = TimeZone.getDefault();
+                        TimeZone tz =  TimeZone.getDefault();
                         long currentTime = Calendar.getInstance().getTimeInMillis() + tz.getOffset(Calendar.getInstance().getTimeInMillis());
                         if (endStamp < currentTime) {
-                            tripList.add(t);
+                            pastTripList.add(t);
                         }
+                        totalTripList.add(t);
                     }
-                    adapter.setTrips(tripList);
+                    adapter.setTrips(pastTripList);
                 }
             }
             displayCorrectTrips();
+            showStats();
         });
-
-
-//        Date d1 = new Date(FirebaseManager.getCreationStamp());
-//        Date d2 = new Date(Calendar.getInstance().getTimeInMillis());
-//        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
-//                new DataPoint(d1, 5),
-//                new DataPoint(d2, 8)
-//        });
-//        tripHistoryBarGraph.addSeries(series);
-//
-//// styling
-//        series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
-//            @Override
-//            public int get(DataPoint data) {
-//                return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
-//            }
-//        });
-//
-//        series.setSpacing(30);
-//
-//// draw values on top
-//
-////        series.setDrawValuesOnTop(true);
-////        series.setValuesOnTopColor(ContextCompat.getColor(getContext(), R.color.darkGrey));
-////series.setValuesOnTopSize(50);
-//// set date label formatter
-//        tripHistoryBarGraph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getActivity()));
-//        tripHistoryBarGraph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
-//
-//// set manual x bounds to have nice steps
-//        tripHistoryBarGraph.getViewport().setMinX(d1.getTime());
-//        tripHistoryBarGraph.getViewport().setMaxX(d2.getTime());
-//        tripHistoryBarGraph.getViewport().setXAxisBoundsManual(true);
-//
-//// as we use dates as labels, the human rounding to nice readable numbers
-//// is not necessary
-//        tripHistoryBarGraph.getGridLabelRenderer().setHumanRounding(false);
 
         return view;
     }
 
-    private void displayCorrectTrips() {
-        if (tripList == null){
-            tripList = new ArrayList<>();
+    private void showStats() {
+        List<String> lst = new ArrayList<>();
+        if (totalTripList != null) {
+            for (MyTrip t : totalTripList) {
+                if (!lst.contains(t.getCountry())) {
+                    lst.add(t.getCountry());
+                }
+            }
         }
-        if (tripList.size() == 0) {
+        countriesNum.setText(String.valueOf(lst.size()));
+        if (lst.size() == 1) {
+            countriesText.setText("Country");
+        } else {
+            countriesText.setText("Countries");
+        }
+        tripsNum.setText(String.valueOf(totalTripList.size()));
+        if (totalTripList.size() == 1) {
+            tripsText.setText("Trip");
+        } else {
+            tripsText.setText("Trips");
+        }
+    }
+
+    private void displayCorrectTrips() {
+        if (pastTripList == null) {
+            pastTripList = new ArrayList<>();
+        }
+        if (pastTripList.size() == 0) {
 
             tripSlider.setVisibility(View.GONE);
             noPastTrips.setVisibility(View.VISIBLE);
@@ -134,7 +126,7 @@ public class PastFragment extends Fragment {
     }
 
     private String getTripIdAt(int position) {
-        return tripList.get(position).getId();
+        return pastTripList.get(position).getId();
     }
 
     public void goToEditTripActivity(ImageView imageView, TextView textView, int position) {

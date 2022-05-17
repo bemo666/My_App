@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.textview.MaterialTextView;
 import com.ikea.myapp.R;
 import com.ikea.myapp.models.Budget;
@@ -67,54 +68,37 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
         notifyDataSetChanged();
     }
 
-    public void notifyOuterChange(PlanHeader h) {
-        notifyItemChanged(trip.getPlans().indexOf(h));
-    }
-
-    public void notifyOuterAdded(int i) {
-        notifyItemInserted(i);
-    }
-
-    public void notifyOuterDelete(PlanHeader h) {
-        notifyItemRemoved(trip.getPlans().indexOf(h));
-    }
-
     public ItineraryFragment getFragment() {
         return fragment;
     }
 
     public void editBudget(Expense cost) {
         boolean found = false;
-        if (trip.hasBudgetEntries()){
+        if (trip.hasBudgetEntries()) {
             int i = 0;
             for (Expense e : trip.getBudget().getExpenses()) {
                 if (e.hasId()) {
                     if (e.getId().equals(cost.getId())) {
                         found = true;
                         trip.getBudget().editExpense(cost, i);
-                        Log.d("tag", "was called");
                     }
                 }
                 i++;
-
             }
-            if(!found){
+            if (!found) {
                 trip.getBudget().addExpense(cost);
-                Log.d("tag", "was called2");
-
             }
         } else {
             Budget b = new Budget();
             b.addExpense(cost);
             trip.setBudget(b);
-            Log.d("tag", "was called3");
-
         }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         for (ItineraryInternalRVAdapter a : adapters) {
-            a.onResult(requestCode, resultCode, data);
+            if (a != null)
+                a.onResult(requestCode, resultCode, data);
         }
     }
 
@@ -150,8 +134,9 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
                 checkForAddHeader(header.getType());
                 adapters[position].notifyItemInserted(adapters[position].getItemCount());
             });
-            if (adapters[position] == null)
+            if (adapters[position] == null) {
                 adapters[position] = new ItineraryInternalRVAdapter(ItineraryRVAdapter.this, header, fragment, trip.getCurrency());
+            }
             internalRV.setAdapter(adapters[position]);
             internalRV.setNestedScrollingEnabled(false);
             internalRV.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
@@ -179,27 +164,28 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
     public void checkForAddHeader(PlanType type) {
         PlanHeader header = null;
+        Plan p = new Plan(type.getType());
+        trip.addPlan(p);
+
         for (PlanHeader h : headers) {
             if (h.getType() == type) {
                 header = h;
+                header.addPlan(p);
                 break;
             }
         }
 
-        Plan p = new Plan(type.getType());
-        trip.addPlan(p);
-
         if (header == null) {
             header = new PlanHeader(type, new ArrayList<>());
             headers.add(header);
-            notifyItemInserted(headers.size() - 1);
+            header.addPlan(p);
             adapters = new ItineraryInternalRVAdapter[headers.size()];
+            notifyItemInserted(headers.size() - 1);
         }
 
-        header.addPlan(p);
-
-        if (adapters[headers.indexOf(header)] != null)
+        if (adapters[headers.indexOf(header)] != null) {
             adapters[headers.indexOf(header)].notifyItemInserted(header.getPlans().size() - 1);
+        }
         fragment.showNewCard();
         fragment.updateTrip(trip);
 
@@ -208,9 +194,12 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
 
     }
 
-    public void editPlan(Plan object, int adapterPosition) {
-        trip.editPlan(object, adapterPosition);
-        fragment.updateTrip(trip);
+    public void editPlan(Plan object) {
+        int num = trip.getPlans().indexOf(object);
+        if(num != -1) {
+            trip.editPlan(object, num);
+            fragment.updateTrip(trip);
+        }
     }
 
     public void deletePlan(Plan plan) {

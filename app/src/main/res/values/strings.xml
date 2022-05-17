@@ -120,5 +120,7 @@
     <string name="ui_start">Start</string>
     <string name="ui_end">End</string>
     <string name="ui_name">Name</string>
+    <string name="ui_hotel">Hotel</string>
+    <string name="trip_details_tbd">\u0020\u0020TBD\u0020</string>
 
 </resources>

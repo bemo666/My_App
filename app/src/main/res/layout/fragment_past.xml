@@ -17,9 +17,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/past_trips_rv"
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="130dp"
-            android:layout_marginVertical="@dimen/spacing" />
+            android:layout_marginVertical="@dimen/spacing"
+            android:visibility="gone" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/past_no_trips_card"
@@ -43,12 +43,13 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="5dp"
                     android:src="@drawable/im_empty_box" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
                     android:layout_toEndOf="@id/no_trips_img"
                     android:gravity="center"
-                    android:layout_marginEnd="5dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -56,9 +57,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:gravity="center"
                         android:text="@string/past_no_past_trips"
                         android:textColor="@color/black"
-                        android:gravity="center"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -74,39 +75,129 @@
                 </LinearLayout>
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
+    <LinearLayout
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_side"
+        android:orientation="horizontal"
+        android:weightSum="2">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="You've seen"
+            android:textColor="@color/darkNavyBlue"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="During"
+            android:textColor="@color/darkNavyBlue"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="@dimen/margin_side"
-            android:orientation="vertical">
+            android:layout_height="150dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="10dp"
+            android:background="@color/white"
+            app:cardCornerRadius="@dimen/card_radius"
+            app:cardElevation="0dp"
+            app:contentPadding="15dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/past_trip_frequency"
-                android:textColor="@color/darkNavyBlue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_marginHorizontal="@dimen/margin_side"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/white"
-                app:cardCornerRadius="@dimen/card_radius"
-                app:cardElevation="0dp"
-                app:contentPadding="15dp">
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-                <com.jjoe64.graphview.GraphView
-                    android:id="@+id/trip_history_graph"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:seriesColor="@color/blue"
-                    app:seriesType="bar" />
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/im_planning" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/past_countries_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:layout_gravity="center"
+                            android:textColor="@color/darkNavyBlue"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/past_countries_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Countries"
+                            android:textColor="@color/darkNavyBlue"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:src="@drawable/trips_img" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical"
+                        android:translationX="-10dp"
+                        android:translationY="-15dp">
+
+                        <TextView
+                            android:id="@+id/past_trips_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/past_trips_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Trips"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

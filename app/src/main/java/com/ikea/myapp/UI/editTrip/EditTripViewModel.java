@@ -14,6 +14,7 @@ public class EditTripViewModel extends AndroidViewModel {
 
     private final TripRepo tripRepo;
     private final LiveData<MyTrip> trip;
+    private LiveData<String> image;
 
     public EditTripViewModel(@NonNull Application application, String id) {
         super(application);
@@ -23,11 +24,17 @@ public class EditTripViewModel extends AndroidViewModel {
         } else{
             trip =  tripRepo.getLocalTrip(id);
         }
+        image = tripRepo.getImage(id);
+
     }
 
 
     public LiveData<MyTrip> getTrip() {
         return trip;
+    }
+
+    public LiveData<String> getImage() {
+        return image;
     }
 
     public void updateTrip(MyTrip trip) {

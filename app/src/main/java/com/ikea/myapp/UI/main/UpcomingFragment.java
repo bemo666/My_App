@@ -53,6 +53,7 @@ public class UpcomingFragment extends Fragment {
     private static String sliderId;
     private static boolean sliderIdChanged;
     private List<MyTrip> tripList;
+    private UpcomingTripDetailsRVAdapter adapter2;
 
     public UpcomingFragment() {
         // Required empty public constructor
@@ -73,10 +74,9 @@ public class UpcomingFragment extends Fragment {
         viewmodel = new ViewModelProvider(requireActivity()).get(TripsViewModel.class);
 
         extraIcon.setOnClickListener(view1 -> {
-
+            goToEditTripActivity(sliderPos);
         });
 
-        tripDetailsInit();
 
         sliderInit();
 
@@ -108,6 +108,7 @@ public class UpcomingFragment extends Fragment {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 sliderPos = position;
+                adapter2.setList(tripList.get(sliderPos).getPlans());
             }
         });
 
@@ -129,6 +130,8 @@ public class UpcomingFragment extends Fragment {
                 adapter.setTrips(tripList);
             }
             handleWelcomeCard();
+            tripDetailsInit();
+
         });
 
         CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
@@ -161,10 +164,12 @@ public class UpcomingFragment extends Fragment {
 
     private void tripDetailsInit() {
         //Setting trip details
-        UpcomingTripDetailsRVAdapter adapter2 = new UpcomingTripDetailsRVAdapter(requireContext());
-        LinearLayoutManager layoutManager2 = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
-        rv_details.setAdapter(adapter2);
-        rv_details.setLayoutManager(layoutManager2);
+        if (tripList.size() != 0) {
+            adapter2 = new UpcomingTripDetailsRVAdapter(requireContext());
+            adapter2.setList(tripList.get(sliderPos).getPlans());
+            rv_details.setAdapter(adapter2);
+            rv_details.setLayoutManager(new LinearLayoutManager(requireContext()));
+        }
     }
 
     public void goToEditTripActivity(ImageView imageView, TextView textView, int position) {
@@ -176,6 +181,12 @@ public class UpcomingFragment extends Fragment {
         );
         this.startActivity(intent, options.toBundle());
 
+    }
+    public void goToEditTripActivity(int position) {
+        Intent intent = new Intent(getContext(), EditTripActivity.class);
+        intent.putExtra("id", getTripIdAt(position));
+        intent.putExtra("goto", "map");
+        this.startActivity(intent);
     }
 
     private String getTripIdAt(int position) {
@@ -204,10 +215,6 @@ public class UpcomingFragment extends Fragment {
     public static void setSliderId(String id) {
         sliderIdChanged = true;
         sliderId = id;
-    }
-
-    public static String getSliderId() {
-        return sliderId;
     }
 
     public void setImage(String id, String absolutePath, int imageVersion) {

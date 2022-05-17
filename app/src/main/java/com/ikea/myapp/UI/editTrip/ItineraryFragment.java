@@ -1,10 +1,20 @@
 package com.ikea.myapp.UI.editTrip;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -15,29 +25,10 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.ikea.myapp.models.Expense;
-import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
+import com.ikea.myapp.models.MyTrip;
+import com.ikea.myapp.models.Plan;
 import com.ikea.myapp.models.PlanType;
 import com.ikea.myapp.utils.getCorrectDate;
 
@@ -207,5 +198,9 @@ public class ItineraryFragment extends Fragment {
         view.clearFocus();
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         rvAdapter.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public boolean verifyPlan(Plan plan) {
+        return trip.getPlans().contains(plan);
     }
 }

@@ -29,19 +29,20 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/map_zoom_button"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
             android:layout_above="@+id/map_card"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="15dp"
             map:cardBackgroundColor="@color/white"
             map:cardCornerRadius="50dp"
-            map:cardElevation="0dp"
+            map:cardElevation="1dp"
             map:contentPadding="9dp">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:id="@+id/map_zoom_image"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@drawable/ic_zoom_in"
                 map:tint="@color/black" />
         </androidx.cardview.widget.CardView>

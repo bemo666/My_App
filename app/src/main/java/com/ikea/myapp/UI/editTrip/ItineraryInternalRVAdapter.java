@@ -1,10 +1,12 @@
 package com.ikea.myapp.UI.editTrip;
 
 import static android.app.Activity.RESULT_OK;
+import static com.ikea.myapp.utils.Utils.getNumber;
 import static com.ikea.myapp.utils.Utils.prettyPrint;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -137,6 +139,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
     }
 
     private Plan putResultsInStart(Place result, Plan plan) {
+        int num = plans.indexOf(plan);
         if (result.getName() != null)
             plan.setStartLocation(result.getName());
         if (result.getId() != null)
@@ -165,14 +168,18 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             }
             plan.setStartEstablishmentTypes(list);
         }
-        if(result.getOpeningHours() != null) {
+        if (result.getOpeningHours() != null) {
             List<String> list = new ArrayList<>(result.getOpeningHours().getWeekdayText());
             plan.setStartLocationTimes(list);
+        }
+        if (num < plans.size() && num != -1) {
+            parentAdapter.editPlan(plan);
         }
         return plan;
     }
 
     private Plan putResultsInEnd(Place result, Plan plan) {
+        int num = plans.indexOf(plan);
         if (result.getName() != null)
             plan.setEndLocation(result.getName());
         if (result.getId() != null)
@@ -201,9 +208,12 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             }
             plan.setEndEstablishmentTypes(list);
         }
-        if(result.getOpeningHours() != null) {
+        if (result.getOpeningHours() != null) {
             List<String> list = new ArrayList<>(result.getOpeningHours().getWeekdayText());
             plan.setEndLocationTimes(list);
+        }
+        if (num < plans.size() && num != -1) {
+            parentAdapter.editPlan(plan);
         }
         return plan;
     }
@@ -211,10 +221,8 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
     class NoteViewHolder extends PlanViewHolder {
 
         private final EditText text;
-        private final ImageView delete;
-        private final ImageView confirmDelete;
-        private final ImageView save2;
-        private boolean deletePressed, textChanged, saved;
+        private final ImageView delete, confirmDelete;
+        private boolean deletePressed;
 
         NoteViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -222,8 +230,6 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             text = itemView.findViewById(R.id.note_text_edit_text);
             delete = itemView.findViewById(R.id.note_delete_ic);
             confirmDelete = itemView.findViewById(R.id.note_confirm_delete);
-            save2 = itemView.findViewById(R.id.note_save_ic);
-
         }
 
         public void setDetails(Plan plan) {
@@ -241,16 +247,9 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    textChanged = true;
-                    changeButtons();
+                    plan.setNote(editable.toString());
+                    parentAdapter.editPlan(plan);
                 }
-            });
-            save2.setOnClickListener(view -> {
-                imm.hideSoftInputFromWindow(fragment.requireView().getWindowToken(), 0);
-                plan.setNote(text.getText().toString());
-                parentAdapter.editPlan(plan, plans.indexOf(plan));
-                saved = true;
-                changeButtons();
             });
 
             delete.setOnClickListener(view -> {
@@ -276,49 +275,33 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         @Override
         public void onResult(int requestCode, int resultCode, Intent data) {
         }
-
-        private void changeButtons() {
-            if (textChanged) {
-                save2.setVisibility(View.VISIBLE);
-                delete.setVisibility(View.GONE);
-                confirmDelete.setVisibility(View.GONE);
-            } else {
-                save2.setVisibility(View.GONE);
-                delete.setVisibility(View.VISIBLE);
-            }
-            if (saved) {
-                saved = false;
-                save2.setVisibility(View.GONE);
-                delete.setVisibility(View.VISIBLE);
-            }
-        }
-
     }
 
     class RentalViewHolder extends PlanViewHolder {
 
-        TextInputEditText pickupAddress, pickupTime, pickupDate, dropoffAddress, dropoffTime, dropoffDate, carDetails, confirmationNum, cost;
+        TextInputEditText pickupName, pickupAddress, pickupTime, pickupDate, dropoffName, dropoffAddress, dropoffTime, dropoffDate, carDetails, confirmationNum, cost;
         TextInputLayout pickupAddressLayout, dropoffAddressLayout;
         Plan plan;
-        Button save, delete;
+        ImageView delete;
         boolean deletePressed = false;
-        CardView confirmDelete;
+        ImageView confirmDelete;
         TextView currencySymbol;
-        ImageView saveCheck;
         Animation fadeOut;
         Handler handler = new android.os.Handler();
         DateFormat date = new SimpleDateFormat("MMM dd, yyyy");
         DateFormat time = new SimpleDateFormat("HH:mm");
-        final int PICKUP_ADDRESS_REQUEST = 100;
-        final int DROPOFF_ADDRESS_REQUEST = 101;
+        final int PICKUP_ADDRESS_REQUEST = getNumber();
+        final int DROPOFF_ADDRESS_REQUEST = getNumber();
 
 
         RentalViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            pickupName = itemView.findViewById(R.id.rental_pick_up);
             pickupAddress = itemView.findViewById(R.id.rental_pick_up_address);
             pickupTime = itemView.findViewById(R.id.rental_pick_up_time);
             pickupDate = itemView.findViewById(R.id.rental_pick_up_date);
+            dropoffName = itemView.findViewById(R.id.rental_drop_off);
             dropoffAddress = itemView.findViewById(R.id.rental_drop_off_address);
             dropoffTime = itemView.findViewById(R.id.rental_drop_off_time);
             dropoffDate = itemView.findViewById(R.id.rental_drop_off_date);
@@ -326,13 +309,11 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             confirmationNum = itemView.findViewById(R.id.rental_confirmation_number);
             cost = itemView.findViewById(R.id.rental_cost);
             currencySymbol = itemView.findViewById(R.id.rental_money_symbol);
-            saveCheck = itemView.findViewById(R.id.rental_saved_check);
 
             pickupAddressLayout = itemView.findViewById(R.id.rental_pick_up_address_layout);
             dropoffAddressLayout = itemView.findViewById(R.id.rental_drop_off_address_layout);
 
-            save = itemView.findViewById(R.id.rental_save);
-            delete = itemView.findViewById(R.id.rental_delete);
+            delete = itemView.findViewById(R.id.rental_delete_ic);
             confirmDelete = itemView.findViewById(R.id.rental_confirm_delete);
 
             date.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -346,9 +327,65 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             dropoffAddressLayout.setEndIconOnClickListener(view -> fragment.openMap());
             pickupAddressLayout.setEndIconOnClickListener(view -> fragment.openMap());
             pickupAddress.setOnClickListener(view -> fragment.startActivityForResult(intent, PICKUP_ADDRESS_REQUEST));
+            pickupName.setOnClickListener(view -> fragment.startActivityForResult(intent, PICKUP_ADDRESS_REQUEST));
             dropoffAddress.setOnClickListener(view -> fragment.startActivityForResult(intent, DROPOFF_ADDRESS_REQUEST));
+            dropoffName.setOnClickListener(view -> fragment.startActivityForResult(intent, DROPOFF_ADDRESS_REQUEST));
             carDetails.setText(plan.getNote());
+            carDetails.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    int num = plans.indexOf(plan);
+                    plan.setNote(editable.toString());
+                    if (num < plans.size() && num != -1) {
+                        parentAdapter.editPlan(plan);
+                    }
+                }
+            });
             confirmationNum.setText(plan.getConfirmationNumber());
+            confirmationNum.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    plan.setConfirmationNumber(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
+            cost.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    updateCost(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
             CalendarConstraints.Builder constraints = new CalendarConstraints.Builder();
             constraints.setStart(fragment.getStartMonth());
             constraints.setEnd(fragment.getEndMonth());
@@ -368,6 +405,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 pickupDate.setText(datePicker.getHeaderText());
                 plan.setStartDate(selection);
+                parentAdapter.editPlan(plan);
             });
             pickupDate.setOnClickListener(view -> datePicker.show(fragment.requireActivity().getSupportFragmentManager(), "DATE_PICKER"));
 
@@ -376,6 +414,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             datePicker2.addOnPositiveButtonClickListener(selection -> {
                 dropoffDate.setText(datePicker2.getHeaderText());
                 plan.setEndDate(selection);
+                parentAdapter.editPlan(plan);
             });
             dropoffDate.setOnClickListener(view -> datePicker2.show(fragment.requireActivity().getSupportFragmentManager(), "DATE_PICKER"));
 
@@ -383,6 +422,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_TimePicker).build();
             timePicker.addOnPositiveButtonClickListener(view -> {
                 plan.setStartTime(timePicker.getHour() * 3600000L + timePicker.getMinute() * 60000L);
+                parentAdapter.editPlan(plan);
                 setStartTime();
             });
             pickupTime.setOnClickListener(view -> timePicker.show(fragment.requireActivity().getSupportFragmentManager(), "TIME_PICKER"));
@@ -391,6 +431,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_TimePicker).build();
             timePicker2.addOnPositiveButtonClickListener(view -> {
                 plan.setEndTime(timePicker2.getHour() * 3600000L + timePicker2.getMinute() * 60000L);
+                parentAdapter.editPlan(plan);
                 setEndTime();
             });
             dropoffTime.setOnClickListener(view -> timePicker2.show(fragment.requireActivity().getSupportFragmentManager(), "TIME_PICKER"));
@@ -406,15 +447,30 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             setEndDate();
             setStartAddress();
             setEndAddress();
+            setStartName();
+            setEndName();
+            cost.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    updateCost(editable.toString());
+                }
+            });
             cost.setOnEditorActionListener((v, actionId, event) -> {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     imm.hideSoftInputFromWindow(fragment.requireView().getWindowToken(), 0);
-                    savePlan();
                 }
                 return false;
             });
-            save.setOnClickListener(view -> savePlan());
             delete.setOnClickListener(view -> {
                 if (deletePressed) {
                     notifyItemRemoved(plans.indexOf(plan));
@@ -438,14 +494,15 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                 if (requestCode == PICKUP_ADDRESS_REQUEST) {
                     Place result = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
                     plan = putResultsInStart(result, plan);
+                    pickupAddressLayout.setEndIconOnClickListener(view -> fragment.openMap());
                     setStartAddress();
-//                    Log.d("tag", "addresscomponents: " + result.getAddressComponents());
-//                    Log.d("tag", "attributions: " + result.getAttributions());
-//                    Log.d("tag", "pricelevel: " + result.getPriceLevel());
+                    setStartName();
                 } else if (requestCode == DROPOFF_ADDRESS_REQUEST) {
                     Place result = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
                     plan = putResultsInEnd(result, plan);
+                    dropoffAddressLayout.setEndIconOnClickListener(view -> fragment.openMap());
                     setEndAddress();
+                    setEndName();
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
@@ -493,72 +550,54 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             }
         }
 
-        private void savePlan() {
-            plan.setStartLocationAddress(Objects.requireNonNull(pickupAddress.getText()).toString());
-            plan.setEndLocationAddress(Objects.requireNonNull(dropoffAddress.getText()).toString());
-            plan.setNote(Objects.requireNonNull(carDetails.getText()).toString());
-            plan.setConfirmationNumber(Objects.requireNonNull(confirmationNum.getText()).toString());
-            updateCost(Objects.requireNonNull(cost.getText()).toString());
-            saveCheck.setVisibility(View.VISIBLE);
-            handler.postDelayed(() -> saveCheck.startAnimation(fadeOut), 700);
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    saveCheck.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            if (plan.getCost() != null) {
-                parentAdapter.editBudget(plan.getCost());
+        private void setStartName() {
+            if (plan.getStartLocation() != null) {
+                pickupAddress.setText(plan.getStartLocation());
             }
-            parentAdapter.editPlan(plan, plans.indexOf(plan));
+        }
+
+        private void setEndName() {
+            if (plan.getEndLocation() != null) {
+                pickupAddress.setText(plan.getEndLocation());
+            }
         }
 
         private void updateCost(String editable) {
-            if (!editable.equals("")) {
-                if (plan.getCost() != null) {
-                    if (!plan.getCost().hasId()) {
-                        plan.getCost().setId(UUID.randomUUID().toString());
-                    }
-                    if (editable.equals("")) {
-                        plan.getCost().setPrice(0.0);
-                    } else
-                        plan.getCost().setPrice(Double.parseDouble(editable));
-                } else {
-                    Expense newCost = new Expense(ExpenseTypes.Rental, Double.parseDouble(editable));
-                    newCost.setId(UUID.randomUUID().toString());
-                    plan.setCost(newCost);
+            int num = plans.indexOf(plan);
+            if (plan.getCost() != null) {
+                if (!plan.getCost().hasId()) {
+                    plan.getCost().setId(UUID.randomUUID().toString());
                 }
+                if (editable.equals("")) {
+                    plan.getCost().setPrice(0.0);
+                } else
+                    plan.getCost().setPrice(Double.parseDouble(editable));
+            } else {
+                Expense newCost = new Expense(ExpenseTypes.Rental, Double.parseDouble(editable));
+                newCost.setId(UUID.randomUUID().toString());
+                plan.setCost(newCost);
+            }
+            parentAdapter.editBudget(plan.getCost());
+            if (num < plans.size() && num != -1) {
+                parentAdapter.editPlan(plan);
             }
         }
     }
-
 
     class FlightViewHolder extends PlanViewHolder {
 
         TextInputEditText departureAirport, departureTime, departureDate, arrivalAirport, arrivalTime, arrivalDate, cost, confirmationNumber, airline, flightNumber;
         TextInputLayout departureAirportLayout, departureTimeLayout, departureDateLayout, arrivalAirportLayout, arrivalTimeLayout, arrivalDateLayout;
         Plan plan;
-        Button save, delete;
+        ImageView delete;
         boolean deletePressed = false;
-        CardView confirmDelete;
+        ImageView confirmDelete;
         TextView currencySymbol;
-        ImageView saveCheck;
-        Animation fadeOut;
         Handler handler = new android.os.Handler();
         DateFormat date = new SimpleDateFormat("MMM dd, yyyy");
         DateFormat time = new SimpleDateFormat("HH:mm");
-        final int DEPARTURE_AIRPORT_REQUEST = 102;
-        final int ARRIVAL_AIRPORT_REQUEST = 103;
+        final int DEPARTURE_AIRPORT_REQUEST = getNumber();
+        final int ARRIVAL_AIRPORT_REQUEST = getNumber();
 
         FlightViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -574,7 +613,6 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             confirmationNumber = itemView.findViewById(R.id.flight_confirmation_number);
             cost = itemView.findViewById(R.id.flight_cost);
             currencySymbol = itemView.findViewById(R.id.flight_money_symbol);
-            saveCheck = itemView.findViewById(R.id.flight_saved_check);
 
             departureAirportLayout = itemView.findViewById(R.id.flight_departure_airport_layout);
             departureTimeLayout = itemView.findViewById(R.id.flight_departure_time_layout);
@@ -583,14 +621,12 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             arrivalTimeLayout = itemView.findViewById(R.id.flight_arrival_time_layout);
             arrivalDateLayout = itemView.findViewById(R.id.flight_arrival_date_layout);
 
-            save = itemView.findViewById(R.id.flight_save);
-            delete = itemView.findViewById(R.id.flight_delete);
+            delete = itemView.findViewById(R.id.flight_delete_ic);
             confirmDelete = itemView.findViewById(R.id.flight_confirm_delete);
 
             date.setTimeZone(TimeZone.getTimeZone("GMT"));
             time.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-            fadeOut = AnimationUtils.loadAnimation(fragment.getContext(), R.anim.fade_out);
         }
 
 
@@ -601,8 +637,59 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             departureAirport.setOnClickListener(view -> fragment.startActivityForResult(intent, DEPARTURE_AIRPORT_REQUEST));
             arrivalAirport.setOnClickListener(view -> fragment.startActivityForResult(intent, ARRIVAL_AIRPORT_REQUEST));
             flightNumber.setText(plan.getFlightCode());
+            flightNumber.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    plan.setFlightCode(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
             airline.setText(plan.getAirline());
+            airline.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    plan.setAirline(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
             confirmationNumber.setText(plan.getConfirmationNumber());
+            confirmationNumber.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    plan.setConfirmationNumber(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
             CalendarConstraints.Builder constraints = new CalendarConstraints.Builder();
             constraints.setStart(fragment.getStartMonth());
             constraints.setEnd(fragment.getEndMonth());
@@ -621,6 +708,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_DatePicker).build();
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 plan.setStartDate(selection);
+                parentAdapter.editPlan(plan);
                 setStartDate();
             });
             departureDate.setOnClickListener(view -> datePicker.show(fragment.requireActivity().getSupportFragmentManager(), "DATE_PICKER"));
@@ -629,6 +717,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_DatePicker).build();
             datePicker2.addOnPositiveButtonClickListener(selection -> {
                 plan.setEndDate(selection);
+                parentAdapter.editPlan(plan);
                 setEndDate();
             });
             arrivalDate.setOnClickListener(view -> datePicker2.show(fragment.requireActivity().getSupportFragmentManager(), "DATE_PICKER"));
@@ -637,6 +726,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_TimePicker).build();
             timePicker.addOnPositiveButtonClickListener(view -> {
                 plan.setStartTime(timePicker.getHour() * 3600000L + timePicker.getMinute() * 60000L);
+                parentAdapter.editPlan(plan);
                 setStartTime();
             });
             departureTime.setOnClickListener(view -> timePicker.show(fragment.requireActivity().getSupportFragmentManager(), "TIME_PICKER"));
@@ -645,6 +735,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_TimePicker).build();
             timePicker2.addOnPositiveButtonClickListener(view -> {
                 plan.setEndTime(timePicker2.getHour() * 3600000L + timePicker2.getMinute() * 60000L);
+                parentAdapter.editPlan(plan);
                 setEndTime();
             });
             arrivalTime.setOnClickListener(view -> timePicker2.show(fragment.requireActivity().getSupportFragmentManager(), "TIME_PICKER"));
@@ -653,6 +744,24 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                 currencySymbol.setText(currency.getSymbol());
                 cost.setText(prettyPrint(plan.getCost().getPrice()));
             }
+            cost.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    updateCost(editable.toString());
+                    parentAdapter.editPlan(plan);
+                    parentAdapter.editBudget(plan.getCost());
+                }
+            });
 
             setStartTime();
             setEndTime();
@@ -664,11 +773,9 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             cost.setOnEditorActionListener((v, actionId, event) -> {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     imm.hideSoftInputFromWindow(fragment.requireView().getWindowToken(), 0);
-                    savePlan();
                 }
                 return false;
             });
-            save.setOnClickListener(view -> savePlan());
             delete.setOnClickListener(view -> {
                 if (deletePressed) {
                     notifyItemRemoved(plans.indexOf(plan));
@@ -744,71 +851,41 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             }
         }
 
-        private void savePlan() {
-            updateCost(Objects.requireNonNull(cost.getText()).toString());
-            plan.setStartLocationAddress(Objects.requireNonNull(departureAirport.getText()).toString());
-            plan.setEndLocationAddress(Objects.requireNonNull(arrivalAirport.getText()).toString());
-            plan.setFlightCode(Objects.requireNonNull(flightNumber.getText()).toString());
-            plan.setAirline(Objects.requireNonNull(airline.getText()).toString());
-            plan.setConfirmationNumber(Objects.requireNonNull(confirmationNumber.getText()).toString());
-            saveCheck.setVisibility(View.VISIBLE);
-            handler.postDelayed(() -> saveCheck.startAnimation(fadeOut), 700);
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    saveCheck.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            if (plan.getCost() != null) {
-                parentAdapter.editBudget(plan.getCost());
-            }
-            parentAdapter.editPlan(plan, plans.indexOf(plan));
-        }
-
         private void updateCost(String editable) {
-            if (!editable.equals("")) {
-                if (plan.getCost() != null) {
-                    if (!plan.getCost().hasId()) {
-                        plan.getCost().setId(UUID.randomUUID().toString());
-                    }
-                    if (editable.equals("")) {
-                        plan.getCost().setPrice(0.0);
-                    } else
-                        plan.getCost().setPrice(Double.parseDouble(editable));
-                } else {
-                    Expense newCost = new Expense(ExpenseTypes.Flight, Double.parseDouble(editable));
-                    newCost.setId(UUID.randomUUID().toString());
-                    plan.setCost(newCost);
+            int num = plans.indexOf(plan);
+            if (plan.getCost() != null) {
+                if (!plan.getCost().hasId()) {
+                    plan.getCost().setId(UUID.randomUUID().toString());
                 }
+                if (editable.equals("")) {
+                    plan.getCost().setPrice(0.0);
+                } else
+                    plan.getCost().setPrice(Double.parseDouble(editable));
+            } else {
+                Expense newCost = new Expense(ExpenseTypes.Flight, Double.parseDouble(editable));
+                newCost.setId(UUID.randomUUID().toString());
+                plan.setCost(newCost);
             }
+            parentAdapter.editBudget(plan.getCost());
+            if (num < plans.size() && num != -1) {
+                parentAdapter.editPlan(plan);
+            }
+
         }
     }
 
     class HotelViewHolder extends PlanViewHolder {
 
-        TextInputEditText address, checkInTime, checkInDate, checkOutTime, checkOutDate, cost, confirmationNumber, notes;
+        TextInputEditText address, checkInTime, checkInDate, checkOutTime, checkOutDate, cost, confirmationNumber, notes, name;
         TextInputLayout addressLayout;
         Plan plan;
-        Button save, delete;
+        ImageView delete, confirmDelete;
         boolean deletePressed = false;
-        CardView confirmDelete;
         TextView currencySymbol;
-        ImageView saveCheck;
-        Animation fadeOut;
         Handler handler = new android.os.Handler();
         DateFormat date = new SimpleDateFormat("MMM dd, yyyy");
         DateFormat time = new SimpleDateFormat("HH:mm");
-        final int HOTEL_ADDRESS_REQUEST = 104;
+        final int HOTEL_ADDRESS_REQUEST = getNumber();
 
 
         HotelViewHolder(@NonNull View itemView) {
@@ -823,18 +900,16 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             cost = itemView.findViewById(R.id.hotel_cost);
             currencySymbol = itemView.findViewById(R.id.hotel_money_symbol);
             notes = itemView.findViewById(R.id.hotel_notes);
+            name = itemView.findViewById(R.id.hotel_name);
 
             addressLayout = itemView.findViewById(R.id.hotel_address_layout);
 
-            save = itemView.findViewById(R.id.hotel_save);
-            delete = itemView.findViewById(R.id.hotel_delete);
+            delete = itemView.findViewById(R.id.hotel_delete_ic);
             confirmDelete = itemView.findViewById(R.id.hotel_confirm_delete);
-            saveCheck = itemView.findViewById(R.id.hotel_saved_check);
 
             date.setTimeZone(TimeZone.getTimeZone("GMT"));
             time.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-            fadeOut = AnimationUtils.loadAnimation(fragment.getContext(), R.anim.fade_out);
         }
 
 
@@ -842,13 +917,64 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             this.plan = plan;
             addressLayout.setEndIconOnClickListener(view -> fragment.openMap());
             address.setOnClickListener(view -> fragment.startActivityForResult(intent, HOTEL_ADDRESS_REQUEST));
-
+            name.setOnClickListener(view -> fragment.startActivityForResult(intent, HOTEL_ADDRESS_REQUEST));
             confirmationNumber.setText(plan.getConfirmationNumber());
+            confirmationNumber.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    plan.setConfirmationNumber(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
             notes.setText(plan.getNote());
+            notes.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    plan.setNote(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
             if (plan.getCost() != null) {
                 currencySymbol.setText(currency.getSymbol());
                 cost.setText(prettyPrint(plan.getCost().getPrice()));
             }
+            cost.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    updateCost(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
             CalendarConstraints.Builder constraints = new CalendarConstraints.Builder();
             constraints.setStart(fragment.getStartMonth());
             constraints.setEnd(fragment.getEndMonth());
@@ -867,6 +993,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_DatePicker).build();
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 plan.setStartDate(selection);
+                parentAdapter.editPlan(plan);
                 setStartDate();
             });
             checkInDate.setOnClickListener(view -> datePicker.show(fragment.requireActivity().getSupportFragmentManager(), "DATE_PICKER"));
@@ -875,6 +1002,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_DatePicker).build();
             datePicker2.addOnPositiveButtonClickListener(selection -> {
                 plan.setEndDate(selection);
+                parentAdapter.editPlan(plan);
                 setEndDate();
             });
             checkOutDate.setOnClickListener(view -> datePicker2.show(fragment.requireActivity().getSupportFragmentManager(), "DATE_PICKER"));
@@ -883,6 +1011,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_TimePicker).build();
             timePicker.addOnPositiveButtonClickListener(view -> {
                 plan.setStartTime(timePicker.getHour() * 3600000L + timePicker.getMinute() * 60000L);
+                parentAdapter.editPlan(plan);
                 setStartTime();
             });
             checkInTime.setOnClickListener(view -> timePicker.show(fragment.requireActivity().getSupportFragmentManager(), "TIME_PICKER"));
@@ -891,6 +1020,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_TimePicker).build();
             timePicker2.addOnPositiveButtonClickListener(view -> {
                 plan.setEndTime(timePicker2.getHour() * 3600000L + timePicker2.getMinute() * 60000L);
+                parentAdapter.editPlan(plan);
                 setEndTime();
             });
             checkOutTime.setOnClickListener(view -> timePicker2.show(fragment.requireActivity().getSupportFragmentManager(), "TIME_PICKER"));
@@ -900,16 +1030,15 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             setStartDate();
             setEndDate();
             setAddress();
+            setName();
 
 
             cost.setOnEditorActionListener((v, actionId, event) -> {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     imm.hideSoftInputFromWindow(fragment.requireView().getWindowToken(), 0);
-                    savePlan();
                 }
                 return false;
             });
-            save.setOnClickListener(view -> savePlan());
             delete.setOnClickListener(view -> {
                 if (deletePressed) {
                     notifyItemRemoved(plans.indexOf(plan));
@@ -934,6 +1063,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     Place result = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
                     plan = putResultsInStart(result, plan);
                     setAddress();
+                    setName();
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
@@ -975,51 +1105,31 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             }
         }
 
-        private void savePlan() {
-            plan.setNote(Objects.requireNonNull(notes.getText()).toString());
-            plan.setStartLocationAddress(Objects.requireNonNull(address.getText()).toString());
-            plan.setConfirmationNumber(Objects.requireNonNull(confirmationNumber.getText()).toString());
-            updateCost(Objects.requireNonNull(cost.getText()).toString());
-            saveCheck.setVisibility(View.VISIBLE);
-            handler.postDelayed(() -> saveCheck.startAnimation(fadeOut), 700);
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    saveCheck.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            if (plan.getCost() != null) {
-                parentAdapter.editBudget(plan.getCost());
+        private void setName() {
+            if (plan.getStartLocation() != null) {
+                name.setText(plan.getStartLocation());
             }
-            parentAdapter.editPlan(plan, plans.indexOf(plan));
         }
 
-        private void updateCost(String editable) {
-            if (!editable.equals("")) {
-                if (plan.getCost() != null) {
-                    if (!plan.getCost().hasId()) {
-                        plan.getCost().setId(UUID.randomUUID().toString());
-                    }
-                    if (editable.equals("")) {
-                        plan.getCost().setPrice(0.0);
-                    } else
 
-                        plan.getCost().setPrice(Double.parseDouble(editable));
-                } else {
-                    Expense newCost = new Expense(ExpenseTypes.Flight, Double.parseDouble(editable));
-                    newCost.setId(UUID.randomUUID().toString());
-                    plan.setCost(newCost);
+        private void updateCost(String editable) {
+            int num = plans.indexOf(plan);
+            if (plan.getCost() != null) {
+                if (!plan.getCost().hasId()) {
+                    plan.getCost().setId(UUID.randomUUID().toString());
                 }
+                if (editable.equals("")) {
+                    plan.getCost().setPrice(0.0);
+                } else
+                    plan.getCost().setPrice(Double.parseDouble(editable));
+            } else {
+                Expense newCost = new Expense(ExpenseTypes.Lodging, Double.parseDouble(editable));
+                newCost.setId(UUID.randomUUID().toString());
+                plan.setCost(newCost);
+            }
+            parentAdapter.editBudget(plan.getCost());
+            if (num < plans.size() && num != -1) {
+                parentAdapter.editPlan(plan);
             }
         }
     }
@@ -1031,17 +1141,15 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
         TextInputLayout addressLayout;
         SwitchMaterial endSwitch;
         Plan plan;
-        Button save, delete;
+        ImageView delete;
         boolean deletePressed = false;
-        CardView confirmDelete;
+        ImageView confirmDelete;
         TextView currencySymbol;
-        ImageView saveCheck;
         LinearLayout endLayout;
-        Animation fadeOut;
         Handler handler = new android.os.Handler();
         DateFormat date = new SimpleDateFormat("MMM dd, yyyy");
         DateFormat time = new SimpleDateFormat("HH:mm");
-        final int ACTIVITY_ADDRESS_REQUEST = 105;
+        final int ACTIVITY_ADDRESS_REQUEST = getNumber();
 
         ActivityViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -1061,15 +1169,11 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             endLayout = itemView.findViewById(R.id.activity_end_layout);
             endSwitch = itemView.findViewById(R.id.activity_end_switch);
 
-            save = itemView.findViewById(R.id.activity_save);
-            delete = itemView.findViewById(R.id.activity_delete);
+            delete = itemView.findViewById(R.id.activity_delete_ic);
             confirmDelete = itemView.findViewById(R.id.activity_confirm_delete);
-            saveCheck = itemView.findViewById(R.id.activity_saved_check);
 
             date.setTimeZone(TimeZone.getTimeZone("GMT"));
             time.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-            fadeOut = AnimationUtils.loadAnimation(fragment.getContext(), R.anim.fade_out);
         }
 
 
@@ -1078,14 +1182,51 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             endSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
                 fragment.requireActivity().startService(new Intent(fragment.requireActivity(), VibrationService.class));
                 plan.setHasEnd(b);
+                parentAdapter.editPlan(plan);
                 setSwitch();
             });
             setSwitch();
             endSwitch.setChecked(plan.isHasEnd());
             addressLayout.setEndIconOnClickListener(view -> fragment.openMap());
             address.setOnClickListener(view -> fragment.startActivityForResult(intent, ACTIVITY_ADDRESS_REQUEST));
+            name.setOnClickListener(view -> fragment.startActivityForResult(intent, ACTIVITY_ADDRESS_REQUEST));
+            name.setText(plan.getStartLocation());
             notes.setText(plan.getNote());
+            notes.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    plan.setNote(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
             confirmationNumber.setText(plan.getConfirmationNumber());
+            confirmationNumber.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    plan.setConfirmationNumber(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
             CalendarConstraints.Builder constraints = new CalendarConstraints.Builder();
             constraints.setStart(fragment.getStartMonth());
             constraints.setEnd(fragment.getEndMonth());
@@ -1104,6 +1245,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_DatePicker).build();
             datePicker.addOnPositiveButtonClickListener(selection -> {
                 plan.setStartDate(selection);
+                parentAdapter.editPlan(plan);
                 setStartDate();
             });
             startDate.setOnClickListener(view -> datePicker.show(fragment.requireActivity().getSupportFragmentManager(), "DATE_PICKER"));
@@ -1112,6 +1254,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_DatePicker).build();
             datePicker2.addOnPositiveButtonClickListener(selection -> {
                 plan.setEndDate(selection);
+                parentAdapter.editPlan(plan);
                 setEndDate();
             });
             endDate.setOnClickListener(view -> datePicker2.show(fragment.requireActivity().getSupportFragmentManager(), "DATE_PICKER"));
@@ -1120,6 +1263,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_TimePicker).build();
             timePicker.addOnPositiveButtonClickListener(view -> {
                 plan.setStartTime(timePicker.getHour() * 3600000L + timePicker.getMinute() * 60000L);
+                parentAdapter.editPlan(plan);
                 setStartTime();
             });
             startTime.setOnClickListener(view -> timePicker.show(fragment.requireActivity().getSupportFragmentManager(), "TIME_PICKER"));
@@ -1128,6 +1272,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                     .setTheme(R.style.ThemeOverlay_App_TimePicker).build();
             timePicker2.addOnPositiveButtonClickListener(view -> {
                 plan.setEndTime(timePicker2.getHour() * 3600000L + timePicker2.getMinute() * 60000L);
+                parentAdapter.editPlan(plan);
                 setEndTime();
             });
             endTime.setOnClickListener(view -> timePicker2.show(fragment.requireActivity().getSupportFragmentManager(), "TIME_PICKER"));
@@ -1136,6 +1281,23 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                 currencySymbol.setText(currency.getSymbol());
                 cost.setText(prettyPrint(plan.getCost().getPrice()));
             }
+            cost.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    updateCost(editable.toString());
+                    parentAdapter.editPlan(plan);
+                }
+            });
 
             setStartTime();
             setEndTime();
@@ -1147,11 +1309,9 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             cost.setOnEditorActionListener((v, actionId, event) -> {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     imm.hideSoftInputFromWindow(fragment.requireView().getWindowToken(), 0);
-                    savePlan();
                 }
                 return false;
             });
-            save.setOnClickListener(view -> savePlan());
             delete.setOnClickListener(view -> {
                 if (deletePressed) {
                     notifyItemRemoved(plans.indexOf(plan));
@@ -1192,6 +1352,7 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
                 endLayout.setVisibility(View.GONE);
                 plan.setEndDate(null);
                 plan.setEndTime(null);
+                parentAdapter.editPlan(plan);
             }
         }
 
@@ -1235,52 +1396,25 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             }
         }
 
-        private void savePlan() {
-            plan.setStartLocationAddress(Objects.requireNonNull(address.getText()).toString());
-            plan.setName(Objects.requireNonNull(name.getText()).toString());
-            plan.setConfirmationNumber(Objects.requireNonNull(confirmationNumber.getText()).toString());
-            plan.setNote(Objects.requireNonNull(notes.getText()).toString());
-            updateCost(Objects.requireNonNull(cost.getText()).toString());
-            saveCheck.setVisibility(View.VISIBLE);
-            handler.postDelayed(() -> saveCheck.startAnimation(fadeOut), 700);
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    saveCheck.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            if (plan.getCost() != null) {
-                parentAdapter.editBudget(plan.getCost());
-            }
-            parentAdapter.editPlan(plan, plans.indexOf(plan));
-        }
 
         private void updateCost(String editable) {
-            if (!editable.equals("")) {
-                if (plan.getCost() != null) {
-                    if (!plan.getCost().hasId()) {
-                        plan.getCost().setId(UUID.randomUUID().toString());
-                    }
-                    if (editable.equals("")) {
-                        plan.getCost().setPrice(0.0);
-                    } else
-
-                        plan.getCost().setPrice(Double.parseDouble(editable));
-                } else {
-                    Expense newCost = new Expense(ExpenseTypes.Flight, Double.parseDouble(editable));
-                    newCost.setId(UUID.randomUUID().toString());
-                    plan.setCost(newCost);
+            int num = plans.indexOf(plan);
+            if (plan.getCost() != null) {
+                if (!plan.getCost().hasId()) {
+                    plan.getCost().setId(UUID.randomUUID().toString());
                 }
+                if (editable.equals("")) {
+                    plan.getCost().setPrice(0.0);
+                } else
+                    plan.getCost().setPrice(Double.parseDouble(editable));
+            } else {
+                Expense newCost = new Expense(ExpenseTypes.Activity, Double.parseDouble(editable));
+                newCost.setId(UUID.randomUUID().toString());
+                plan.setCost(newCost);
+            }
+            parentAdapter.editBudget(plan.getCost());
+            if (num < plans.size() && num != -1) {
+                parentAdapter.editPlan(plan);
             }
         }
     }

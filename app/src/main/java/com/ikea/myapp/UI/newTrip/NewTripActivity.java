@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -41,6 +42,8 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AddressComponent;
+import com.google.android.libraries.places.api.model.AddressComponents;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
@@ -53,7 +56,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.ikea.myapp.Notification;
 import com.ikea.myapp.UI.profile.CurrenciesRVAdapter;
 import com.ikea.myapp.models.CustomCurrency;
@@ -68,11 +74,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -95,6 +104,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     private List<Place.Field> fieldList;
     private CustomCurrency c;
     private Pair<Date, Date> rangeDate;
+    private String country;
 
     public NewTripActivity() {
     }
@@ -190,6 +200,14 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             placeId = dest.getId();
             sw = Objects.requireNonNull(dest.getViewport()).southwest;
             ne = Objects.requireNonNull(dest.getViewport()).northeast;
+            List<AddressComponent> addressComponents = dest.getAddressComponents().asList();
+            for (AddressComponent component: addressComponents){
+                for (String type : component.getTypes()){
+                    if (type.equals("country")){
+                        country = component.getName();
+                    }
+                }
+            }
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
             Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
@@ -227,9 +245,10 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         endStamp = rangeDate.second.getTime() + 86399999;
 
         MyTrip data = new MyTrip(destination, destinationLatLng, sw, ne, startStamp, start, endStamp, end, placeId,
-                Objects.requireNonNull(pushedTrip.getKey()), c);
+                Objects.requireNonNull(pushedTrip.getKey()), c, country);
         fetchImage(pushedTrip.getKey());
         if (FirebaseManager.loggedIn()) {
+
             pushedTrip.setValue(data).addOnCompleteListener(task -> {
                 progressDialog.hide();
                 if (task.isSuccessful()) {

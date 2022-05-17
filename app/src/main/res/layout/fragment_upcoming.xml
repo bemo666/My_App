@@ -105,15 +105,18 @@
                 android:id="@+id/planBar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_side">
+                android:paddingHorizontal="@dimen/margin_side"
+                android:paddingVertical="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:gravity="start|top"
                     android:text="@string/ui_plan"
                     android:textColor="@color/darkGrey"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/edit_cardview"
@@ -133,7 +136,7 @@
                         android:layout_width="17dp"
                         android:layout_height="17dp"
                         android:layout_gravity="center"
-                        app:srcCompat="@drawable/ic_calendar"
+                        app:srcCompat="@drawable/ic_location"
                         app:tint="@color/orange" />
 
                 </androidx.cardview.widget.CardView>
@@ -144,7 +147,7 @@
                 android:id="@+id/rvTripDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing"
+                android:layout_marginTop="@dimen/upcoming_top_margin"
                 android:visibility="visible" />
 
         </LinearLayout>

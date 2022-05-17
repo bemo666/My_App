@@ -77,7 +77,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     private ImageView mainImage;
     private TextView placeName;
     private CollapsingToolbarLayout collapsingToolbar;
-    private String id;
+    private String id, goTo;
     private MyTrip trip;
     private AppBarLayout appBarLayout;
     private TabLayout tabLayout;
@@ -101,7 +101,8 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
         getWindow().setEnterTransition(fade);
         getWindow().setExitTransition(fade);
-        id = (String) getIntent().getSerializableExtra("id");
+        id = getIntent().getStringExtra("id");
+        goTo = getIntent().getStringExtra("goto");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_trip);
@@ -128,8 +129,14 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             trip = myTrip;
             if (trip != null) {
                 placeName.setText(trip.getDestination());
+            }
+        });
+
+        viewModel.getImage().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
                 if (trip.getImage() != null)
-                    Glide.with(this).load(trip.getImage()).fitCenter().skipMemoryCache(true).into(mainImage);
+                    Glide.with(EditTripActivity.this).load(trip.getImage()).fitCenter().skipMemoryCache(true).into(mainImage);
             }
         });
 
@@ -142,7 +149,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         fragments.setAdapter(fragmentAdapter);
         fragments.setUserInputEnabled(false);
         addButton.setOnClickListener(view -> click());
-
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -178,6 +184,12 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        if(goTo != null){
+            if(goTo.equals("map")){
+                openMapsFragment();
+            }
+        }
 
 
         rotateOpen = AnimationUtils.loadAnimation(this, R.anim.rotate_open);
@@ -220,6 +232,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         setTitle(" ");
 
         mask.setOnClickListener(view -> {
+            if(clicked)
             click();
         });
         addButton.setOnClickListener(view -> click());
@@ -270,7 +283,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
     private void setVisibility() {
         if (!clicked) {
-            appBarLayout.setExpanded(true, false);
+//            appBarLayout.setExpanded(true, false);
             notes.show();
             flights.show();
             hotels.show();
@@ -409,7 +422,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
 
     }
     public void openMapsFragment(){
-        fragments.setCurrentItem(1);
         tabLayout.selectTab(tabLayout.getTabAt(1), true);
     }
 

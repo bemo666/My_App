@@ -19,9 +19,11 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +46,10 @@ import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.models.Plan;
 import com.ikea.myapp.utils.MyViewModelFactory;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
@@ -54,11 +60,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     private ChipGroup chipGroup;
     private TextView rating, ratingCount, time, location, url, phone;
     private LinearLayout ratingLayout, timeLayout, locationLayout, urlLayout, phoneLayout;
+    private ImageView zoomImage;
     private GoogleMap mMap;
     private MyTrip trip;
-    private Plan currentPlan;
     private LatLng area;
     private final int PERMISSIONS_FINE_LOCATION = 99;
+    private boolean zoomedIn;
+    private List<Marker> markerList;
+    private Marker currentMarker;
 
     public MapFragment(String id) {
         this.id = id;
@@ -91,6 +100,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         card.setVisibility(View.GONE);
         card.setOnClickListener(this);
         button = view.findViewById(R.id.map_zoom_button);
+        zoomImage = view.findViewById(R.id.map_zoom_image);
         chipGroup = view.findViewById(R.id.marker_chip_group);
         viewModel = ViewModelProviders.of(requireActivity(), new MyViewModelFactory(requireActivity().getApplication(), id)).get(EditTripViewModel.class);
         viewModel.getTrip().observe(getViewLifecycleOwner(), myTrip -> {
@@ -103,28 +113,48 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        button.setOnClickListener(this);
+        markerList = new ArrayList<>();
+
+        button.setOnClickListener(view1 -> zoom());
 
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             mMap.setOnMarkerClickListener(marker -> {
+                currentMarker = marker;
                 marker.hideInfoWindow();
                 showMoreInfo(marker);
                 return false;
             });
             mMap.setOnMapClickListener(latLng -> {
-                        hideMoreInfo();
-                    }
-//                            mMap.addMarker(new MarkerOptions().position(latLng).title("idk bro")
-//                                .icon(
-//                                BitmapDescriptorFactory.defaultMarker(201
-////                                        R.drawable.ic_pin
-//                                )
-//                        )
-//                )
-            );
-        }, 200);
+                zoomImage.setImageResource(R.drawable.ic_zoom_in);
+                zoomedIn = false;
+                hideMoreInfo();
+            });
+        }, 300);
         return view;
+    }
+
+    private void zoom() {
+        if (!zoomedIn) {
+            if (currentMarker == null) {
+                currentMarker = markerList.get(0);
+            }
+            showMoreInfo(currentMarker);
+            zoomImage.setImageResource(R.drawable.ic_zoom_out_map);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentMarker.getPosition(), 17));
+            zoomedIn = true;
+        } else {
+            LatLng sw = new LatLng(trip.getSwLat(), trip.getSwLon());
+            LatLng ne = new LatLng(trip.getNeLat(), trip.getNeLon());
+            LatLngBounds bounds = new LatLngBounds(sw, ne);
+            for (Marker m : markerList) {
+                bounds = bounds.including(m.getPosition());
+            }
+            hideMoreInfo();
+            zoomImage.setImageResource(R.drawable.ic_zoom_in);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+            zoomedIn = false;
+        }
     }
 
     private void hideMoreInfo() {
@@ -143,6 +173,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             for (Plan p : trip.getPlans()) {
                 if (p.getStartLocationId() != null) {
                     if (p.getStartLocationId().equals(marker.getTag())) {
+                        if(p.getStartLocationTimes()!= null){
+                            if(p.getStartDate() != null){
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTimeInMillis(p.getStartDate());
+                                int weekDay = calendar.get(calendar.DAY_OF_WEEK) - 2;
+                                weekDay = weekDay < 0? weekDay + 7: weekDay;
+                                time.setText(p.getStartLocationTimes().get(weekDay));
+                                timeLayout.setVisibility(View.VISIBLE);
+                            }
+                        }
                         if (p.getStartLocationRating() != null) {
                             rating.setText(String.valueOf(p.getStartLocationRating()));
                             ratingLayout.setVisibility(View.VISIBLE);
@@ -182,10 +222,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                                 chip.setText(type);
                                 chip.setCloseIconVisible(false);
                                 chip.setCheckable(false);
+                                chip.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                });
 //                                chip.setChipCornerRadius(3f);
+//                                chip.setShapeAppearanceModel(ShapeAppearanceModel.builder().setAllCornerSizes(0.1f).build());
                                 chip.setChipStrokeColor(ColorStateList.valueOf(getResources().getColor(R.color.black)));
                                 chip.setChipStrokeWidth(3);
                                 chip.setClickable(false);
+                                chip.setFocusable(false);
                                 chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.transparent)));
                                 chipGroup.addView(chip);
                             }
@@ -194,6 +242,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 }
                 if (p.getEndLocationId() != null) {
                     if (p.getEndLocationId().equals(marker.getTag())) {
+                        if(p.getEndLocationTimes()!= null){
+                            if(p.getEndDate() != null){
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTimeInMillis(p.getEndDate());
+                                int weekDay = calendar.get(calendar.DAY_OF_WEEK) - 2;
+                                weekDay = weekDay < 0? weekDay + 7: weekDay;
+                                time.setText(p.getEndLocationTimes().get(weekDay));
+                                timeLayout.setVisibility(View.VISIBLE);
+                            }
+                        }
                         if (p.getEndLocationRating() != null) {
                             rating.setText(String.valueOf(p.getEndLocationRating()));
                             ratingLayout.setVisibility(View.VISIBLE);
@@ -252,9 +310,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                     }
                 }
             }
-        }
-        else {
-            card.setVisibility(View.GONE);
+        } else {
+            hideMoreInfo();
         }
     }
 
@@ -289,11 +346,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                         LatLng pos = new LatLng(p.getStartLocationLat(), p.getStartLocationLong());
                         Marker marker = mMap.addMarker(new MarkerOptions().position(pos).title(p.getStartLocation()));
                         marker.setTag(p.getStartLocationId());
+                        markerList.add(marker);
                     }
                     if (p.getEndLocationLat() != null && p.getEndLocationLong() != null) {
                         LatLng pos = new LatLng(p.getEndLocationLat(), p.getEndLocationLong());
                         Marker marker = mMap.addMarker(new MarkerOptions().position(pos).title(p.getEndLocation()));
                         marker.setTag(p.getEndLocationId());
+                        markerList.add(marker);
                     }
                 }
             }
@@ -305,7 +364,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             LatLngBounds bounds = new LatLngBounds(sw, ne);
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 80));
             mMap.setOnMyLocationButtonClickListener(() -> {
-                if(checkForPermissions()){
+                if (checkForPermissions()) {
                     enableLocation();
                 }
                 return false;
@@ -319,7 +378,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == PERMISSIONS_FINE_LOCATION){
+        if (requestCode == PERMISSIONS_FINE_LOCATION) {
             if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(true);

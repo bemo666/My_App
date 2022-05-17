@@ -3,10 +3,11 @@ package com.ikea.myapp.models;
 import android.content.Intent;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Plan {
 
-    private String name;
+    private String name, id;
     private String airline, flightCode;
     private Integer startLocationRatingCount, endLocationRatingCount;
     private Double startLocationLat, startLocationLong, startLocationRating, endLocationLat, endLocationLong, endLocationRating;
@@ -17,6 +18,7 @@ public class Plan {
     private Expense cost;
     private boolean hasEnd;
     private List<String> startEstablishmentTypes, endEstablishmentTypes, startLocationTimes, endLocationTimes;
+    private int objectType;
 
     public Plan() { }
 
@@ -24,10 +26,10 @@ public class Plan {
 
     public void setHasEnd(boolean hasEnd) { this.hasEnd = hasEnd; }
 
-    private int objectType;
 
     public Plan(int objectType) {
         this.objectType = objectType;
+        id = UUID.randomUUID().toString();
     }
 
     public Long getStartDate() { return startDate; }
@@ -245,4 +247,16 @@ public class Plan {
     public List<String> getEndLocationTimes() { return endLocationTimes; }
 
     public void setEndLocationTimes(List<String> endLocationTimes) { this.endLocationTimes = endLocationTimes; }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public boolean isId(String id){
+        return this.id.equals(id);
+    }
 }

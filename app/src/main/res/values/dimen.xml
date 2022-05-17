@@ -21,4 +21,7 @@
     <dimen name="toolbar_expand_height">350dp</dimen>
     <dimen name="toolbar_height">100dp</dimen>
 
+    <dimen name="upcoming_top_margin">15dp</dimen>
+
+
 </resources>

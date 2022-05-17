@@ -1,14 +1,12 @@
 package com.ikea.myapp.data;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -236,6 +234,22 @@ public class TripRepo {
                 tripDao.incrementImageVersion(id);
             });
         }
+    }
+
+    public MutableLiveData<String> getImage(String id){
+        MutableLiveData<String> uri = new MutableLiveData<>();
+        firebaseManager.getTripImage(id).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                uri.setValue(snapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return uri;
     }
 
 
