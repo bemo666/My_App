@@ -8,10 +8,10 @@ public class SubPlan {
     private String location, locationId, locationAddress;
     private Long time, date, endtime;
     private String note, confirmationNumber;
-    private int objectType;
     private boolean start;
+    private PlanType type;
 
-    public SubPlan(String name, String airline, String flightCode, Double latitude, Double longitude, String location, String locationId, String locationAddress, Long time, Long endtime, Long date, String note, String confirmationNumber, int objectType, boolean start) {
+    public SubPlan(String name, String airline, String flightCode, Double latitude, Double longitude, String location, String locationId, String locationAddress, Long time, Long date, Long endtime, String note, String confirmationNumber, boolean start, PlanType type) {
         this.name = name;
         this.airline = airline;
         this.flightCode = flightCode;
@@ -22,11 +22,11 @@ public class SubPlan {
         this.locationAddress = locationAddress;
         this.time = time;
         this.date = date;
+        this.endtime = endtime;
         this.note = note;
         this.confirmationNumber = confirmationNumber;
-        this.objectType = objectType;
         this.start = start;
-        this.endtime = endtime;
+        this.type = type;
     }
 
     public String getName() {
@@ -125,14 +125,6 @@ public class SubPlan {
         this.confirmationNumber = confirmationNumber;
     }
 
-    public int getObjectType() {
-        return objectType;
-    }
-
-    public void setObjectType(int objectType) {
-        this.objectType = objectType;
-    }
-
     public boolean isStart() {
         return start;
     }
@@ -147,5 +139,13 @@ public class SubPlan {
 
     public void setEndtime(Long endtime) {
         this.endtime = endtime;
+    }
+
+    public PlanType getType() {
+        return type;
+    }
+
+    public void setType(PlanType type) {
+        this.type = type;
     }
 }

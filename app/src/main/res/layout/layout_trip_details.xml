@@ -41,7 +41,7 @@
             android:layout_alignStart="@+id/trip_detail_card_view"
             android:layout_marginStart="14dp"
             android:layout_marginTop="3dp"
-            android:backgroundTint="@color/blue"
+            app:cardBackgroundColor="@color/blue"
             app:cardElevation="0dp" />
 
         <androidx.cardview.widget.CardView
@@ -51,7 +51,7 @@
             android:layout_alignTop="@id/trip_detail_time"
             android:layout_marginStart="15dp"
             android:layout_toEndOf="@id/trip_detail_time"
-            android:backgroundTint="@color/blue"
+            app:cardBackgroundColor="@color/blue"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp">
 

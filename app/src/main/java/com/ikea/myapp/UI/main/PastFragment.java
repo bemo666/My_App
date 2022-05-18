@@ -59,7 +59,6 @@ public class PastFragment extends Fragment {
         tripsText = view.findViewById(R.id.past_trips_text);
         viewmodel = ViewModelProviders.of(requireActivity()).get(TripsViewModel.class);
 
-
         PastTripsRVAdapter adapter = new PastTripsRVAdapter(this);
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         tripSlider.setAdapter(adapter);
@@ -71,7 +70,7 @@ public class PastFragment extends Fragment {
                     totalTripList = new ArrayList<>();
                     for (MyTrip t : myTrips) {
                         long endStamp = t.getEndStamp();
-                        TimeZone tz =  TimeZone.getDefault();
+                        TimeZone tz = TimeZone.getDefault();
                         long currentTime = Calendar.getInstance().getTimeInMillis() + tz.getOffset(Calendar.getInstance().getTimeInMillis());
                         if (endStamp < currentTime) {
                             pastTripList.add(t);
@@ -80,9 +79,9 @@ public class PastFragment extends Fragment {
                     }
                     adapter.setTrips(pastTripList);
                 }
+                showStats();
             }
             displayCorrectTrips();
-            showStats();
         });
 
         return view;

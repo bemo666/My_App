@@ -236,19 +236,24 @@ public class TripRepo {
         }
     }
 
-    public MutableLiveData<String> getImage(String id){
+    public LiveData<String> getImage(String id){
         MutableLiveData<String> uri = new MutableLiveData<>();
-        firebaseManager.getTripImage(id).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                uri.setValue(snapshot.getValue(String.class));
-            }
+        if(FirebaseManager.loggedIn()){
+            firebaseManager.getTripImage(id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    uri.setValue(snapshot.getValue(String.class));
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+        else{
+            return tripDao.getTripImage(id);
+        }
         return uri;
     }
 

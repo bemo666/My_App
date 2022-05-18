@@ -132,12 +132,9 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        viewModel.getImage().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                if (trip.getImage() != null)
-                    Glide.with(EditTripActivity.this).load(trip.getImage()).fitCenter().skipMemoryCache(true).into(mainImage);
-            }
+        viewModel.getImage().observe(this, s -> {
+            if (s!= null)
+                Glide.with(EditTripActivity.this).load(s).fitCenter().skipMemoryCache(true).into(mainImage);
         });
 
         //Fragments setup

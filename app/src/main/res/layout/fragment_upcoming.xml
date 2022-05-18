@@ -143,6 +143,21 @@
 
             </RelativeLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/ItineraryTextBoxes"
+                android:layout_marginHorizontal="@dimen/margin_side"
+                app:endIconMode="clear_text"
+                android:hint="@string/upcoming_search_bar_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/upcoming_search_bar"
+                    android:layout_width="match_parent"
+                    android:imeOptions="actionNext"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:paddingVertical="7dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTripDetails"
                 android:layout_width="match_parent"

@@ -1,21 +1,30 @@
 package com.ikea.myapp.UI.main;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,6 +34,8 @@ import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.ikea.myapp.R;
 import com.ikea.myapp.UI.editTrip.EditTripActivity;
 import com.ikea.myapp.UI.newTrip.NewTripActivity;
@@ -54,6 +65,8 @@ public class UpcomingFragment extends Fragment {
     private static boolean sliderIdChanged;
     private List<MyTrip> tripList;
     private UpcomingTripDetailsRVAdapter adapter2;
+    private TextInputEditText searchBar;
+    private InputMethodManager imm;
 
     public UpcomingFragment() {
         // Required empty public constructor
@@ -71,17 +84,44 @@ public class UpcomingFragment extends Fragment {
         extraIcon = view.findViewById(R.id.edit_cardview);
         createTrip = view.findViewById(R.id.create_trip);
         welcomeCard = view.findViewById(R.id.welcomeCard);
+        searchBar = view.findViewById(R.id.upcoming_search_bar);
         viewmodel = new ViewModelProvider(requireActivity()).get(TripsViewModel.class);
 
         extraIcon.setOnClickListener(view1 -> {
             goToEditTripActivity(sliderPos);
         });
-
-
+        searchBarInit();
         sliderInit();
 
         return view;
     }
+
+    private void searchBarInit() {
+        imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void afterTextChanged(Editable editable) {
+                adapter2.search(editable.toString());
+            }
+        });
+        searchBar.setOnEditorActionListener((v, actionId, event) -> {
+            Log.d("tag", "searchBarInit: running");
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
+            }
+            return false;
+        });
+    }
+
+//    private void relinquishControl(View view2) {
+//        view2.clearFocus();
+//        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
+//    }
 
     @SuppressLint("ClickableViewAccessibility")
     private void sliderInit() {

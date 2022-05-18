@@ -24,6 +24,9 @@ public interface TripDao {
     @Query("SELECT * from trips WHERE id LIKE :newId")
     LiveData<MyTrip> getTrip(String newId);
 
+    @Query("SELECT image from trips WHERE id == :newId")
+    LiveData<String> getTripImage(String newId);
+
     @Update
     void updateTrip(MyTrip trip);
 

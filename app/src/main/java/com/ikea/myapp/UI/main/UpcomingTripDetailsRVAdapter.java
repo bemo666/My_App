@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ikea.myapp.R;
 import com.ikea.myapp.models.Plan;
+import com.ikea.myapp.models.PlanType;
 import com.ikea.myapp.models.SubPlan;
 
 import java.text.DateFormat;
@@ -34,7 +35,7 @@ import java.util.TimeZone;
 
 public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingTripDetailsRVAdapter.ViewHolder> {
 
-    private List<SubPlan> plans;
+    private List<SubPlan> plans, original;
     private Context context;
     private DateFormat date = new SimpleDateFormat("EEE, MMM dd, yyyy");
     private DateFormat time = new SimpleDateFormat("HH:mm");
@@ -63,13 +64,14 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
 
             holder.name.setText(mPlan.getLocation());
             //hotel, rental, flight, activity
-            if (mPlan.getObjectType() == 1) {
-//                int color = ContextCompat.getColor(context, R.color.green);
-//                holder.iconLayout.setCardBackgroundColor(color);
-//                holder.line.setCardBackgroundColor(color);
-//                holder.icon.setImageResource(R.drawable.ic_bed_side);
-                String text = (mPlan.getNote() != null?mPlan.getNote() + " - ":"") + (mPlan.getConfirmationNumber()!= null?mPlan.getConfirmationNumber(): "");
-                if (!text.equals("")){
+
+            if (mPlan.getType().getType() == 1) {
+                int color = ContextCompat.getColor(context, R.color.purple);
+                holder.iconLayout.setCardBackgroundColor(color);
+                holder.line.setCardBackgroundColor(color);
+                holder.icon.setImageResource(R.drawable.ic_bed_side);
+                String text = (mPlan.getNote() != null ? mPlan.getNote() + " - " : "") + (mPlan.getConfirmationNumber() != null ? mPlan.getConfirmationNumber() : "");
+                if (!text.equals("")) {
                     holder.details.setText(text);
                     holder.details.setVisibility(View.VISIBLE);
                 }
@@ -77,9 +79,12 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
                     holder.name.setText("Check in: " + mPlan.getLocation());
                 else
                     holder.name.setText("Check out: " + mPlan.getLocation());
-            } else if (mPlan.getObjectType() == 2) {
+            } else if (mPlan.getType().getType() == 2) {
+                int color = ContextCompat.getColor(context, R.color.green);
+                holder.iconLayout.setCardBackgroundColor(color);
+                holder.line.setCardBackgroundColor(color);
                 holder.icon.setImageResource(R.drawable.ic_car);
-                String text = (mPlan.getNote() != null?mPlan.getNote() + " - ":"") + (mPlan.getConfirmationNumber()!= null?mPlan.getConfirmationNumber(): "");
+                String text = (mPlan.getNote() != null ? mPlan.getNote() + " - " : "") + (mPlan.getConfirmationNumber() != null ? mPlan.getConfirmationNumber() : "");
                 if (!text.equals("")) {
                     holder.details.setText(text);
                     holder.details.setVisibility(View.VISIBLE);
@@ -88,9 +93,12 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
                     holder.name.setText("Pick up: " + mPlan.getLocation());
                 else
                     holder.name.setText("Drop off: " + mPlan.getLocation());
-            } else if (mPlan.getObjectType() == 3) {
+            } else if (mPlan.getType().getType() == 3) {
+                int color = ContextCompat.getColor(context, R.color.orange);
+                holder.iconLayout.setCardBackgroundColor(color);
+                holder.line.setCardBackgroundColor(color);
                 holder.icon.setImageResource(R.drawable.ic_airplane);
-                String text = (mPlan.getAirline() != null?mPlan.getAirline() + " - ":"") + (mPlan.getFlightCode()!= null?mPlan.getFlightCode() + " - ": "") + (mPlan.getConfirmationNumber()!= null?mPlan.getConfirmationNumber(): "");
+                String text = (mPlan.getAirline() != null ? mPlan.getAirline() + " - " : "") + (mPlan.getFlightCode() != null ? mPlan.getFlightCode() + " - " : "") + (mPlan.getConfirmationNumber() != null ? mPlan.getConfirmationNumber() : "");
                 if (!text.equals("")) {
                     holder.details.setText(text);
                     holder.details.setVisibility(View.VISIBLE);
@@ -99,15 +107,15 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
                     holder.name.setText("Departure: " + mPlan.getLocation());
                 else
                     holder.name.setText("Arrival: " + mPlan.getLocation());
-            } else if (mPlan.getObjectType() == 4) {
+            } else if (mPlan.getType().getType() == 4) {
                 holder.icon.setImageResource(R.drawable.ic_man);
-                String text = (mPlan.getNote() != null?mPlan.getNote() + " - ":"") + (mPlan.getConfirmationNumber()!= null?mPlan.getConfirmationNumber(): "");
+                String text = (mPlan.getNote() != null ? mPlan.getNote() + " - " : "") + (mPlan.getConfirmationNumber() != null ? mPlan.getConfirmationNumber() : "");
                 if (!text.equals("")) {
                     holder.details.setText(text);
                     holder.details.setVisibility(View.VISIBLE);
                 }
                 if (mPlan.getTime() != null) {
-                    holder.time.setText(time.format(new Date(mPlan.getTime())) + (mPlan.getEndtime() != null? "\n     -\n" + time.format(new Date(mPlan.getEndtime())):""));
+                    holder.time.setText(time.format(new Date(mPlan.getTime())) + (mPlan.getEndtime() != null ? "\n     -\n" + time.format(new Date(mPlan.getEndtime())) : ""));
                 } else
                     holder.time.setText(R.string.trip_details_tbd);
 
@@ -115,7 +123,7 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
 
 
             holder.address.setText(mPlan.getLocationAddress());
-            holder.address.setPaintFlags(holder.address.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
+            holder.address.setPaintFlags(holder.address.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             holder.address.setOnClickListener(view -> {
                 String uri = String.format(Locale.ENGLISH, "geo:%f,%f", mPlan.getLatitude(), mPlan.getLongitude());
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
@@ -128,6 +136,7 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
         } else {
             holder.noDateLayout.setVisibility(View.GONE);
             holder.date.setVisibility(View.VISIBLE);
+            Log.d("tag", "date null?" + (plans.get(position + 1).getDate() == null));
             holder.date.setText(date.format(new Date(plans.get(position + 1).getDate())));
         }
     }
@@ -142,17 +151,18 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
         if (plans != null) {
             for (Plan p : plans) {
                 if (p.getObjectType() != 0) {
+                    PlanType type = PlanType.getTypeByInt(p.getObjectType());
                     if (p.getStartDate() != null) {
-                        SubPlan tmp = new SubPlan(p.getName(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getStartTime(), (p.getEndTime() != null? p.getEndTime() : null), p.getStartDate(), p.getNote(), p.getConfirmationNumber(), p.getObjectType(), true);
+                        SubPlan tmp = new SubPlan(p.getName(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getStartTime(),p.getStartDate(), p.getEndTime(), p.getNote(), p.getConfirmationNumber(), true, type);
                         this.plans.add(tmp);
                     }
                     if (p.getEndDate() != null) {
                         SubPlan tmp;
-                        if(p.getObjectType() != 4) {
+                        if (p.getObjectType() != 4) {
                             if (p.getEndLocation() == null && p.getStartLocation() != null) {
-                                tmp = new SubPlan(p.getName(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getEndTime(), null, p.getEndDate(), p.getNote(), p.getConfirmationNumber(), p.getObjectType(), false);
+                                tmp = new SubPlan(p.getName(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getEndTime(), p.getEndDate(),null,  p.getNote(), p.getConfirmationNumber(), false, type);
                             } else {
-                                tmp = new SubPlan(p.getName(), p.getAirline(), p.getFlightCode(), p.getEndLocationLat(), p.getEndLocationLong(), p.getEndLocation(), p.getEndLocationId(), p.getEndLocationAddress(), p.getEndTime(), (p.getEndTime() != null? p.getEndTime() : null), p.getEndDate(), p.getNote(), p.getConfirmationNumber(), p.getObjectType(), false);
+                                tmp = new SubPlan(p.getName(), p.getAirline(), p.getFlightCode(), p.getEndLocationLat(), p.getEndLocationLong(), p.getEndLocation(), p.getEndLocationId(), p.getEndLocationAddress(), p.getEndTime(), p.getEndDate(), null, p.getNote(), p.getConfirmationNumber(), false, type);
                             }
                             this.plans.add(tmp);
                         }
@@ -167,26 +177,40 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
 
     List<SubPlan> bubbleSort(List<SubPlan> arr) {
         int n = arr.size();
-        for (int i = 0; i < n - 1; i++)
-            for (int j = 0; j < n - i - 1; j++)
-                if (arr.get(j).getDate() > arr.get(j + 1).getDate()) {
-                    SubPlan temp = arr.get(j);
-                    arr.set(j, arr.get(j + 1));
-                    arr.set(j + 1, temp);
-                }
+        if (n > 0){
+            for (int i = 0; i < n - 1; i++)
+                for (int j = 0; j < n - i - 1; j++)
+                    if (arr.get(j).getDate() > arr.get(j + 1).getDate()) {
+                        SubPlan temp = arr.get(j);
+                        arr.set(j, arr.get(j + 1));
+                        arr.set(j + 1, temp);
+                    }
 
-        arr.add(0, null);
-        for (int i = 1; i < arr.size(); i++) {
-            if (arr.get(i) != null && arr.get(i - 1) != null)
-                if (!Objects.equals(arr.get(i).getDate(), arr.get(i - 1).getDate())) {
-                    arr.add(i, null);
-                }
+            arr.add(0, null);
+            for (int i = 1; i < arr.size(); i++) {
+                if (arr.get(i) != null && arr.get(i - 1) != null)
+                    if (!Objects.equals(arr.get(i).getDate(), arr.get(i - 1).getDate())) {
+                        arr.add(i, null);
+                    }
+            }
         }
+
+
 
         //do time sorting here
 
         return arr;
 
+    }
+
+    public void search(String searchText) {
+        original = plans;
+        for (int i = plans.size() - 1; i >= 0; i--) {
+            if (plans.get(i).getLocation().toLowerCase().compareTo(searchText.toLowerCase()) < 0) {
+                notifyItemRemoved(i);
+                plans.remove(i);
+            }
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
