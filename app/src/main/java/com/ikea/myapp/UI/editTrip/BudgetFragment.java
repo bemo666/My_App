@@ -52,7 +52,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
 
     private MyTrip trip;
     private String id;
-    private TextView currentTotal, budget, expenseTypeSelector, cancelButton, cancelButton2, saveButton, saveButton2, expenseCurrencySymbol, budgetCurrencySymbol, addExpenseTitle;
+    private TextView currentTotal, budget, expenseTypeSelector, cancelButton, cancelButton2, saveButton, saveButton2, expenseCurrencySymbol, budgetCurrencySymbol, addExpenseTitle, welcomeText;
     private ImageView expenseTypeIcon, budgetCurrencySelector, expenseCurrencySelector;
     private LinearLayout budgetFramentLayout, setBudgetLinearLayout, addExpenseLinearLayout, setBudgetCostLayout, expenseDescriptionLayout, budgetLinearLayout;
     private RelativeLayout expenseCostLayout;
@@ -103,6 +103,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         expensessRV = view.findViewById(R.id.budget_expenses_rv);
         budgetLinearLayout = view.findViewById(R.id.budget_linear_layout);
         noExpensesCard = view.findViewById(R.id.budget_expenses_card);
+        welcomeText = view.findViewById(R.id.welcomeText2);
         cancelButton2 = setBudgetSheet.findViewById(R.id.set_budget_cancel_button);
         saveButton2 = setBudgetSheet.findViewById(R.id.set_budget_save_button);
         budgetET = setBudgetSheet.findViewById(R.id.set_budget_edit_text);
@@ -137,6 +138,11 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
                 setCurrencySheet();
             }
         });
+        viewModel.getName().observe(getViewLifecycleOwner(), name -> {
+            if (!name.equals("-1")) {
+                welcomeText.setText("Welcome " + name + "!");
+            }
+        });
 
         budgetFramentLayout.setOnClickListener(view2 -> {
             view2.clearFocus();
@@ -165,6 +171,7 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
                 currenciesRVAdapter.searchUpdate(editable.toString());
             }
         });
+        currentTotal.setOnClickListener(view -> currencySheet.show());
 
     }
 
@@ -173,7 +180,6 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         expensesRVAdapter = new ExpensesRVAdapter(this, trip.getBudget().getExpenses(), c);
         expensessRV.setAdapter(expensesRVAdapter);
         expensessRV.setLayoutManager(new LinearLayoutManager(requireContext()));
-//        expensessRV.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
         expensessRV.setNestedScrollingEnabled(false);
     }
 

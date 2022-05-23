@@ -13,6 +13,7 @@
     <color name="darkGrey">#474851</color>
     <color name="moreThanBarelyGrey">#E6E6E6</color>
     <color name="barelyGrey">#F5F5F5</color>
+    <color name="semiTransparentBarelyGrey">#B3F5F5F5</color>
     <color name="lightGrey">#D5D5D5</color>
     <color name="dividerLightGrey">#ECEFF1</color>
     <color name="actualOrange">#FF9800</color>
@@ -27,6 +28,7 @@
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="mapWhite">#F2FFFFFF</color>
     <color name="almostWhite">#fefefe</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="semiTransparent">#80FFFFFF</color>

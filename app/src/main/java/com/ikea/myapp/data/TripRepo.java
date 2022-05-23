@@ -98,27 +98,6 @@ public class TripRepo {
     public MutableLiveData<List<MyTrip>> getRemoteTrips() {
         MutableLiveData<List<MyTrip>> trips = new MutableLiveData<>();
         trips.setValue(null);
-//        firebaseManager.getTripsRef().addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                List<MyTrip> list = trips.getValue();
-//                if (list == null) list = new ArrayList<>();
-//                int i = 0;
-//                for (DataSnapshot child: snapshot.getChildren()) {
-//                    if(list.size() <= i)
-//                        list.add(child.getValue(MyTrip.class));
-//                    else
-//                        list.set(i, child.getValue(MyTrip.class));
-//                    i++;
-//                }
-//                trips.setValue(list);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
         firebaseManager.getTripsRef().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -256,19 +235,4 @@ public class TripRepo {
         }
         return uri;
     }
-
-
-//    public void setLocalImage(String id, byte[] image){
-//        appExecutors.diskIO().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                tripDao.setImage(id, image);
-//            }
-//        });
-//    }
-//
-//    public void setRemoteImage(String id, byte[] image){
-//        ByteArrayInputStream bs = new ByteArrayInputStream(image);
-//        storage.child(id + ".jpg").putStream(bs);
-//    }
 }

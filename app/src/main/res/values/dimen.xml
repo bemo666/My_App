@@ -15,7 +15,6 @@
     <dimen name="loading_radius">3dp</dimen>
     <dimen name="loading_margin">15dp</dimen>
 
-    <integer name="loading_time">3000</integer>
     <dimen name="result_padding">15dp</dimen>
 
     <dimen name="toolbar_expand_height">350dp</dimen>

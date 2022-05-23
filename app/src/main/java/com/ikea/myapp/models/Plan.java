@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class Plan {
 
-    private String name, id;
+    private String id;
     private String airline, flightCode;
     private Integer startLocationRatingCount, endLocationRatingCount;
     private Double startLocationLat, startLocationLong, startLocationRating, endLocationLat, endLocationLong, endLocationRating;
@@ -39,10 +39,6 @@ public class Plan {
     public Long getEndDate() { return endDate; }
 
     public void setEndDate(Long endDate) { this.endDate = endDate; }
-
-    public boolean hasStartLocation(){ return startLocation != null; }
-
-    public boolean hasEndLocation(){ return endLocation != null; }
 
     public Double getStartLocationLat() {
         return startLocationLat;
@@ -141,10 +137,6 @@ public class Plan {
     public void setCost(Expense cost) {
         this.cost = cost;
     }
-
-    public String getName() { return name; }
-
-    public void setName(String name) { this.name = name; }
 
     public String getAirline() {
         return airline;
@@ -254,9 +246,5 @@ public class Plan {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public boolean isId(String id){
-        return this.id.equals(id);
     }
 }

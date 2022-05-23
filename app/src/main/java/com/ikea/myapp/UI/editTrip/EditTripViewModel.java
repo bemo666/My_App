@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.models.MyTrip;
@@ -33,9 +34,7 @@ public class EditTripViewModel extends AndroidViewModel {
         return trip;
     }
 
-    public LiveData<String> getImage() {
-        return image;
-    }
+    public LiveData<String> getImage() {return image;}
 
     public void updateTrip(MyTrip trip) {
         tripRepo.updateTrip(trip);
@@ -45,8 +44,15 @@ public class EditTripViewModel extends AndroidViewModel {
         tripRepo.deleteTrip(trip);
     }
 
-
     public void setImage(String id, String image, int version) {
         tripRepo.setImage(id, image, version);
     }
+
+    public LiveData<String> getName() {
+        if (FirebaseManager.loggedIn())
+            return tripRepo.getUsername();
+        else
+            return new MutableLiveData<>("-1");
+    }
+
 }

@@ -2,11 +2,8 @@ package com.ikea.myapp.UI.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +33,14 @@ import java.util.TimeZone;
 public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingTripDetailsRVAdapter.ViewHolder> {
 
     private List<SubPlan> plans, original;
-    private Context context;
-    private DateFormat date = new SimpleDateFormat("EEE, MMM dd, yyyy");
-    private DateFormat time = new SimpleDateFormat("HH:mm");
+    private final UpcomingFragment upcomingFragment;
+    private final Context context;
+    private final DateFormat date = new SimpleDateFormat("EEE, MMM dd, yyyy");
+    private final DateFormat time = new SimpleDateFormat("HH:mm");
 
-    public UpcomingTripDetailsRVAdapter(Context context) {
-        this.context = context;
+    public UpcomingTripDetailsRVAdapter(UpcomingFragment upcomingFragment) {
+        this.upcomingFragment = upcomingFragment;
+        this.context = upcomingFragment.requireContext();
         this.plans = new ArrayList<>();
     }
 
@@ -63,6 +62,9 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
                 holder.time.setText(R.string.trip_details_tbd);
 
             holder.name.setText(mPlan.getLocation());
+            holder.itemView.setOnClickListener(view -> {
+                upcomingFragment.goToEditTripActivity(upcomingFragment.sliderPos, mPlan.getId());
+            });
             //hotel, rental, flight, activity
 
             if (mPlan.getType().getType() == 1) {
@@ -108,6 +110,9 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
                 else
                     holder.name.setText("Arrival: " + mPlan.getLocation());
             } else if (mPlan.getType().getType() == 4) {
+                int color = ContextCompat.getColor(context, R.color.blue);
+                holder.iconLayout.setCardBackgroundColor(color);
+                holder.line.setCardBackgroundColor(color);
                 holder.icon.setImageResource(R.drawable.ic_man);
                 String text = (mPlan.getNote() != null ? mPlan.getNote() + " - " : "") + (mPlan.getConfirmationNumber() != null ? mPlan.getConfirmationNumber() : "");
                 if (!text.equals("")) {
@@ -125,7 +130,7 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
             holder.address.setText(mPlan.getLocationAddress());
             holder.address.setPaintFlags(holder.address.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             holder.address.setOnClickListener(view -> {
-                String uri = String.format(Locale.ENGLISH, "geo:%f,%f", mPlan.getLatitude(), mPlan.getLongitude());
+                String uri = String.format(Locale.ENGLISH, "geo:%1$s,%2$s?q=%1$s,%2$s", mPlan.getLatitude(), mPlan.getLongitude());
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                 context.startActivity(intent);
             });
@@ -136,7 +141,6 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
         } else {
             holder.noDateLayout.setVisibility(View.GONE);
             holder.date.setVisibility(View.VISIBLE);
-            Log.d("tag", "date null?" + (plans.get(position + 1).getDate() == null));
             holder.date.setText(date.format(new Date(plans.get(position + 1).getDate())));
         }
     }
@@ -153,16 +157,16 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
                 if (p.getObjectType() != 0) {
                     PlanType type = PlanType.getTypeByInt(p.getObjectType());
                     if (p.getStartDate() != null) {
-                        SubPlan tmp = new SubPlan(p.getName(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getStartTime(),p.getStartDate(), p.getEndTime(), p.getNote(), p.getConfirmationNumber(), true, type);
+                        SubPlan tmp = new SubPlan(p.getId(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getStartTime(), p.getStartDate(), p.getEndTime(), p.getNote(), p.getConfirmationNumber(), true, type);
                         this.plans.add(tmp);
                     }
                     if (p.getEndDate() != null) {
                         SubPlan tmp;
                         if (p.getObjectType() != 4) {
                             if (p.getEndLocation() == null && p.getStartLocation() != null) {
-                                tmp = new SubPlan(p.getName(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getEndTime(), p.getEndDate(),null,  p.getNote(), p.getConfirmationNumber(), false, type);
+                                tmp = new SubPlan(p.getId(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getEndTime(), p.getEndDate(), null, p.getNote(), p.getConfirmationNumber(), false, type);
                             } else {
-                                tmp = new SubPlan(p.getName(), p.getAirline(), p.getFlightCode(), p.getEndLocationLat(), p.getEndLocationLong(), p.getEndLocation(), p.getEndLocationId(), p.getEndLocationAddress(), p.getEndTime(), p.getEndDate(), null, p.getNote(), p.getConfirmationNumber(), false, type);
+                                tmp = new SubPlan(p.getId(), p.getAirline(), p.getFlightCode(), p.getEndLocationLat(), p.getEndLocationLong(), p.getEndLocation(), p.getEndLocationId(), p.getEndLocationAddress(), p.getEndTime(), p.getEndDate(), null, p.getNote(), p.getConfirmationNumber(), false, type);
                             }
                             this.plans.add(tmp);
                         }
@@ -170,47 +174,141 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
                 }
             }
         }
-        this.plans = bubbleSort(this.plans);
+        sortList();
         notifyDataSetChanged();
+        original = new ArrayList<>(this.plans);
 
     }
 
-    List<SubPlan> bubbleSort(List<SubPlan> arr) {
-        int n = arr.size();
-        if (n > 0){
+    List<SubPlan> bubbleSort(List<SubPlan> list) {
+        int n = list.size();
+        if (n > 0) {
             for (int i = 0; i < n - 1; i++)
                 for (int j = 0; j < n - i - 1; j++)
-                    if (arr.get(j).getDate() > arr.get(j + 1).getDate()) {
-                        SubPlan temp = arr.get(j);
-                        arr.set(j, arr.get(j + 1));
-                        arr.set(j + 1, temp);
-                    }
+                    if (list.get(j) != null)
+                        if (list.get(j).getDate() != null)
+                            if (list.get(j).getDate() > list.get(j + 1).getDate()) {
+                                SubPlan temp = list.get(j);
+                                list.set(j, list.get(j + 1));
+                                list.set(j + 1, temp);
+                            }
+        }
+        return list;
+    }
 
-            arr.add(0, null);
-            for (int i = 1; i < arr.size(); i++) {
-                if (arr.get(i) != null && arr.get(i - 1) != null)
-                    if (!Objects.equals(arr.get(i).getDate(), arr.get(i - 1).getDate())) {
-                        arr.add(i, null);
+    List<SubPlan> bubbleSortByTime(List<SubPlan> list) {
+        int n = list.size();
+        if (n > 0) {
+            for (int i = 0; i < n - 1; i++)
+                for (int j = 0; j < n - i - 1; j++)
+                    if (list.get(j) != null)
+                        if (list.get(j).getTime() != null)
+                            if (list.get(j).getTime() > list.get(j + 1).getTime()) {
+                                SubPlan temp = list.get(j);
+                                list.set(j, list.get(j + 1));
+                                list.set(j + 1, temp);
+                            }
+        }
+        return list;
+    }
+
+    void addNulls() {
+        if (!plans.isEmpty()) {
+            plans.add(0, null);
+            notifyItemInserted(0);
+            for (int i = 1; i < plans.size(); i++) {
+                if (plans.get(i) != null && plans.get(i - 1) != null)
+                    if (!Objects.equals(plans.get(i).getDate(), plans.get(i - 1).getDate())) {
+                        plans.add(i, null);
+                        notifyItemInserted(i);
                     }
             }
         }
 
+    }
 
+    void sortList() {
+        plans = bubbleSort(plans);
 
-        //do time sorting here
+        //adding nulls (dates in recyclerview)
+        addNulls();
 
-        return arr;
+        //sort plans by time
+        ArrayList<SubPlan> newList = new ArrayList<>();
+        boolean lastNull = true;
+        for (int i = 0; i < plans.size(); i++) {
+            if (plans.get(i) == null) {
+                newList.add(null);
+                for (int j = i + 1; j < plans.size(); j++) {
+                    if (plans.get(j) == null) {
+                        if (j - i == 2) {
+                            newList.add(plans.get(i + 1));
+                        } else {
+                            newList.addAll(bubbleSortByTime(plans.subList(i + 1, j)));
+                        }
+                        lastNull = false;
+                        break;
+                    } else {
+                        lastNull = true;
+                    }
+                }
+
+                if (lastNull)
+                    newList.addAll(bubbleSortByTime(plans.subList(i + 1, plans.size())));
+
+            }
+        }
+        plans = newList;
 
     }
 
+
     public void search(String searchText) {
-        original = plans;
-        for (int i = plans.size() - 1; i >= 0; i--) {
-            if (plans.get(i).getLocation().toLowerCase().compareTo(searchText.toLowerCase()) < 0) {
+        plans = new ArrayList<>(original);
+        notifyDataSetChanged();
+
+        for (int i = 0; i < plans.size(); i++)
+            if (plans.get(i) == null) {
                 notifyItemRemoved(i);
                 plans.remove(i);
             }
+
+        for (int i = 0; i < plans.size(); i++) {
+            SubPlan tmp = plans.get(i);
+            DateFormat formatter = new SimpleDateFormat("MMM dd");
+            DateFormat time = new SimpleDateFormat("HH:mm  HHmm");
+            time.setTimeZone(TimeZone.getTimeZone("GMT"));
+            formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String t = "";
+            t += formatter.format(new Date(tmp.getDate())).toLowerCase(Locale.ROOT) + " ";
+
+            if (tmp.getTime() != null) {
+                t += time.format(new Date(tmp.getTime()));
+                t += " ";
+            }
+            if (tmp.getEndtime() != null)
+                t += time.format(new Date(tmp.getEndtime()));
+
+            if (tmp.getLocation().toLowerCase().contains(searchText.toLowerCase()) ||
+                    tmp.getAirline() != null && tmp.getAirline().toLowerCase().contains(searchText.toLowerCase()) ||
+                    tmp.getFlightCode() != null && tmp.getFlightCode().toLowerCase().contains(searchText.toLowerCase()) ||
+                    tmp.getNote() != null && tmp.getNote().toLowerCase().contains(searchText.toLowerCase()) ||
+                    tmp.getConfirmationNumber() != null && tmp.getConfirmationNumber().toLowerCase().contains(searchText.toLowerCase()) ||
+                    tmp.getLocationAddress() != null && tmp.getLocationAddress().toLowerCase().contains(searchText.toLowerCase()) ||
+                    t.contains(searchText.toLowerCase(Locale.ROOT)) ||
+                    tmp.getType().getStartText() != null && tmp.getType().getStartText().toLowerCase().contains(searchText.toLowerCase()) && tmp.isStart() ||
+                    tmp.getType().getEndText() != null && tmp.getType().getEndText().toLowerCase().contains(searchText.toLowerCase()) && !tmp.isStart()) {
+
+                continue;
+            } else {
+                notifyItemRemoved(i);
+                plans.remove(i);
+                i--;
+            }
         }
+
+        addNulls();
+
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -2,6 +2,7 @@ package com.ikea.myapp.UI.editTrip;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.textview.MaterialTextView;
 import com.ikea.myapp.R;
 import com.ikea.myapp.models.Budget;
@@ -160,6 +160,9 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
             expanded = true;
         }
 
+        public RecyclerView getInternalRV() {
+            return internalRV;
+        }
     }
 
     public void checkForAddHeader(PlanType type) {
@@ -228,6 +231,18 @@ public class ItineraryRVAdapter extends RecyclerView.Adapter<ItineraryRVAdapter.
             headers.remove(index);
         }
         fragment.updateTrip(trip);
+    }
+
+    public void expandGroup(Plan plan){
+        new Handler().postDelayed(() -> {
+            for(PlanHeader h : headers){
+                if(h.getType().getType() == plan.getObjectType()){
+                    fragment.expandViewHolder(headers.indexOf(h));
+                    break;
+                }
+            }
+        }, 10);
+
     }
 
 

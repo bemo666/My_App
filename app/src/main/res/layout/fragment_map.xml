@@ -24,7 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:layout_marginBottom="8dp"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
         android:layout_alignParentBottom="true">
 
         <androidx.cardview.widget.CardView
@@ -34,9 +35,9 @@
             android:layout_above="@+id/map_card"
             android:layout_marginStart="10dp"
             android:layout_marginBottom="15dp"
-            map:cardBackgroundColor="@color/white"
+            map:cardBackgroundColor="@color/mapWhite"
             map:cardCornerRadius="50dp"
-            map:cardElevation="1dp"
+            map:cardElevation="2dp"
             map:contentPadding="9dp">
 
             <ImageView
@@ -54,11 +55,11 @@
             android:layout_alignParentBottom="true"
             android:layout_marginHorizontal="5dp"
             android:layout_marginBottom="5dp"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/mapWhite"
             android:padding="10dp"
             android:visibility="visible"
             map:cardCornerRadius="10dp"
-            map:cardElevation="0dp">
+            map:cardElevation="2dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,8 +71,9 @@
                     android:id="@+id/marker_chip_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:paddingHorizontal="10dp" />
+                    android:scaleX="0.9"
+                    android:scaleY="0.9"
+                    android:animateLayoutChanges="true" />
 
                 <LinearLayout
                     android:id="@+id/marker_location_layout"

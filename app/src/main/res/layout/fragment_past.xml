@@ -88,7 +88,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="You've seen"
+            android:text="  You've seen"
+            android:gravity="center"
             android:textColor="@color/darkNavyBlue"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -96,7 +97,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="During"
+            android:gravity="center"
+            android:text="    While on        "
             android:textColor="@color/darkNavyBlue"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -106,18 +108,17 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="180dp"
             android:layout_marginTop="5dp"
             android:layout_marginHorizontal="10dp"
             android:background="@color/white"
             app:cardCornerRadius="@dimen/card_radius"
             app:cardElevation="0dp"
-            app:contentPadding="15dp">
+            app:contentPadding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/margin_side"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -126,32 +127,36 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <com.makeramen.roundedimageview.RoundedImageView
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:src="@drawable/im_planning" />
+                        android:src="@drawable/im_countries_background"
+                        app:riv_corner_radius="12dp" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
+                        android:translationX="-12dp"
+                        android:translationY="-15dp"
                         android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/past_countries_num"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
                             android:layout_gravity="center"
-                            android:textColor="@color/darkNavyBlue"
+                            android:text="0"
+                            android:textColor="@color/white"
                             android:textSize="30sp"
                             android:textStyle="bold" />
+
                         <TextView
                             android:id="@+id/past_countries_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Countries"
-                            android:textColor="@color/darkNavyBlue"
+                            android:textColor="@color/white"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -165,7 +170,7 @@
                     <ImageView
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:src="@drawable/trips_img" />
+                        android:src="@drawable/im_trips_img" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"

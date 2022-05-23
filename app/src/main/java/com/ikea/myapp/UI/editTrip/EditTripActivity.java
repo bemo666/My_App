@@ -54,6 +54,7 @@ import com.ikea.myapp.Adapters.FragmentAdapter;
 import com.ikea.myapp.UI.main.UpcomingFragment;
 import com.ikea.myapp.data.remote.FirebaseManager;
 import com.ikea.myapp.models.MyTrip;
+import com.ikea.myapp.models.Plan;
 import com.ikea.myapp.models.PlanHeader;
 import com.ikea.myapp.R;
 import com.ikea.myapp.models.PlanType;
@@ -121,15 +122,33 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         mask = findViewById(R.id.editTrip_mask);
         mainImage = findViewById(R.id.editTrip_mainImage);
         tabLayout = findViewById(R.id.editTripTabLayout);
-        itineraryFragment = new ItineraryFragment(id, this);
+        itineraryFragment = new ItineraryFragment(this);
 
         viewModel = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), id)).get(EditTripViewModel.class);
 
+        final boolean[] go = {true};
         viewModel.getTrip().observe(this, myTrip -> {
             trip = myTrip;
             if (trip != null) {
                 placeName.setText(trip.getDestination());
+
+                if(goTo != null && go[0]){
+                    if(goTo.equals("map")){
+                        openMapsFragment();
+                    } else if(goTo.equals("addPlan")){
+                        click();
+                    }
+                    else
+                        for (Plan p: trip.getPlans()) {
+                            if(p.getId().equals(goTo)){
+                                itineraryFragment.scrollTo(p);
+                                break;
+                            }
+                        }
+                }
+                go[0] = false;
             }
+
         });
 
         viewModel.getImage().observe(this, s -> {
@@ -182,12 +201,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        if(goTo != null){
-            if(goTo.equals("map")){
-                openMapsFragment();
-            }
-        }
-
 
         rotateOpen = AnimationUtils.loadAnimation(this, R.anim.rotate_open);
         rotateClose = AnimationUtils.loadAnimation(this, R.anim.rotate_close);
@@ -229,8 +242,9 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         setTitle(" ");
 
         mask.setOnClickListener(view -> {
+            Log.d("tag", "mask has been clicked");
             if(clicked)
-            click();
+                click();
         });
         addButton.setOnClickListener(view -> click());
         notes.setOnClickListener(this);
@@ -238,6 +252,8 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         rentals.setOnClickListener(this);
         flights.setOnClickListener(this);
         activities.setOnClickListener(this);
+
+
     }
 
 
@@ -345,7 +361,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
                         .setPositiveButton("DELETE", (dialog, which) -> {
                             if (trip != null){
                                 viewModel.deleteTrip(trip);
-                                Log.d("tag", "deletetd");
                             }
                             finish();
                         })

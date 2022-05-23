@@ -9,6 +9,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.data.remote.FirebaseManager;
@@ -29,8 +32,9 @@ public class TripsViewModel extends AndroidViewModel {
         if (FirebaseManager.loggedIn()) {
             firebaseManager = new FirebaseManager();
             fetchRemoteTrips();
-        } else
+        } else {
             fetchLocalTrips();
+        }
     }
 
     private void fetchLocalTrips() {
@@ -57,4 +61,12 @@ public class TripsViewModel extends AndroidViewModel {
     public void setImage(String id, String url, int version){
         tripRepo.setImage(id, url, version);
     }
+
+    public LiveData<String> getName() {
+        if (FirebaseManager.loggedIn())
+            return tripRepo.getUsername();
+        else
+            return new MutableLiveData<>("-1");
+    }
+
 }

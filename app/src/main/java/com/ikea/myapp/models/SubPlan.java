@@ -2,17 +2,14 @@ package com.ikea.myapp.models;
 
 public class SubPlan {
 
-    private String name;
-    private String airline, flightCode;
+    private String id, airline, flightCode, location, locationId, locationAddress, note, confirmationNumber;
     private Double latitude, longitude;
-    private String location, locationId, locationAddress;
     private Long time, date, endtime;
-    private String note, confirmationNumber;
     private boolean start;
     private PlanType type;
 
-    public SubPlan(String name, String airline, String flightCode, Double latitude, Double longitude, String location, String locationId, String locationAddress, Long time, Long date, Long endtime, String note, String confirmationNumber, boolean start, PlanType type) {
-        this.name = name;
+    public SubPlan(String id, String airline, String flightCode, Double latitude, Double longitude, String location, String locationId, String locationAddress, Long time, Long date, Long endtime, String note, String confirmationNumber, boolean start, PlanType type) {
+        this.id = id;
         this.airline = airline;
         this.flightCode = flightCode;
         this.latitude = latitude;
@@ -27,14 +24,6 @@ public class SubPlan {
         this.confirmationNumber = confirmationNumber;
         this.start = start;
         this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getAirline() {
@@ -89,9 +78,7 @@ public class SubPlan {
         return locationAddress;
     }
 
-    public void setLocationAddress(String locationAddress) {
-        this.locationAddress = locationAddress;
-    }
+    public void setLocationAddress(String locationAddress) {this.locationAddress = locationAddress;}
 
     public Long getTime() {
         return time;
@@ -121,9 +108,7 @@ public class SubPlan {
         return confirmationNumber;
     }
 
-    public void setConfirmationNumber(String confirmationNumber) {
-        this.confirmationNumber = confirmationNumber;
-    }
+    public void setConfirmationNumber(String confirmationNumber) {this.confirmationNumber = confirmationNumber;}
 
     public boolean isStart() {
         return start;
@@ -148,4 +133,8 @@ public class SubPlan {
     public void setType(PlanType type) {
         this.type = type;
     }
+
+    public String getId() {return id;}
+
+    public void setId(String id) {this.id = id;}
 }

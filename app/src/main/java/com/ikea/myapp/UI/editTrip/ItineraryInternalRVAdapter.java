@@ -552,13 +552,13 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
 
         private void setStartName() {
             if (plan.getStartLocation() != null) {
-                pickupAddress.setText(plan.getStartLocation());
+                pickupName.setText(plan.getStartLocation());
             }
         }
 
         private void setEndName() {
             if (plan.getEndLocation() != null) {
-                pickupAddress.setText(plan.getEndLocation());
+                dropoffName.setText(plan.getEndLocation());
             }
         }
 

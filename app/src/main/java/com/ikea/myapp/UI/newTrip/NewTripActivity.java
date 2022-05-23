@@ -129,15 +129,12 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         firebaseManager = new FirebaseManager();
         progressDialog = new CustomProgressDialog(this, "Creating Trip");
 
-
         viewmodel = new ViewModelProvider(this).get(NewTripActivityViewModel.class);
-
         viewmodel.getName().observe(this, name -> {
-            if (name != null) {
+            if (!name.equals("-1")) {
                 welcomeText.setText(getString(R.string.newtrip_hey) + name + getString(R.string.ui_comma));
             }
         });
-
 
         MaterialDatePicker<Pair<Long, Long>> datePicker = MaterialDatePicker.Builder.dateRangePicker().setTheme(R.style.ThemeOverlay_App_DatePicker).build();
         inputDates.setOnClickListener(view -> datePicker.show(getSupportFragmentManager(), "DATE_PICKER"));

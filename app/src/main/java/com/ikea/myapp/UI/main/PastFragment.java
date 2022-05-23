@@ -95,6 +95,10 @@ public class PastFragment extends Fragment {
                     lst.add(t.getCountry());
                 }
             }
+            tripsNum.setText(String.valueOf(totalTripList.size()));
+
+            tripsText.setText(totalTripList.size() == 1 ? "Trip" : "Trips");
+
         }
         countriesNum.setText(String.valueOf(lst.size()));
         if (lst.size() == 1) {
@@ -102,12 +106,7 @@ public class PastFragment extends Fragment {
         } else {
             countriesText.setText("Countries");
         }
-        tripsNum.setText(String.valueOf(totalTripList.size()));
-        if (totalTripList.size() == 1) {
-            tripsText.setText("Trip");
-        } else {
-            tripsText.setText("Trips");
-        }
+
     }
 
     private void displayCorrectTrips() {

@@ -144,6 +144,7 @@
             </RelativeLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/upcoming_search_bar_layout"
                 style="@style/ItineraryTextBoxes"
                 android:layout_marginHorizontal="@dimen/margin_side"
                 app:endIconMode="clear_text"
@@ -154,9 +155,93 @@
                     android:layout_width="match_parent"
                     android:imeOptions="actionNext"
                     android:layout_height="match_parent"
-                    android:inputType="text"
+                    android:inputType="text|textCapSentences"
                     android:paddingVertical="7dp" />
             </com.google.android.material.textfield.TextInputLayout>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/itinerary_new_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="55dp"
+                android:backgroundTint="@color/semiTransparentBarelyGrey"
+                android:visibility="visible"
+                android:layout_marginHorizontal="@dimen/margin_side"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="@dimen/card_radius_thin"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/im_schedule" />
+
+                    <TextView
+                        android:id="@+id/upcoming_welcome_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/main_welcome_traveler"
+                        android:textColor="@color/black"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:gravity="center_horizontal"
+                        android:text="Get started by adding activities\nand/or hotels to your itinerary!"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/add_to_itinerary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="@color/white"
+                        android:paddingHorizontal="20dp"
+                        android:drawableLeft="@drawable/ic_add"
+                        android:drawableTint="@color/green"
+                        android:paddingVertical="10dp"
+                        android:text="Add a plan"
+                        android:textAllCaps="false"
+                        android:textColor="@color/green"
+                        app:cornerRadius="40dp"
+                        app:elevation="0dp"
+                        app:rippleColor="@color/lightGrey"/>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container_trip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginTop="15dp"
+                app:shimmer_base_color="@color/greyShimmer"
+                app:shimmer_colored="true"
+                app:shimmer_auto_start="false"
+                app:shimmer_duration="1500"
+                app:shimmer_highlight_color="@color/semiTransparent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <include layout="@layout/shimmer_trip_details"/>
+                    <include layout="@layout/shimmer_trip_details"/>
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTripDetails"

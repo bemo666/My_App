@@ -29,11 +29,8 @@ public class VibrationService extends Service {
     public void onCreate() {
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        Log.d("tag", "onCreate: created");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            list.add(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
             effect = (VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK));
-//            list.add(VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK));
         }
         super.onCreate();
 

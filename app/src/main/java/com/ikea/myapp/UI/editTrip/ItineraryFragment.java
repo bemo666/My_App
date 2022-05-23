@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class ItineraryFragment extends Fragment {
-    private TextView dates;
-    private final String id;
+    private TextView dates, welcomeText;
     protected MyTrip trip;
     private EditText nickname;
     private EditTripViewModel viewModel;
@@ -49,14 +49,11 @@ public class ItineraryFragment extends Fragment {
     private CardView newCard;
     private boolean nicknameChanged;
     private InputMethodManager imm;
-    private View divider;
-    private EditTripActivity editTripActivity;
-    private View view;
+    private View divider, view;
+    private final EditTripActivity editTripActivity;
 
 
-
-    public ItineraryFragment(String id, EditTripActivity editTripActivity) {
-        this.id = id;
+    public ItineraryFragment(EditTripActivity editTripActivity) {
         this.editTripActivity = editTripActivity;
     }
 
@@ -70,6 +67,7 @@ public class ItineraryFragment extends Fragment {
         mainLayout = view.findViewById(R.id.itinerary_layout);
         newCard = view.findViewById(R.id.itinerary_new_card);
         divider = view.findViewById(R.id.itinerary_divider);
+        welcomeText =view.findViewById(R.id.welcomeText3);
 
         rvAdapter = new ItineraryRVAdapter(this);
         itineraryRV.setAdapter(rvAdapter);
@@ -91,7 +89,11 @@ public class ItineraryFragment extends Fragment {
         };
         viewModel = ViewModelProviders.of(requireActivity()).get(EditTripViewModel.class);
         viewModel.getTrip().observe(getViewLifecycleOwner(), observer);
-
+        viewModel.getName().observe(getViewLifecycleOwner(), name -> {
+            if (!name.equals("-1")) {
+                welcomeText.setText("Welcome " + name + "!");
+            }
+        });
         nickname.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -200,7 +202,11 @@ public class ItineraryFragment extends Fragment {
         rvAdapter.onActivityResult(requestCode, resultCode, data);
     }
 
-    public boolean verifyPlan(Plan plan) {
-        return trip.getPlans().contains(plan);
+    public void scrollTo(Plan p) {
+        rvAdapter.expandGroup(p);
+    }
+
+    public void expandViewHolder(int counter){
+        ((ItineraryRVAdapter.HeaderViewHolder)itineraryRV.findViewHolderForAdapterPosition(counter)).forceExpand();
     }
 }
