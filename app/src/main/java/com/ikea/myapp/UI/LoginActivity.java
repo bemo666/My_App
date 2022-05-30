@@ -3,7 +3,6 @@ package com.ikea.myapp.UI;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.FileUtils;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -30,15 +29,14 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.ikea.myapp.models.CustomProgressDialog;
-import com.ikea.myapp.utils.NetworkChangeReceiver;
+import com.ikea.myapp.R;
 import com.ikea.myapp.UI.main.MainActivity;
 import com.ikea.myapp.data.TripRepo;
 import com.ikea.myapp.data.remote.FirebaseManager;
-import com.ikea.myapp.R;
+import com.ikea.myapp.models.CustomProgressDialog;
+import com.ikea.myapp.utils.NetworkChangeReceiver;
 import com.ikea.myapp.utils.Utils;
 
-import java.io.File;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -46,7 +44,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Declaring Variables
     private Button firebaseButton;
     private TextInputEditText inputName, inputEmail, inputPassword;
-    private ActionBar actionBar;
     private String name, email, password;
     private TextInputLayout layoutInputName, layoutInputEmail, layoutInputPassword;
     private RelativeLayout relativeLayout;
@@ -64,7 +61,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //Setting the Actionbar attributes
         setTitle("Login");
-        actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setElevation(0);
@@ -219,7 +216,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         firebaseButton.setText(R.string.ui_sign_in);
     }
 
-
     private void signUp() {
         bSignUp = true;
         layoutInputName.setVisibility(View.VISIBLE);
@@ -342,8 +338,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -360,7 +354,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (FirebaseManager.loggedIn())
             finish();
     }
-
 
     private boolean validateName() {
         name = Objects.requireNonNull(inputName.getText()).toString().trim();

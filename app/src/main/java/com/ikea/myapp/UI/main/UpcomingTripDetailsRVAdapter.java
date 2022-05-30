@@ -157,16 +157,16 @@ public class UpcomingTripDetailsRVAdapter extends RecyclerView.Adapter<UpcomingT
                 if (p.getObjectType() != 0) {
                     PlanType type = PlanType.getTypeByInt(p.getObjectType());
                     if (p.getStartDate() != null) {
-                        SubPlan tmp = new SubPlan(p.getId(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getStartTime(), p.getStartDate(), p.getEndTime(), p.getNote(), p.getConfirmationNumber(), true, type);
+                        SubPlan tmp = new SubPlan(p.getId(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationAddress(), p.getStartTime(), p.getStartDate(), p.getEndTime(), p.getNote(), p.getConfirmationNumber(), true, type);
                         this.plans.add(tmp);
                     }
                     if (p.getEndDate() != null) {
                         SubPlan tmp;
                         if (p.getObjectType() != 4) {
                             if (p.getEndLocation() == null && p.getStartLocation() != null) {
-                                tmp = new SubPlan(p.getId(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationId(), p.getStartLocationAddress(), p.getEndTime(), p.getEndDate(), null, p.getNote(), p.getConfirmationNumber(), false, type);
+                                tmp = new SubPlan(p.getId(), p.getAirline(), p.getFlightCode(), p.getStartLocationLat(), p.getStartLocationLong(), p.getStartLocation(), p.getStartLocationAddress(), p.getEndTime(), p.getEndDate(), null, p.getNote(), p.getConfirmationNumber(), false, type);
                             } else {
-                                tmp = new SubPlan(p.getId(), p.getAirline(), p.getFlightCode(), p.getEndLocationLat(), p.getEndLocationLong(), p.getEndLocation(), p.getEndLocationId(), p.getEndLocationAddress(), p.getEndTime(), p.getEndDate(), null, p.getNote(), p.getConfirmationNumber(), false, type);
+                                tmp = new SubPlan(p.getId(), p.getAirline(), p.getFlightCode(), p.getEndLocationLat(), p.getEndLocationLong(), p.getEndLocation(), p.getEndLocationAddress(), p.getEndTime(), p.getEndDate(), null, p.getNote(), p.getConfirmationNumber(), false, type);
                             }
                             this.plans.add(tmp);
                         }

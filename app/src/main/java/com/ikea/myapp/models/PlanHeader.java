@@ -26,10 +26,6 @@ public class PlanHeader {
         return plans;
     }
 
-    public void setPlans(List<Plan> plans) {
-        this.plans = plans;
-    }
-
     public void addPlan(Plan plan){
         if(plans == null)
             plans = new ArrayList<>();

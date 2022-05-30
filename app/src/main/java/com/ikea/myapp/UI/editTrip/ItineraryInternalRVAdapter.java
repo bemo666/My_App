@@ -146,8 +146,6 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             plan.setStartLocationId(result.getId());
         if (result.getAddress() != null)
             plan.setStartLocationAddress(result.getAddress());
-        if (result.getBusinessStatus() != null)
-            plan.setStartLocationStatus(result.getBusinessStatus().name());
         if (result.getLatLng() != null)
             plan.setStartLocationLat(result.getLatLng().latitude);
         if (result.getLatLng() != null)
@@ -186,8 +184,6 @@ public class ItineraryInternalRVAdapter extends RecyclerView.Adapter<PlanViewHol
             plan.setEndLocationId(result.getId());
         if (result.getAddress() != null)
             plan.setEndLocationAddress(result.getAddress());
-        if (result.getBusinessStatus() != null)
-            plan.setEndLocationStatus(result.getBusinessStatus().name());
         if (result.getLatLng() != null)
             plan.setEndLocationLat(result.getLatLng().latitude);
         if (result.getLatLng() != null)

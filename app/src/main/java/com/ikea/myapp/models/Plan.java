@@ -11,8 +11,8 @@ public class Plan {
     private String airline, flightCode;
     private Integer startLocationRatingCount, endLocationRatingCount;
     private Double startLocationLat, startLocationLong, startLocationRating, endLocationLat, endLocationLong, endLocationRating;
-    private String startLocation, startLocationId, startLocationAddress, startLocationStatus, startLocationPhoneNumber, startLocationTypes, startLocationUrl, startLocationPriceLevel;
-    private String endLocation, endLocationId, endLocationAddress, endLocationStatus, endLocationPhoneNumber, endLocationTypes, endLocationUrl, endLocationPriceLevel;
+    private String startLocation, startLocationId, startLocationAddress, startLocationPhoneNumber, startLocationUrl;
+    private String endLocation, endLocationId, endLocationAddress, endLocationPhoneNumber, endLocationUrl;
     private Long startTime, endTime,  startDate, endDate;
     private String note, confirmationNumber;
     private Expense cost;
@@ -162,59 +162,31 @@ public class Plan {
         this.objectType = objectType;
     }
 
-    public void onResult(int requestCode, int resultCode, Intent data) { }
-
     public Double getStartLocationRating() {
         return startLocationRating;
     }
 
     public void setStartLocationRating(Double startLocationRating) { this.startLocationRating = startLocationRating; }
 
-    public String getStartLocationStatus() {
-        return startLocationStatus;
-    }
-
-    public void setStartLocationStatus(String startLocationStatus) { this.startLocationStatus = startLocationStatus; }
-
     public String getStartLocationPhoneNumber() { return startLocationPhoneNumber; }
 
     public void setStartLocationPhoneNumber(String startLocationPhoneNumber) { this.startLocationPhoneNumber = startLocationPhoneNumber; }
-
-    public String getStartLocationTypes() { return startLocationTypes; }
-
-    public void setStartLocationTypes(String startLocationTypes) { this.startLocationTypes = startLocationTypes; }
 
     public String getStartLocationUrl() { return startLocationUrl; }
 
     public void setStartLocationUrl(String startLocationUrl) { this.startLocationUrl = startLocationUrl; }
 
-    public String getStartLocationPriceLevel() { return startLocationPriceLevel; }
-
-    public void setStartLocationPriceLevel(String startLocationPriceLevel) { this.startLocationPriceLevel = startLocationPriceLevel; }
-
     public Double getEndLocationRating() { return endLocationRating; }
 
     public void setEndLocationRating(Double endLocationRating) { this.endLocationRating = endLocationRating; }
-
-    public String getEndLocationStatus() { return endLocationStatus; }
-
-    public void setEndLocationStatus(String endLocationStatus) { this.endLocationStatus = endLocationStatus; }
 
     public String getEndLocationPhoneNumber() { return endLocationPhoneNumber; }
 
     public void setEndLocationPhoneNumber(String endLocationPhoneNumber) { this.endLocationPhoneNumber = endLocationPhoneNumber; }
 
-    public String getEndLocationTypes() { return endLocationTypes; }
-
-    public void setEndLocationTypes(String endLocationTypes) { this.endLocationTypes = endLocationTypes; }
-
     public String getEndLocationUrl() { return endLocationUrl; }
 
     public void setEndLocationUrl(String endLocationUrl) { this.endLocationUrl = endLocationUrl; }
-
-    public String getEndLocationPriceLevel() { return endLocationPriceLevel; }
-
-    public void setEndLocationPriceLevel(String endLocationPriceLevel) { this.endLocationPriceLevel = endLocationPriceLevel; }
 
     public List<String> getStartEstablishmentTypes() { return startEstablishmentTypes; }
 

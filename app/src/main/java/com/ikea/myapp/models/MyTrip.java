@@ -16,7 +16,6 @@ public class MyTrip {
     @NonNull
     private String id;
     private String placeId, image, country;
-    private CustomDateTime start, end;
     private Long startStamp, endStamp;
     private String destination, nickname;
     private Double destinationLat, destinationLon;
@@ -34,9 +33,7 @@ public class MyTrip {
                   LatLng sw,
                   LatLng ne,
                   Long startStamp,
-                  CustomDateTime start,
                   Long endStamp,
-                  CustomDateTime end,
                   String placeId, @NonNull String id, CustomCurrency currency,
                   String country) {
         this.destination = destination;
@@ -44,8 +41,6 @@ public class MyTrip {
         this.destinationLon = destinationLatLng.longitude;
         this.startStamp = startStamp;
         this.endStamp = endStamp;
-        this.start = start;
-        this.end = end;
         this.placeId = placeId;
         this.id = id;
         this.budget = new Budget();
@@ -194,14 +189,6 @@ public class MyTrip {
     }
 
     public void editPlan(Plan plan, int position){ this.plans.set(position, plan); }
-
-    public CustomDateTime getStart() { return start; }
-
-    public void setStart(CustomDateTime start) { this.start = start; }
-
-    public CustomDateTime getEnd() { return end; }
-
-    public void setEnd(CustomDateTime end) { this.end = end; }
 
     public Double getNeLat() { return neLat; }
 

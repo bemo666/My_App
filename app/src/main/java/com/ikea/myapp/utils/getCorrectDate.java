@@ -1,16 +1,8 @@
 package com.ikea.myapp.utils;
 
-import android.util.Log;
-
-import com.ikea.myapp.models.CustomDateTime;
 import com.ikea.myapp.models.MyTrip;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -22,20 +14,14 @@ public class getCorrectDate {
     private final SimpleDateFormat simpleFormatMonthAndYear = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
     private final SimpleDateFormat simpleFormatJustMonth = new SimpleDateFormat("MMM", Locale.ENGLISH);
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
-    private MyTrip trip;
     private String startDate, endDate;
-    private Date tripStart, tripEnd;
-    private CustomDateTime start, end;
+    private final Date tripStart, tripEnd;
 
     public getCorrectDate(MyTrip trip) {
-        this.trip = trip;
         TimeZone tz = TimeZone.getTimeZone("GMT");
 
         tripStart = new Date(trip.getStartStamp());
         tripEnd = new Date(trip.getEndStamp());
-        start = trip.getStart();
-        end = trip.getEnd();
         simpleFormatMonth.setTimeZone(tz);
         simpleFormatYear.setTimeZone(tz);
         simpleFormatMonthAndYear.setTimeZone(tz);
@@ -84,14 +70,5 @@ public class getCorrectDate {
             startDate = simpleFormatMonthAndYear.format(tripStart);
         }
         return (startDate + " - " + endDate);
-    }
-
-    public String getStartTime(){
-//        dateFormat.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
-        return dateFormat.format(tripStart);
-    }
-    public String getEndTime(){
-//        dateFormat.setTimeZone(TimeZone.getTimeZone(trip.getTimeZone()));
-        return dateFormat.format(tripEnd);
     }
 }

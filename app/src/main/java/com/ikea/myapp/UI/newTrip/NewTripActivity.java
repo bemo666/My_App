@@ -1,49 +1,31 @@
 package com.ikea.myapp.UI.newTrip;
 
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
-
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.app.AlarmManager;
-import android.app.Dialog;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AddressComponent;
-import com.google.android.libraries.places.api.model.AddressComponents;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
@@ -52,18 +34,12 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.ikea.myapp.Notification;
-import com.ikea.myapp.UI.profile.CurrenciesRVAdapter;
 import com.ikea.myapp.models.CustomCurrency;
-import com.ikea.myapp.models.CustomDateTime;
 import com.ikea.myapp.models.CustomProgressDialog;
 import com.ikea.myapp.models.MyTrip;
 import com.ikea.myapp.R;
@@ -74,14 +50,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -89,18 +62,13 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
     //Declaring Variables
     private TextInputEditText inputDestination, inputDates;
-    private Toolbar toolbar;
     private TextView welcomeText;
     private FirebaseManager firebaseManager;
     private String placeId = "", destination = "";
     private LatLng destinationLatLng, ne, sw;
-    private long startStamp;
-    private long endStamp;
-    private MaterialButton createButton;
+    private long startStamp, endStamp;
     private CustomProgressDialog progressDialog;
-    private final Handler handler = new Handler();
     private NewTripActivityViewModel viewmodel;
-    private Place dest;
     private List<Place.Field> fieldList;
     private CustomCurrency c;
     private Pair<Date, Date> rangeDate;
@@ -123,8 +91,8 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         inputDestination = findViewById(R.id.inputDestination);
         welcomeText = findViewById(R.id.welcomeText);
         inputDates = findViewById(R.id.inputDates);
-        createButton = findViewById(R.id.create_trip);
-        toolbar = findViewById(R.id.newTripToolbar);
+        MaterialButton createButton = findViewById(R.id.create_trip);
+        Toolbar toolbar = findViewById(R.id.newTripToolbar);
         c = new CustomCurrency(Currency.getInstance(Locale.US));
         firebaseManager = new FirebaseManager();
         progressDialog = new CustomProgressDialog(this, "Creating Trip");
@@ -143,35 +111,23 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             rangeDate = new Pair<>(new Date((Long) selection.first), new Date((Long) ((Pair) selection).second));
         });
         createButton.setOnClickListener(this);
-        initializeAPIs();
-
-
-        //Actionbar setup
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
-        initializeLocationStuff();
-    }
-
-    private void initializeAPIs() {
-        //Initialize the places api
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.g_apiKey));
         }
-
-    }
-
-    private void initializeLocationStuff() {
         inputDestination.setFocusable(false);
         inputDestination.setOnClickListener(view -> {
-            initializeAPIs();
             fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME, Place.Field.ID, Place.Field.PHOTO_METADATAS, Place.Field.VIEWPORT, Place.Field.ADDRESS_COMPONENTS);
             Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY
                     , fieldList).build(NewTripActivity.this);
             startActivityForResult(intent, 100);
 
         });
+        //Actionbar setup
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
+
 
 
     @Override
@@ -190,7 +146,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK) {
-            dest = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+            Place dest = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
             destination = dest.getName();
             inputDestination.setText(dest.getName());
             destinationLatLng = dest.getLatLng();
@@ -228,20 +184,10 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
 
     private void createTrip() {
         DatabaseReference pushedTrip = firebaseManager.newTrip();
-        CustomDateTime start = new CustomDateTime(0, 0,
-                rangeDate.first.getDate(),
-                rangeDate.first.getDay(),
-                rangeDate.first.getMonth() + 1,
-                rangeDate.first.getYear() + 1900);
-        CustomDateTime end = new CustomDateTime(59, 11,
-                rangeDate.first.getDate(),
-                rangeDate.first.getDay(),
-                rangeDate.first.getMonth() + 1,
-                rangeDate.first.getYear() + 1900);
         startStamp = rangeDate.first.getTime();
         endStamp = rangeDate.second.getTime() + 86399999;
 
-        MyTrip data = new MyTrip(destination, destinationLatLng, sw, ne, startStamp, start, endStamp, end, placeId,
+        MyTrip data = new MyTrip(destination, destinationLatLng, sw, ne, startStamp, endStamp, placeId,
                 Objects.requireNonNull(pushedTrip.getKey()), c, country);
         fetchImage(pushedTrip.getKey());
         if (FirebaseManager.loggedIn()) {
@@ -278,6 +224,7 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         Intent intent = new Intent(getApplicationContext(), EditTripActivity.class);
         intent.putExtra("id", key);
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(NewTripActivity.this).toBundle());
+        Handler handler = new Handler();
         handler.postDelayed(this::finish, 900);
     }
 

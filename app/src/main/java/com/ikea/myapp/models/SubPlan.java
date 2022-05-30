@@ -2,20 +2,19 @@ package com.ikea.myapp.models;
 
 public class SubPlan {
 
-    private String id, airline, flightCode, location, locationId, locationAddress, note, confirmationNumber;
+    private String id, airline, flightCode, location, locationAddress, note, confirmationNumber;
     private Double latitude, longitude;
     private Long time, date, endtime;
     private boolean start;
     private PlanType type;
 
-    public SubPlan(String id, String airline, String flightCode, Double latitude, Double longitude, String location, String locationId, String locationAddress, Long time, Long date, Long endtime, String note, String confirmationNumber, boolean start, PlanType type) {
+    public SubPlan(String id, String airline, String flightCode, Double latitude, Double longitude, String location, String locationAddress, Long time, Long date, Long endtime, String note, String confirmationNumber, boolean start, PlanType type) {
         this.id = id;
         this.airline = airline;
         this.flightCode = flightCode;
         this.latitude = latitude;
         this.longitude = longitude;
         this.location = location;
-        this.locationId = locationId;
         this.locationAddress = locationAddress;
         this.time = time;
         this.date = date;
@@ -64,14 +63,6 @@ public class SubPlan {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(String locationId) {
-        this.locationId = locationId;
     }
 
     public String getLocationAddress() {

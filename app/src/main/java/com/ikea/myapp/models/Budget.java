@@ -21,12 +21,6 @@ public class Budget {
         this.budget = 0.0;
     }
 
-    public Budget(Double budget, List<Expense> expenses) {
-        this.budget = budget;
-        this.expenses = expenses;
-        currentTally = 0.0;
-    }
-
     public Double getBudget() {
         return budget;
     }
