@@ -67,13 +67,6 @@ public class PastTripsRVAdapter extends RecyclerView.Adapter<PastTripsRVAdapter.
             placeName.setText(trip.getDestination());
             getCorrectDate date = new getCorrectDate(trip);
             dates.setText(date.getDatesOnlyMonthAndYearFormat());
-
-//            try {
-//                byte[] encodeByte = Base64.decode(trip.getImage(), Base64.DEFAULT);
-//                Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-//                imageView.setImageBitmap(bitmap);
-//            } catch (Exception e) {
-//            }
         }
     }
 

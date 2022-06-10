@@ -11,21 +11,17 @@ import androidx.annotation.NonNull;
 public class AppExecutors {
 
     private static volatile AppExecutors sInstance;
-    private static final int THREAD_COUNT = 3;
     private final Executor diskIO;
-    private final Executor networkIO;
 
-    public AppExecutors(Executor diskIO, Executor networkIO) {
+    private AppExecutors(Executor diskIO) {
         this.diskIO = diskIO;
-        this.networkIO = networkIO;
     }
 
     public static AppExecutors getInstance() {
         if (sInstance == null) {
             synchronized (AppExecutors.class) {
                 if (sInstance == null) {
-                    sInstance = new AppExecutors(Executors.newSingleThreadExecutor(),
-                            Executors.newFixedThreadPool(THREAD_COUNT));
+                    sInstance = new AppExecutors(Executors.newSingleThreadExecutor());
                 }
             }
         }
@@ -36,7 +32,4 @@ public class AppExecutors {
         return diskIO;
     }
 
-    public Executor networkIO() {
-        return networkIO;
-    }
 }

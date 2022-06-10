@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private final String id;
     private EditTripViewModel viewModel;
@@ -100,7 +100,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
         card = view.findViewById(R.id.map_card);
         card.setVisibility(View.GONE);
-        card.setOnClickListener(this);
+        card.setOnClickListener(view1 -> {});
         button = view.findViewById(R.id.map_zoom_button);
         zoomImage = view.findViewById(R.id.map_zoom_image);
         chipGroup = view.findViewById(R.id.marker_chip_group);
@@ -420,10 +420,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             androidx.appcompat.app.AlertDialog dialog = alertDialog.create();
             dialog.show();
         }
-    }
-
-    @Override
-    public void onClick(View view) {
-
     }
 }

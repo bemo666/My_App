@@ -27,7 +27,6 @@ public class TripRepo {
 
     private final TripDao tripDao;
     private final FirebaseManager firebaseManager;
-    private final StorageReference storage;
     private final AppExecutors appExecutors;
     private final Application application;
 
@@ -36,7 +35,6 @@ public class TripRepo {
         firebaseManager = new FirebaseManager();
         tripDao = TripDatabase.getDatabase(application).tripDao();
         appExecutors = AppExecutors.getInstance();
-        storage = FirebaseStorage.getInstance().getReference().child("pictures");
     }
 
     public void insertLocalTrip(MyTrip trip) {

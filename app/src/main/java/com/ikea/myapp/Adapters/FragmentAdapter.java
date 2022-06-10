@@ -33,7 +33,4 @@ public class FragmentAdapter extends FragmentStateAdapter {
         return fragments.size();
     }
 
-    public Fragment getItem(int position){
-        return fragments.get(position);
-    }
 }

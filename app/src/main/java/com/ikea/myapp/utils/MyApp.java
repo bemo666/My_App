@@ -30,12 +30,8 @@ public class MyApp extends Application implements Application.ActivityLifecycleC
                     FirebaseAuth.getInstance().getCurrentUser().getUid()).keepSynced(true);
 
         BroadcastReceiver receiver = new NetworkChangeReceiver();
-
         registerReceiver(receiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-
         registerActivityLifecycleCallbacks(this);
-
-
         createNotificationChannel();
 
 

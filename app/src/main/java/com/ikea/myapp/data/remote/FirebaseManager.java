@@ -23,12 +23,7 @@ public class FirebaseManager {
     private final DatabaseReference userdata, tripsRef;
 
     public FirebaseManager() {
-        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                loggedIn = firebaseAuth.getCurrentUser() != null;
-            }
-        });
+        firebaseAuth.addAuthStateListener(firebaseAuth -> loggedIn = firebaseAuth.getCurrentUser() != null);
         if (loggedIn) {
             userdata = FirebaseDatabase.getInstance().getReference("UserData").child(Objects.requireNonNull(firebaseAuth.getUid()));
             tripsRef = userdata.child("Trips");
@@ -40,12 +35,6 @@ public class FirebaseManager {
 
     public static boolean loggedIn() {
         return loggedIn;
-    }
-
-
-    public static Long getCreationStamp() {
-        FirebaseUserMetadata metadata = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getMetadata();
-        return Objects.requireNonNull(metadata).getCreationTimestamp();
     }
 
     public String getEmail() {
@@ -89,10 +78,6 @@ public class FirebaseManager {
         return tripsRef.push();
     }
 
-    public DatabaseReference getCountriesReference(){
-        return userdata.child("Countries");
-    }
-
     public Query getTripsRef() {
         return tripsRef.orderByChild("startStamp");
     }
@@ -111,9 +96,6 @@ public class FirebaseManager {
         return userdata.child("firstName");
     }
 
-    public DatabaseReference getCurrencyDisplayNameRef() {
-        return userdata.child("currency/displayName");
-    }
 
     public void addTripImage(String id, String url, int version) { //maybe save by location id so it can be reused by different users, or save by userId + tripId
         tripsRef.child(id).child("image").setValue(url);

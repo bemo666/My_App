@@ -58,7 +58,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 
-public class NewTripActivity extends AppCompatActivity implements View.OnClickListener {
+public class NewTripActivity extends AppCompatActivity {
 
     //Declaring Variables
     private TextInputEditText inputDestination, inputDates;
@@ -110,7 +110,13 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
             inputDates.setText(datePicker.getHeaderText());
             rangeDate = new Pair<>(new Date((Long) selection.first), new Date((Long) ((Pair) selection).second));
         });
-        createButton.setOnClickListener(this);
+        createButton.setOnClickListener(view -> {
+            if (verifyInput()) {
+                progressDialog.show();
+                createTrip();
+            } else
+                Toast.makeText(getApplicationContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();
+        });
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.g_apiKey));
         }
@@ -164,21 +170,6 @@ public class NewTripActivity extends AppCompatActivity implements View.OnClickLi
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             Status status = Autocomplete.getStatusFromIntent(Objects.requireNonNull(data));
             Toast.makeText(getApplicationContext(), status.getStatusMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.create_trip) {
-            {
-                if (verifyInput()) {
-                    progressDialog.show();
-                    createTrip();
-                } else
-                    Toast.makeText(getApplicationContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show();
-
-            }
         }
     }
 

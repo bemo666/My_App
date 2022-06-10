@@ -5,12 +5,11 @@ import androidx.room.TypeConverter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ikea.myapp.models.Plan;
-import com.ikea.myapp.models.PlanHeader;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class PlanHeaderConverter {
+public class ListPlanConverter {
 
     @TypeConverter
     public static  List<Plan> fromString(String value) {

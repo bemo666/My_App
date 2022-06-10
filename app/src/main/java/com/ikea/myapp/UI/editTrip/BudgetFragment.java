@@ -48,7 +48,7 @@ import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Objects;
 
-public class BudgetFragment extends Fragment implements View.OnClickListener {
+public class BudgetFragment extends Fragment {
 
     private MyTrip trip;
     private String id;
@@ -393,10 +393,6 @@ public class BudgetFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-
-    @Override
-    public void onClick(View view) {
-    }
 
     public void setCurrency(Currency c) {
         trip.setCurrency(new CustomCurrency(c));

@@ -46,15 +46,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final String CHANNEL_ID = "Trip Reminder";
+public class MainActivity extends AppCompatActivity {
     //Declaring Variables
     private FloatingActionButton addFab;
     private TabLayout tabLayout;
     private ViewPager2 fragments;
     private Toolbar toolbar;
     private FragmentAdapter fragmentAdapter;
-    private ImageView backdrop;
     private AppBarLayout appBarLayout;
     private Animation animTop, animBottom;
     private ImageView logo;
@@ -73,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabLayout = findViewById(R.id.tab_view);
         fragments = findViewById(R.id.viewpager);
         addFab = findViewById(R.id.add_button);
-        backdrop = findViewById(R.id.backdrop);
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.app_bar);
         logo = findViewById(R.id.logo);
@@ -91,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbar.setBackground(new ColorDrawable(ContextCompat.getColor(getApplicationContext(), R.color.transparent)));
 
         //OnClick listeners
-        addFab.setOnClickListener(this);
+        addFab.setOnClickListener(view -> startActivity(new Intent(this, NewTripActivity.class)));
 
         //Fragments setup
         FragmentManager fm = getSupportFragmentManager();
@@ -128,13 +125,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //Inflate menu (search and profile)
+        //Inflate menu (search)
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        //Get profile button and change its color
-        Drawable drawable = menu.findItem(R.id.profile).getIcon();
-        drawable.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.orange),
-                PorterDuff.Mode.SRC_IN);
-
         return true;
     }
 
@@ -146,13 +138,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         }
         return true;
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view == addFab) {
-            startActivity(new Intent(this, NewTripActivity.class));
-        }
     }
 
     @Override

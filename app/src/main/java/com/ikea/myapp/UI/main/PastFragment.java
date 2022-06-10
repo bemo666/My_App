@@ -96,9 +96,7 @@ public class PastFragment extends Fragment {
                 }
             }
             tripsNum.setText(String.valueOf(totalTripList.size()));
-
             tripsText.setText(totalTripList.size() == 1 ? "Trip" : "Trips");
-
         }
         countriesNum.setText(String.valueOf(lst.size()));
         if (lst.size() == 1) {
@@ -121,10 +119,6 @@ public class PastFragment extends Fragment {
             tripSlider.setVisibility(View.VISIBLE);
             noPastTrips.setVisibility(View.GONE);
         }
-    }
-
-    private String getTripIdAt(int position) {
-        return pastTripList.get(position).getId();
     }
 
     public void goToEditTripActivity(ImageView imageView, TextView textView, int position) {

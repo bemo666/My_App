@@ -73,7 +73,6 @@ import java.util.TimeZone;
 
 public class EditTripActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Toolbar toolbar;
     private ViewPager2 fragments;
     private ImageView mainImage;
     private TextView placeName;
@@ -88,7 +87,6 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
     private boolean clicked = false;
     private View mask;
     private EditTripViewModel viewModel;
-    private CoordinatorLayout.LayoutParams layoutParams;
     private ItineraryFragment itineraryFragment;
 
 
@@ -109,7 +107,7 @@ public class EditTripActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_edit_trip);
 
         fragments = findViewById(R.id.editTrip_viewpager);
-        toolbar = findViewById(R.id.editTripToolbar);
+        Toolbar toolbar = findViewById(R.id.editTripToolbar);
         collapsingToolbar = findViewById(R.id.editTripCollapsingToolbar);
         placeName = findViewById(R.id.editTrip_placeName);
         appBarLayout = findViewById(R.id.editTripAppBar);

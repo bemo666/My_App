@@ -21,7 +21,6 @@ import java.util.List;
 
 public class TripsViewModel extends AndroidViewModel {
 
-    FirebaseManager firebaseManager;
     TripRepo tripRepo;
     LiveData<List<MyTrip>> trips;
 
@@ -30,7 +29,6 @@ public class TripsViewModel extends AndroidViewModel {
         trips = new MutableLiveData<>();
         tripRepo = new TripRepo(application);
         if (FirebaseManager.loggedIn()) {
-            firebaseManager = new FirebaseManager();
             fetchRemoteTrips();
         } else {
             fetchLocalTrips();
