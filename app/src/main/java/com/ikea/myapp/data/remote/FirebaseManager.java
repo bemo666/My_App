@@ -4,11 +4,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -97,9 +99,17 @@ public class FirebaseManager {
     }
 
 
-    public void addTripImage(String id, String url, int version) { //maybe save by location id so it can be reused by different users, or save by userId + tripId
-        tripsRef.child(id).child("image").setValue(url);
-        tripsRef.child(id).child("imageVersion").setValue(version + 1);
+    public void addTripImage(String id, String url, int version) {//maybe save by location id so it can be reused by different users, or save by userId + tripId
+        tripsRef.child(id).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    tripsRef.child(id).child("image").setValue(url);
+                    tripsRef.child(id).child("imageVersion").setValue(version + 1);
+                }
+
+            }
+        });
 
     }
 

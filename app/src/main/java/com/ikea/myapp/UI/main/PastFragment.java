@@ -132,4 +132,8 @@ public class PastFragment extends Fragment {
 
     }
 
+    public void setImage(String id, String absolutePath, int imageVersion) {
+        viewmodel.setImage(id, absolutePath, imageVersion);
+    }
+
 }
